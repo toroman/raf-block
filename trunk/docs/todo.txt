@@ -1,0 +1,11 @@
+Sistem za lokalizaciju
+	- singleton, ima listu jezika, moze da se izabere jezik
+	- properties fajlovi
+	- keshira slike (tj ikonice)
+	- lepo radi sa cirilicom
+Serijalizacija
+	- pomocu XStream-a ili neceg slicnog (u XML)
+	- detalji o view-u se nalaze u modelu, ali u toku rada sa objektima,
+	drzimo se MVC paterna :)
+	
+:))

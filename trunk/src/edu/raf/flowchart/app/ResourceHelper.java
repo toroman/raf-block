@@ -1,6 +1,13 @@
 package edu.raf.flowchart.app;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.ImageFilter;
+import java.awt.image.ImageProducer;
+import java.awt.image.RGBImageFilter;
 import java.util.Locale;
 
 import javax.swing.JFrame;
@@ -43,8 +50,12 @@ public class ResourceHelper {
 	 */
 
 	public static String frameStateToString(JFrame frame) {
-		return frame.getExtendedState() + " " + (int) frame.getBounds().getX() + " "
-				+ (int) frame.getBounds().getY() + " " + frame.getWidth() + " " + frame.getHeight();
+		int exState = frame.getExtendedState();
+		frame.setVisible(false);
+		frame.setExtendedState(JFrame.NORMAL);
+		frame.setVisible(true);
+		return exState + " " + (int) frame.getX() + " "
+				+ (int) frame.getY() + " " + frame.getWidth() + " " + frame.getHeight();
 	}
 
 	/**
@@ -64,5 +75,31 @@ public class ResourceHelper {
 		int height = Integer.parseInt(coords[4]);
 		frame.setBounds(x, y, width, height);
 		frame.setPreferredSize(new Dimension(width, height));
+	}
+	
+	/**
+	 * Ovaj kod ti je poznat, Srećko :))
+	 * 
+	 * @param im slika koja treba da dobije transparentnu boju
+	 * @param color transparentna boja 
+	 * @return nova slika sa transparentnom bojom (НЕ СЕРИ, РЕЈУЗАБИЛНОСТ)
+	 */
+	
+	public static Image makeColorTransparent(Image im, final Color color) {
+		ImageFilter filter = new RGBImageFilter() {
+
+			public int markerRGB = color.getRGB() | 0xFF000000;
+
+			@Override
+			public final int filterRGB(int x, int y, int rgb) {
+				if ((rgb | 0xFF000000) == markerRGB) {
+					return 0x00FFFFFF & rgb;
+				} else {
+					return rgb;
+				}
+			}
+		};
+		ImageProducer ip = new FilteredImageSource(im.getSource(), filter);
+		return Toolkit.getDefaultToolkit().createImage(ip);
 	}
 }

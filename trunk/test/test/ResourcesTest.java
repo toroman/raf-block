@@ -1,17 +1,17 @@
 package test;
 
-import java.awt.FlowLayout;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.util.Date;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.UIManager;
 
 import edu.raf.flowchart.app.Resources;
-import edu.raf.flowchart.app.ResourceHelper;
+import edu.raf.flowchart.gui.MainFrame;
 
 /**
  * Kreira prozor u određenom jeziku, omogućava promenu jezika i proverava sistem za lociranje
@@ -20,36 +20,36 @@ import edu.raf.flowchart.app.ResourceHelper;
  * @author Boca
  * 
  */
-public class ResourcesTest extends WindowAdapter implements ActionListener {
-	JFrame prozor;
+@SuppressWarnings("serial")
+public class ResourcesTest extends MainFrame implements ActionListener {
+	@Override
+	protected JPanel createMainPanel() {
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BorderLayout());
+		JTextArea textArea = new JTextArea(Resources.getInstance().createCompositeMessage(
+				"testCompositeMessage", Resources.getInstance().getLocale().toString(), new Date())
+				+ "\n\n" + Resources.getInstance().getLanguageBundle().getString("testMessage"));
+		textArea.setLineWrap(true);
+		textArea.setWrapStyleWord(true);
+		mainPanel.add(textArea, BorderLayout.CENTER);
 
-	private ResourcesTest() {
-
-		String prozorState = Resources.getInstance().getProperty("frameState");
-		String testString = Resources.getInstance().getLanguageBundle().getString(
-				"testMessage");
-
-		prozor = new JFrame(testString);
-
-		ResourceHelper.applyStateToFrame(prozor, prozorState);
-		prozor.add(new JLabel(testString));
-		prozor.setLayout(new FlowLayout());
 		JButton btn;
+
+		JPanel jezikPanel = new JPanel();
 
 		btn = new JButton("English");
 		btn.addActionListener(this);
-		prozor.add(btn);
+		jezikPanel.add(btn);
 		btn = new JButton("Srpski");
 		btn.addActionListener(this);
-		prozor.add(btn);
+		jezikPanel.add(btn);
 		btn = new JButton("Српски");
 		btn.addActionListener(this);
-		prozor.add(btn);
+		jezikPanel.add(btn);
 
-		prozor.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		prozor.pack();
-		prozor.addWindowListener(this);
-		prozor.setVisible(true);
+		mainPanel.add(jezikPanel, BorderLayout.SOUTH);
+
+		return mainPanel;
 	}
 
 	@Override
@@ -66,19 +66,17 @@ public class ResourcesTest extends WindowAdapter implements ActionListener {
 		}
 	}
 
-	@Override
-	public void windowClosing(WindowEvent e) {
-		Resources.getInstance().setProperty("frameState",
-				ResourceHelper.frameStateToString(prozor));
-		Resources.getInstance().saveProperties();
-		super.windowClosing(e);
-	}
-
 	public static void main(String[] args) {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				new ResourcesTest();
+				try {
+					UIManager.setLookAndFeel(UIManager
+							.getSystemLookAndFeelClassName());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				new ResourcesTest().setVisible(true);
 			}
 		});
 	}

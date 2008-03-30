@@ -14,24 +14,24 @@ import java.util.ResourceBundle;
  * dešava tek kada se prvi put zatraži instanca klase. Što će se verovatno desiti kada se bude
  * kreirao prozor, zbog title-a ili pozicije na ekranu ili šta ja znam.
  * <p>
- * Ako nam ne treba lazy čitanje ima i preloadGlobalResources() metodu.
+ * Ako nam ne treba lazy čitanje ima i preloadResources() metodu.
  * <p>
  * Locale-u i LanguageBundle-u se može pristupiti samo preko ne-static metoda za pristup. Na primer,
  * da bi pronašao tekst za labelu <i>Djoksi</i>, linija glasi
- * <i>GlobalResources.getInstance().getLanguageBundle().getString("DjoksiLabel")</i>
+ * <i>Resources.getInstance().getLanguageBundle().getString("DjoksiLabel")</i>
  * 
  * @author Boca
  */
 
 @SuppressWarnings("serial")
-public class GlobalProperties extends Properties {
-	private static volatile GlobalProperties GLOBAL_PROPERTIES = null;
+public class Resources extends Properties {
+	private static volatile Resources GLOBAL_RESOURCES = null;
 	private static volatile Locale APP_LOCALE = null;
 	private static volatile ResourceBundle LANGUAGE_BUNDLE = null;
 
-	private GlobalProperties() {
+	private Resources() {
 		loadProperties();
-		APP_LOCALE = GlobalPropertiesHelper.makeLocaleFromString(getProperty("currentLocale"));
+		APP_LOCALE = ResourceHelper.makeLocaleFromString(getProperty("currentLocale"));
 		LANGUAGE_BUNDLE = ResourceBundle.getBundle("languages/LocalMessagesBundle", APP_LOCALE);
 	}
 
@@ -40,23 +40,23 @@ public class GlobalProperties extends Properties {
 	 * učitavanje, ako bude potrebe.
 	 */
 
-	public void preloadGlobalProperties() {
+	public void preloadResources() {
 		getInstance();
 	}
 
 	/**
 	 * Glavna singleton metoda. Otpočinje lazy učitavanje, ako treba.
 	 * 
-	 * @return instancu GlobalProperties klase
+	 * @return instancu Resources klase
 	 */
 
-	public static GlobalProperties getInstance() {
-		if (GLOBAL_PROPERTIES == null)
-			synchronized (GlobalProperties.class) {
-				if (GLOBAL_PROPERTIES == null)
-					GLOBAL_PROPERTIES = new GlobalProperties();
+	public static Resources getInstance() {
+		if (GLOBAL_RESOURCES == null)
+			synchronized (Resources.class) {
+				if (GLOBAL_RESOURCES == null)
+					GLOBAL_RESOURCES = new Resources();
 			}
-		return GLOBAL_PROPERTIES;
+		return GLOBAL_RESOURCES;
 	}
 
 	/**

@@ -10,8 +10,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import edu.raf.flowchart.app.GlobalProperties;
-import edu.raf.flowchart.app.GlobalPropertiesHelper;
+import edu.raf.flowchart.app.Resources;
+import edu.raf.flowchart.app.ResourceHelper;
 
 /**
  * Kreira prozor u određenom jeziku, omogućava promenu jezika i proverava sistem za lociranje
@@ -20,18 +20,18 @@ import edu.raf.flowchart.app.GlobalPropertiesHelper;
  * @author Boca
  * 
  */
-public class GlobalPropertiesTest extends WindowAdapter implements ActionListener {
+public class ResourcesTest extends WindowAdapter implements ActionListener {
 	JFrame prozor;
 
-	private GlobalPropertiesTest() {
+	private ResourcesTest() {
 
-		String prozorState = GlobalProperties.getInstance().getProperty("frameState");
-		String testString = GlobalProperties.getInstance().getLanguageBundle().getString(
+		String prozorState = Resources.getInstance().getProperty("frameState");
+		String testString = Resources.getInstance().getLanguageBundle().getString(
 				"testMessage");
 
 		prozor = new JFrame(testString);
 
-		GlobalPropertiesHelper.applyStateToFrame(prozor, prozorState);
+		ResourceHelper.applyStateToFrame(prozor, prozorState);
 		prozor.add(new JLabel(testString));
 		prozor.setLayout(new FlowLayout());
 		JButton btn;
@@ -55,22 +55,22 @@ public class GlobalPropertiesTest extends WindowAdapter implements ActionListene
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		if (((JButton) event.getSource()).getText().equals("English")) {
-			GlobalProperties.getInstance().setProperty("currentLocale", "en");
-			GlobalProperties.getInstance().saveProperties();
+			Resources.getInstance().setProperty("currentLocale", "en");
+			Resources.getInstance().saveProperties();
 		} else if (((JButton) event.getSource()).getText().equals("Srpski")) {
-			GlobalProperties.getInstance().setProperty("currentLocale", "sr SR LATIN");
-			GlobalProperties.getInstance().saveProperties();
+			Resources.getInstance().setProperty("currentLocale", "sr SR LATIN");
+			Resources.getInstance().saveProperties();
 		} else {
-			GlobalProperties.getInstance().setProperty("currentLocale", "sr SR CYRILLIC");
-			GlobalProperties.getInstance().saveProperties();
+			Resources.getInstance().setProperty("currentLocale", "sr SR CYRILLIC");
+			Resources.getInstance().saveProperties();
 		}
 	}
 
 	@Override
 	public void windowClosing(WindowEvent e) {
-		GlobalProperties.getInstance().setProperty("frameState",
-				GlobalPropertiesHelper.frameStateToString(prozor));
-		GlobalProperties.getInstance().saveProperties();
+		Resources.getInstance().setProperty("frameState",
+				ResourceHelper.frameStateToString(prozor));
+		Resources.getInstance().saveProperties();
 		super.windowClosing(e);
 	}
 
@@ -78,7 +78,7 @@ public class GlobalPropertiesTest extends WindowAdapter implements ActionListene
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				new GlobalPropertiesTest();
+				new ResourcesTest();
 			}
 		});
 	}

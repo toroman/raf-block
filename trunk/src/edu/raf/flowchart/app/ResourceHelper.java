@@ -6,12 +6,12 @@ import java.util.Locale;
 import javax.swing.JFrame;
 
 /**
- * Utility gluposti vezane za GlobalProperties.
+ * Utility gluposti vezane za Resources.
  * 
  * @author Boca
  * 
  */
-public class GlobalPropertiesHelper {
+public class ResourceHelper {
 	/**
 	 * Parsira string i od njega pravi Locale instancu. String mora biti jednog od formata
 	 * "&#060;lang&#062;", "&#060;lang&#062; &#060;country&#062;" ili "&#060;lang&#062;

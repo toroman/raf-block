@@ -102,4 +102,13 @@ public class ResourceHelper {
 		ImageProducer ip = new FilteredImageSource(im.getSource(), filter);
 		return Toolkit.getDefaultToolkit().createImage(ip);
 	}
+
+	public static Color stringToColor(String colorText) {
+		String [] parts = colorText.split(" ");
+		int r = Integer.parseInt(parts[0]);
+		int g = Integer.parseInt(parts[1]);
+		int b = Integer.parseInt(parts[2]);
+		int alpha = Integer.parseInt(parts[3]);
+		return new Color (r, g, b, alpha);
+	}
 }

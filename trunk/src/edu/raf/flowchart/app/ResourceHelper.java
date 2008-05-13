@@ -13,20 +13,14 @@ import java.util.Locale;
 import javax.swing.JFrame;
 
 /**
- * Utility gluposti vezane za Resources.
- * 
- * @author Boca
- * 
+ * Resources utilities.
  */
 public class ResourceHelper {
 	/**
-	 * Parsira string i od njega pravi Locale instancu. String mora biti jednog od formata
-	 * "&#060;lang&#062;", "&#060;lang&#062; &#060;country&#062;" ili "&#060;lang&#062;
-	 * &#060;country&#062; &#060;variant&#062;". Postoji tačno jedan blanko između tagova, ako se ne
-	 * vidi.
+	 * Parse a string representing the locale and return the Locale instance.
 	 * 
 	 * @param locale
-	 *            String koji treba parsirati
+	 * 
 	 * @return
 	 */
 	public static Locale makeLocaleFromString(String locale) {
@@ -42,11 +36,10 @@ public class ResourceHelper {
 	}
 
 	/**
-	 * Prebacuje poziciju i stanje prozora u string.
+	 * Serialize frame's state to a String
 	 * 
 	 * @param frame
-	 *            Prozor čiji se stanje konvertuje
-	 * @return opis stanja prozora
+	 * @return
 	 */
 
 	public static String frameStateToString(JFrame frame) {
@@ -54,17 +47,15 @@ public class ResourceHelper {
 		frame.setVisible(false);
 		frame.setExtendedState(JFrame.NORMAL);
 		frame.setVisible(true);
-		return exState + " " + (int) frame.getX() + " "
-				+ (int) frame.getY() + " " + frame.getWidth() + " " + frame.getHeight();
+		return exState + " " + (int) frame.getX() + " " + (int) frame.getY() + " "
+				+ frame.getWidth() + " " + frame.getHeight();
 	}
 
 	/**
-	 * Ime govori čemu služi.
+	 * Apply the serialized state to the frame.
 	 * 
 	 * @param frame
-	 *            Prozor koji treba namestiti
 	 * @param state
-	 *            String formatiran kao u frameStateToString() metodi.
 	 */
 	public static void applyStateToFrame(JFrame frame, String state) {
 		String[] coords = state.split(" ");
@@ -76,24 +67,23 @@ public class ResourceHelper {
 		frame.setBounds(x, y, width, height);
 		frame.setPreferredSize(new Dimension(width, height));
 	}
-	
-	/**
-	 * Ovaj kod ti je poznat, Srećko :))
-	 * 
-	 * @param im slika koja treba da dobije transparentnu boju
-	 * @param color transparentna boja 
-	 * @return nova slika sa transparentnom bojom (НЕ СЕРИ, РЕЈУЗАБИЛНОСТ)
-	 */
-	
-	public static Image makeColorTransparent(Image im, final Color color) {
-		ImageFilter filter = new RGBImageFilter() {
 
-			public int markerRGB = color.getRGB() | 0xFF000000;
+	/**
+	 * Use for eliminating "pink" transparent colors from images.
+	 * 
+	 * @param im
+	 * @param colorToReplace
+	 * @return
+	 */
+	public static Image makeTransparent(Image im, final Color colorToReplace) {
+		ImageFilter filter = new RGBImageFilter() {
+			private final int transparentRgb = colorToReplace.getRGB() & 0x00FFFFFF;
 
 			@Override
 			public final int filterRGB(int x, int y, int rgb) {
-				if ((rgb | 0xFF000000) == markerRGB) {
-					return 0x00FFFFFF & rgb;
+				int noAlpha = rgb & 0x00FFFFFF;
+				if (noAlpha == transparentRgb) {
+					return noAlpha;
 				} else {
 					return rgb;
 				}
@@ -103,12 +93,19 @@ public class ResourceHelper {
 		return Toolkit.getDefaultToolkit().createImage(ip);
 	}
 
+	/**
+	 * Converts a string given in format "R G B A" to a Color instance.
+	 * 
+	 * @param colorText
+	 *            "R G B A"
+	 * @return Teh color
+	 */
 	public static Color stringToColor(String colorText) {
-		String [] parts = colorText.split(" ");
+		String[] parts = colorText.split(" ");
 		int r = Integer.parseInt(parts[0]);
 		int g = Integer.parseInt(parts[1]);
 		int b = Integer.parseInt(parts[2]);
 		int alpha = Integer.parseInt(parts[3]);
-		return new Color (r, g, b, alpha);
+		return new Color(r, g, b, alpha);
 	}
 }

@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.util.Date;
 
 import javax.swing.JButton;
+import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
@@ -14,21 +15,30 @@ import edu.raf.flowchart.app.Resources;
 import edu.raf.flowchart.gui.MainFrame;
 
 /**
- * Kreira prozor u određenom jeziku, omogućava promenu jezika i proverava sistem za lociranje
- * prozora pre ponovnom paljenju. Ono, da li je maksimizovan i to.
+ * Kreira prozor u određenom jeziku, omogućava promenu jezika i proverava sistem
+ * za lociranje prozora pre ponovnom paljenju. Ono, da li je maksimizovan i to.
  * 
  * @author Boca
  * 
  */
 @SuppressWarnings("serial")
 public class ResourcesTest extends MainFrame implements ActionListener {
+
 	@Override
-	protected JPanel createMainPanel() {
+	public void open() {
+		super.open();
+		JInternalFrame in = new JInternalFrame("HIho");
+		in.setLayout(new BorderLayout());
+		in.add(createPanel(), BorderLayout.CENTER);
+		getDesktop().add(in);
+	}
+
+	private JPanel createPanel() {
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
-		JTextArea textArea = new JTextArea(Resources.getInstance().createCompositeMessage(
-				"testCompositeMessage", Resources.getInstance().getLocale().toString(), new Date())
-				+ "\n\n" + Resources.getInstance().getLanguageBundle().getString("testMessage"));
+		JTextArea textArea = new JTextArea(Resources.getGlobal().getString("testCompositeMessage",
+			Resources.getLocale().toString(), new Date())
+				+ "\n\n" + Resources.getGlobal().getString("testMessage"));
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
 		mainPanel.add(textArea, BorderLayout.CENTER);
@@ -48,21 +58,20 @@ public class ResourcesTest extends MainFrame implements ActionListener {
 		jezikPanel.add(btn);
 
 		mainPanel.add(jezikPanel, BorderLayout.SOUTH);
-
 		return mainPanel;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		if (((JButton) event.getSource()).getText().equals("English")) {
-			Resources.getInstance().setProperty("currentLocale", "en");
-			Resources.getInstance().saveProperties();
+			Resources.getGlobal().setProperty("currentLocale", "en");
+			Resources.getGlobal().saveProperties();
 		} else if (((JButton) event.getSource()).getText().equals("Srpski")) {
-			Resources.getInstance().setProperty("currentLocale", "sr SR LATIN");
-			Resources.getInstance().saveProperties();
+			Resources.getGlobal().setProperty("currentLocale", "sr SR LATIN");
+			Resources.getGlobal().saveProperties();
 		} else {
-			Resources.getInstance().setProperty("currentLocale", "sr SR CYRILLIC");
-			Resources.getInstance().saveProperties();
+			Resources.getGlobal().setProperty("currentLocale", "sr SR CYRILLIC");
+			Resources.getGlobal().saveProperties();
 		}
 	}
 
@@ -71,12 +80,11 @@ public class ResourcesTest extends MainFrame implements ActionListener {
 			@Override
 			public void run() {
 				try {
-					UIManager.setLookAndFeel(UIManager
-							.getSystemLookAndFeelClassName());
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				new ResourcesTest().setVisible(true);
+				new ResourcesTest().open();
 			}
 		});
 	}

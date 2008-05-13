@@ -6,15 +6,15 @@ import java.awt.Graphics2D;
 
 import edu.raf.flowchart.app.ResourceHelper;
 import edu.raf.flowchart.app.Resources;
-import edu.raf.flowchart.diagram.Diagram;
+import edu.raf.flowchart.diagram.BlockDiagram;
 
 public class DiagramView {
-	private Diagram diagram;
+	private BlockDiagram diagram;
 	private Color backgroundColor;
 
-	public DiagramView(Diagram diagram) {
+	public DiagramView(BlockDiagram diagram) {
 		this.diagram = diagram;
-		backgroundColor = ResourceHelper.stringToColor(Resources.getInstance().getProperty(
+		backgroundColor = ResourceHelper.stringToColor(Resources.getGlobal().getProperty(
 				"diagramBackgroundColor"));
 	}
 

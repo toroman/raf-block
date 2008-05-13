@@ -1,13 +1,13 @@
 package edu.raf.flowchart.app;
 
-import java.awt.Color;
 import java.awt.Image;
-import java.awt.Toolkit;
-import java.io.File;
-import java.io.FileFilter;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -15,156 +15,175 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 /**
- * Singleton klasa koja čuva sve opcije vezane za aplikaciju uopšteno, ali i globalcu Locale
- * instancu, i jezik. Po kreiranju čita podatke o jeziku, pa čita i sve ostalo. Pravo učitavanje se
- * dešava tek kada se prvi put zatraži instanca klase. Što će se verovatno desiti kada se bude
- * kreirao prozor, zbog title-a ili pozicije na ekranu ili šta ja znam.
+ * Resource holder / wrapper.
  * <p>
- * Ako nam ne treba lazy čitanje ima i preloadResources() metodu.
+ * Has a static getGlobal() method which returns the lazy initialized global
+ * resources (which should have the default locale, main settings and other
+ * stuff - possibly everything - but some other parts may actually have their
+ * own resources...).
  * <p>
- * Locale-u i LanguageBundle-u se može pristupiti samo preko ne-static metoda za pristup. Na primer,
- * da bi pronašao tekst za labelu <i>Djoksi</i>, linija glasi
- * <i>Resources.getInstance().getLanguageBundle().getString("DjoksiLabel")</i>
+ * Strings are accessed via {@link #getLanguageBundle()}
  * <p>
- * Formatiranje kompozitne poruke se obavlja preko metode getInstance().createCompositeMessage
- * (String patternName, Object... args).
+ * Composite messages are obtained via
+ * {@link #createCompositeMessage(String, Object...)}
  * <p>
- * Slike su baferovane, i za to postoji metoda getInstance.getImageIcon(String fileName). Na primer,
- * getImageIcon ("MainFrameIcon.PNG")
+ * Image icons are buffered, use {@link #getIcon(String)} to fetch
  * 
- * @author Boca
  */
 
 @SuppressWarnings("serial")
-public class Resources extends Properties {
-	private static volatile Resources GLOBAL_RESOURCES = null;
-	private static volatile Locale APP_LOCALE = null;
-	private static volatile ResourceBundle LANGUAGE_BUNDLE = null;
-	private static volatile MessageFormat MSG_FORMATTER = null;
-	private static volatile HashMap<String, ImageIcon> IMAGES = null;
+public class Resources {
+	private static Locale locale = null;
 
-	public static final File DEFAULT_PROPERTIES_FILE = new File("res/properties.properties");
-	public static final Color TRANSPARRENT_COLOR = new Color(255, 0, 255);
+	public static Locale getLocale() {
+		return locale;
+	}
 
-	private Resources() {
-		loadProperties();
-		APP_LOCALE = ResourceHelper.makeLocaleFromString(getProperty("currentLocale"));
-		LANGUAGE_BUNDLE = ResourceBundle.getBundle("languages/LocalMessagesBundle", APP_LOCALE);
-		MSG_FORMATTER = new MessageFormat("");
-		MSG_FORMATTER.setLocale(APP_LOCALE);
+	private Properties properties;
+	private ResourceBundle bundle;
+	private HashMap<String, ImageIcon> icons;
 
-		IMAGES = new HashMap<String, ImageIcon>();
+	private String location;
 
-		File[] imageFiles = new File("res/images").listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				String filename = pathname.getAbsolutePath();
-				String extension = (filename.lastIndexOf(".") == -1) ? null : filename.substring(
-						filename.lastIndexOf(".") + 1, filename.length());
-				if (extension != null && extension.toLowerCase().equals("png"))
-					return true;
-				return false;
-			}
-		});
-		for (File file : imageFiles) {
-			String path = "\\images\\" + file.getName();
-			URL url = Resources.class.getClassLoader().getResource(path);
-			Image image = Toolkit.getDefaultToolkit().getImage(url);
-			IMAGES.put(file.getName(), new ImageIcon(ResourceHelper.makeColorTransparent(image,
-					TRANSPARRENT_COLOR)));
+	private static class GlobalInstanceHolder {
+		static final Resources instance = new Resources("");
+		static {
+			locale = ResourceHelper.makeLocaleFromString(instance.getProperty("currentLocale"));
 		}
 	}
 
 	/**
-	 * Pri pozivu ove metode se otpočinje učitavanje svega ovoga. Služi da se izbegne lazy
-	 * učitavanje, ako bude potrebe.
+	 * @return Global resources.
 	 */
-
-	public static void preloadResources() {
-		getInstance();
+	public static Resources getGlobal() {
+		return GlobalInstanceHolder.instance;
 	}
 
 	/**
-	 * Glavna singleton metoda. Otpočinje lazy učitavanje, ako treba.
+	 * Construct and initialize this the Resources instance.
 	 * 
-	 * @return instancu Resources klase
+	 * @param location
+	 *            Root directory for settings/properties, images and strings.
+	 *            For example "" means for root, but something like "./foo/" can
+	 *            be passed too.
 	 */
+	public Resources(String location) {
+		this.location = location;
+		this.icons = new HashMap<String, ImageIcon>();
+		try {
+			initProperties();
+		} catch (Exception ex) {
+			// TODO: handle exception
+			ex.printStackTrace();
+		}
+	}
 
-	public static Resources getInstance() {
-		if (GLOBAL_RESOURCES == null)
-			synchronized (Resources.class) {
-				if (GLOBAL_RESOURCES == null)
-					GLOBAL_RESOURCES = new Resources();
+	/**
+	 * Loads properties / settings.
+	 */
+	private void initProperties() throws IOException {
+		properties = new Properties();
+		InputStream fis = null;
+		try {
+			// fis = new FileInputStream(new File("properties.properties"));
+			URL url = getClass().getClassLoader().getResource(location + "properties.properties");
+			fis = new BufferedInputStream(new FileInputStream(url.getPath()));
+			properties.load(fis);
+		} finally {
+			if (fis != null) {
+				fis.close();
 			}
-		return GLOBAL_RESOURCES;
+		}
 	}
 
-	/**
-	 * Kreira string od templejta koji se nalazi pod imenom <i>patternName</i>, i ubacuje
-	 * odgovarajuće argumente na odgovarajuća mesta u odgovarajućem formatu. Koristi globalni Locale
-	 * za odabir svih pod-formata.
-	 * 
-	 * @param patternName
-	 *            ldentifikator tog paterna u LanguageBundle-u
-	 * @param args
-	 *            lista argumenata
-	 * @return sklopljena poruka
-	 */
-
-	public synchronized String createCompositeMessage(String patternName, Object... args) {
-		String pattern = getLanguageBundle().getString(patternName);
-		MSG_FORMATTER.applyPattern(pattern);
-		return MSG_FORMATTER.format(args);
-	}
-
-	public synchronized final Locale getLocale() {
-		return APP_LOCALE;
-	}
-
-	public synchronized final ResourceBundle getLanguageBundle() {
-		return LANGUAGE_BUNDLE;
+	private ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = ResourceBundle.getBundle(location + "locales/LocalMessagesBundle", locale);
+		}
+		return bundle;
 	}
 
 	/**
 	 * Snima promene properties-a.
 	 */
-
-	public synchronized void saveProperties() {
+	public void saveProperties() {
+		OutputStream fos = null;
 		try {
-			super.store(new FileOutputStream(DEFAULT_PROPERTIES_FILE), null);
+			synchronized (properties) {
+				URL url = getClass().getClassLoader().getResource(
+					location + "properties.properties");
+				fos = new BufferedOutputStream(new FileOutputStream(url.getPath()));
+				properties.store(fos, null);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			if (fos != null) {
+				try {
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
 	/**
-	 * Čita properties iz fajla. Nema veze sa locale-om i jezicima, ova metoda čita samo podatke
-	 * koji se mogu menjati u toku rada programa. Locale i jezik se inicijalizuju prvi put, i ne
-	 * promenjivi su.
-	 */
-
-	public synchronized void loadProperties() {
-		try {
-			super.load(new FileInputStream(DEFAULT_PROPERTIES_FILE));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Vraća ImageIcon objekat koji je učitan sa fajla <i>imageName</i>. Na primer, getImageIcon
-	 * ("MainFrameIcon 16x16.PNG"). On ne čita tu sliku sa fajla, ona je baferovana a može joj se
-	 * pristupiti preko tog ključa.
+	 * @param key
 	 * 
-	 * @param imageName
-	 *            ime fajla
 	 * @return traženu sliku
 	 */
-
-	public synchronized ImageIcon getImageIcon(String imageName) {
-		return IMAGES.get(imageName);
+	public ImageIcon getIcon(String key) {
+		try {
+			ImageIcon icon = icons.get(key);
+			if (icon == null) {
+				icon = loadIcon(key);
+			}
+			return icon;
+		} catch (Exception ex) {
+			System.err.println("No icon: " + key);
+			ex.printStackTrace();
+			return null;
+		}
 	}
+
+	private ImageIcon loadIcon(String key) throws IOException {
+		String name = getBundle().getString(key);
+		URL url = getClass().getClassLoader().getResource(location + "icons/" + name);
+		Image image = ImageIO.read(url);
+		if (image != null) {
+			ImageIcon icon = new ImageIcon(image);
+			icons.put(key, icon);
+			return icon;
+		}
+		return null;
+	}
+
+	public String getProperty(String key) {
+		return properties.getProperty(key);
+	}
+
+	public void setProperty(String key, String value) {
+		this.properties.setProperty(key, value);
+	}
+
+	/**
+	 * Kreira string od templejta koji se nalazi pod imenom <i>patternName</i>,
+	 * i ubacuje odgovarajuće argumente na odgovarajuća mesta u odgovarajućem
+	 * formatu. Koristi globalni Locale za odabir svih pod-formata.
+	 * 
+	 * @param key
+	 *            ldentifikator tog paterna u LanguageBundle-u
+	 * @param args
+	 *            lista argumenata
+	 * @return sklopljena poruka
+	 */
+	public String getString(String key, Object... args) {
+		return new MessageFormat(getBundle().getString(key), locale).format(args);
+	}
+
 }

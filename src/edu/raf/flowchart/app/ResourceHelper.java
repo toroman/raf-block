@@ -9,6 +9,7 @@ import java.awt.image.ImageFilter;
 import java.awt.image.ImageProducer;
 import java.awt.image.RGBImageFilter;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 
@@ -41,14 +42,21 @@ public class ResourceHelper {
 	 * @param frame
 	 * @return
 	 */
-
 	public static String frameStateToString(JFrame frame) {
+		boolean exVisible = frame.isVisible();
 		int exState = frame.getExtendedState();
-		frame.setVisible(false);
-		frame.setExtendedState(JFrame.NORMAL);
 		frame.setVisible(true);
-		return exState + " " + (int) frame.getX() + " " + (int) frame.getY() + " "
+		frame.setExtendedState(JFrame.NORMAL);
+		try {
+			Thread.sleep(50);
+		} catch (InterruptedException e) {
+		}
+		String state = exState + " " + (int) frame.getX() + " " + (int) frame.getY() + " "
 				+ frame.getWidth() + " " + frame.getHeight();
+
+		frame.setVisible(exVisible);
+		frame.setExtendedState(exState);
+		return state;
 	}
 
 	/**
@@ -108,4 +116,6 @@ public class ResourceHelper {
 		int alpha = Integer.parseInt(parts[3]);
 		return new Color(r, g, b, alpha);
 	}
+
+	private static final Logger logger = Logger.getLogger(ResourceHelper.class.getName());
 }

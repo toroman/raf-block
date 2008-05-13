@@ -1,10 +1,13 @@
 package edu.raf.flowchart;
 
+import javax.swing.UIManager;
+
 import edu.raf.flowchart.app.ComponentDiscoveryUtils;
 import edu.raf.flowchart.app.Resources;
+import edu.raf.flowchart.app.errors.GraphicalErrorHandler;
 import edu.raf.flowchart.gui.MainFrame;
 
-public class Main {
+public final class Main {
 	private static MainFrame mainFrame;
 
 	public static void main(String[] args) {
@@ -13,9 +16,11 @@ public class Main {
 			public void run() {
 				try {
 					// UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 				} catch (Exception e) {
-					e.printStackTrace();
+					geh.handleError("main", "Couldn't set look and feel (aka skin)", e);
 				}
+
 				String components = Resources.getGlobal().getProperty("components");
 				if (components != null) {
 					String[] klasses = components.split(" ");
@@ -26,4 +31,7 @@ public class Main {
 			}
 		});
 	}
+
+	private static GraphicalErrorHandler geh = new GraphicalErrorHandler(Main.class, null);
+
 }

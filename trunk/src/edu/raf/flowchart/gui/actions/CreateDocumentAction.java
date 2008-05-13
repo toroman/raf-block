@@ -6,8 +6,9 @@ import javax.swing.AbstractAction;
 import javax.swing.JInternalFrame;
 
 import edu.raf.flowchart.app.errors.GraphicalErrorHandler;
+import edu.raf.flowchart.app.framework.EditorPlugin;
+import edu.raf.flowchart.app.framework.PluginContainer;
 import edu.raf.flowchart.gui.MainFrame;
-import edu.raf.flowchart.gui.swing.EditorPlugin;
 
 public class CreateDocumentAction extends AbstractAction {
 	/**
@@ -17,15 +18,15 @@ public class CreateDocumentAction extends AbstractAction {
 
 	public static final String ID = "new";
 
-	private Class<? extends EditorPlugin> editorPlugin;
+	private PluginContainer plugin;
 
 	private MainFrame mainFrame;
 
 	private GraphicalErrorHandler geh;
 
-	public CreateDocumentAction(MainFrame mf, Class<? extends EditorPlugin> editorPlugin) {
-		super(editorPlugin.getName());
-		this.editorPlugin = editorPlugin;
+	public CreateDocumentAction(MainFrame mf, PluginContainer plugin) {
+		super(plugin.getResources().getString("plugin.name"));
+		this.plugin = plugin;
 		this.mainFrame = mf;
 	}
 
@@ -34,7 +35,7 @@ public class CreateDocumentAction extends AbstractAction {
 		JInternalFrame frame = new JInternalFrame("A plugin :P", true, true, true);
 		EditorPlugin instance;
 		try {
-			instance = editorPlugin.newInstance();
+			instance = plugin.getPluginClass().newInstance();
 		} catch (Exception ex) {
 			getGeh().handleError("createDocumentAction", "Plugin failed to initialize", ex);
 			return;

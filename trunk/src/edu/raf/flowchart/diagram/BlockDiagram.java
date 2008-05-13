@@ -3,10 +3,10 @@ package edu.raf.flowchart.diagram;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import edu.raf.flowchart.app.framework.EditorPlugin;
 import edu.raf.flowchart.diagram.control.DiagramController;
 import edu.raf.flowchart.diagram.model.DiagramModel;
 import edu.raf.flowchart.diagram.view.DiagramView;
-import edu.raf.flowchart.gui.swing.EditorPlugin;
 
 public class BlockDiagram implements EditorPlugin {
 	/**

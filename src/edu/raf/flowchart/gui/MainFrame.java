@@ -4,13 +4,14 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import edu.raf.flowchart.app.ComponentDiscoveryUtils;
 import edu.raf.flowchart.app.Resources;
+import edu.raf.flowchart.app.framework.ComponentDiscoveryUtils;
+import edu.raf.flowchart.app.framework.EditorPlugin;
+import edu.raf.flowchart.app.framework.PluginContainer;
 import edu.raf.flowchart.gui.actions.ActionGroups;
 import edu.raf.flowchart.gui.actions.CreateDocumentAction;
 import edu.raf.flowchart.gui.actions.OpenDocumentAction;
 import edu.raf.flowchart.gui.swing.ApplicationMdiFrame;
-import edu.raf.flowchart.gui.swing.EditorPlugin;
 import edu.raf.flowchart.gui.swing.ToolbarManager;
 
 /**
@@ -51,8 +52,7 @@ public class MainFrame extends ApplicationMdiFrame {
 			{
 				JMenu inew = new JMenu("New");
 				{
-					for (Class<? extends EditorPlugin> plugin : ComponentDiscoveryUtils
-							.getPlugins()) {
+					for (PluginContainer plugin : ComponentDiscoveryUtils.getPlugins()) {
 						JMenuItem menuItem = new JMenuItem(new CreateDocumentAction(this, plugin));
 						inew.add(menuItem);
 					}

@@ -1,13 +1,12 @@
-package edu.raf.flowchart.app;
+package edu.raf.flowchart.app.framework;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import edu.raf.flowchart.app.errors.ProgrammingError;
-import edu.raf.flowchart.gui.swing.EditorPlugin;
 
 public class ComponentDiscoveryUtils {
-	static final Set<Class<? extends EditorPlugin>> plugins = new HashSet<Class<? extends EditorPlugin>>();;
+	static final Set<PluginContainer> plugins = new HashSet<PluginContainer>();;
 
 	@SuppressWarnings("unchecked")
 	public static void discover(String[] klasses) {
@@ -21,12 +20,13 @@ public class ComponentDiscoveryUtils {
 			if (!EditorPlugin.class.isAssignableFrom(klass)) {
 				throw new ProgrammingError("Invalid plugin!");
 			}
-			plugins.add((Class<? extends EditorPlugin>) klass);
+			PluginContainer container = new PluginContainer((Class<? extends EditorPlugin>) klass);
+			plugins.add(container);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Class<EditorPlugin>[] getPlugins() {
-		return (Class<EditorPlugin>[]) plugins.toArray(new Class[0]);
+	public static PluginContainer[] getPlugins() {
+		return plugins.toArray(new PluginContainer[0]);
 	}
 }

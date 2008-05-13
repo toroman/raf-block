@@ -2,9 +2,9 @@ package edu.raf.flowchart;
 
 import javax.swing.UIManager;
 
-import edu.raf.flowchart.app.ComponentDiscoveryUtils;
 import edu.raf.flowchart.app.Resources;
 import edu.raf.flowchart.app.errors.GraphicalErrorHandler;
+import edu.raf.flowchart.app.framework.ComponentDiscoveryUtils;
 import edu.raf.flowchart.gui.MainFrame;
 
 public final class Main {

@@ -1,0 +1,45 @@
+Specifikacija - RAF BLOCK
+-------------
+Uredjivanje Blok dijagrama
+
+1. blokovi
+2. veze
+3. uredjivac
+4. gui misc
+
+
+1. BLOKOVI
+- start (_____) 
+- izvrsavanje |_______|
+- provera <______>
+- ulaz \_____/
+- izlaz /_____\
+- spajanje ()
+- kraj (______)
+
+2. VEZE
+- postoji samo jedan tip veze - usmerena je
+- postoje dva tipa cvorista - ULAZNI I IZLAZNI
+- jedan kraj veze se kaci na ULAZNI cvor a drugi na IZLAZNI
+- kod "tece" od ulaznog ka izlaznom cvoru
+--
+	START ima jedan izlazni cvor
+	KRAJ ima jedan ulazni cvor
+	IZVRSAVANJE, ULAZ, IZLAZ imaju jedan ulazni i jedan izlazni cvor
+	PROVERA ima jedan ulazni i dva izlazna cvora (true/false)
+	SPAJANJE ima jedan izlazni i 1 ili vise ulaznih cvorova
+- veza mora biti lomljiva, opcionalno je da program sam lomi vezu radi boljeg prikaza
+
+3. UREDJIVAC
+- moze da edituje vise dijagrama istovremeno (MDI okruzenje)
+- moze da sacuva stanje / ucita iz programovog formata (koji god to bio)
+- ima undo/redo do proizvoljno mnogo koraka
+- moze da se lokalizuje u smislu prevodjenja poruka i slika (ikona?)
+- omogucava zoom in/out, skrolovanje, visestruko selektovanje i operacije nad selektovanim elementima a to su:
+	- skaliranje, pomeranje i rotacija - prilikom rotacije, selektovani elementi se rotiraju oko svog centra
+	(koji se racuna na jednostavan nacin), neselektovani elementi ostaju na svom mestu
+	 
+4. GUI MISC
+- editor treba da podrzava new, open, save, cut, copy, paste, undo, redo
+- opcionalno bilo bi dobro da se napravi i interpreter dijagrama
+	

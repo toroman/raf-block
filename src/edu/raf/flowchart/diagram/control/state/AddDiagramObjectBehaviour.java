@@ -5,7 +5,7 @@ import java.awt.geom.Point2D;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import edu.raf.flowchart.diagram.Diagram;
+import edu.raf.flowchart.diagram.BlockDiagram;
 import edu.raf.flowchart.diagram.control.DiagramController;
 import edu.raf.flowchart.diagram.model.object.DiagramObject;
 
@@ -13,7 +13,7 @@ public class AddDiagramObjectBehaviour extends DefaultMouseBehaviour {
 
 	Class <DiagramObject> diagramObject;
 	
-	public AddDiagramObjectBehaviour(Diagram diagram) {
+	public AddDiagramObjectBehaviour(BlockDiagram diagram) {
 		super(diagram);
 	}
 	

@@ -1,6 +1,6 @@
 package edu.raf.flowchart.diagram.control.state;
 
-import edu.raf.flowchart.diagram.Diagram;
+import edu.raf.flowchart.diagram.BlockDiagram;
 
 /**
  * Selekcija elemenata. Multiple selection, lasso i to.
@@ -8,7 +8,7 @@ import edu.raf.flowchart.diagram.Diagram;
  *
  */
 public class SelectionBehaviour extends DefaultMouseBehaviour {
-	public SelectionBehaviour(Diagram diagram) {
+	public SelectionBehaviour(BlockDiagram diagram) {
 		super(diagram);
 	}	
 }

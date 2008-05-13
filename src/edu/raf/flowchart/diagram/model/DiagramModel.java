@@ -2,16 +2,16 @@ package edu.raf.flowchart.diagram.model;
 
 import java.util.ArrayList;
 
-import edu.raf.flowchart.diagram.Diagram;
+import edu.raf.flowchart.diagram.BlockDiagram;
 import edu.raf.flowchart.diagram.model.object.DiagramElement;
 
 public class DiagramModel {
 	@SuppressWarnings("unused")
-	private Diagram diagram;
+	private BlockDiagram diagram;
 	
 	private ArrayList <DiagramElement> elements;
 	
-	public DiagramModel(Diagram diagram) {
+	public DiagramModel(BlockDiagram diagram) {
 		elements = new ArrayList<DiagramElement>();
 	}
 	

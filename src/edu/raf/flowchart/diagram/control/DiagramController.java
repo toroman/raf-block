@@ -4,7 +4,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.ArrayList;
 
-import edu.raf.flowchart.diagram.Diagram;
+import edu.raf.flowchart.diagram.BlockDiagram;
 import edu.raf.flowchart.diagram.control.state.AddDiagramObjectBehaviour;
 import edu.raf.flowchart.diagram.control.state.SelectionBehaviour;
 import edu.raf.flowchart.diagram.control.state.util.TotalMouseAdapter;
@@ -14,9 +14,9 @@ public class DiagramController extends TotalMouseAdapter {
 	private ArrayList <TotalMouseAdapter> possibleStates;
 
 	@SuppressWarnings("unused")
-	private Diagram diagram;
+	private BlockDiagram diagram;
 	
-	public DiagramController(Diagram diagram) {
+	public DiagramController(BlockDiagram diagram) {
 		this.diagram = diagram;
 		
 		possibleStates = new ArrayList<TotalMouseAdapter>();

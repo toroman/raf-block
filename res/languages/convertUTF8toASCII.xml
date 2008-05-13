@@ -1,9 +1,0 @@
-<project name="convertUTF8toASCII" default="convert">
-<target name="convert">
-<native2ascii encoding="UTF-8"
-src="UTF-8 Language Files"
-dest=""
-includes="**/*.properties"
-/>
-</target>
-</project>

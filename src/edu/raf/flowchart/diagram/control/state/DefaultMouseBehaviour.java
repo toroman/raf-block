@@ -1,6 +1,6 @@
 package edu.raf.flowchart.diagram.control.state;
 
-import edu.raf.flowchart.diagram.Diagram;
+import edu.raf.flowchart.diagram.BlockDiagram;
 import edu.raf.flowchart.diagram.control.state.util.TotalMouseAdapter;
 
 /**
@@ -12,9 +12,9 @@ import edu.raf.flowchart.diagram.control.state.util.TotalMouseAdapter;
  * 
  */
 public class DefaultMouseBehaviour extends TotalMouseAdapter {
-	protected Diagram diagram;
+	protected BlockDiagram diagram;
 
-	public DefaultMouseBehaviour (Diagram diagram) {
+	public DefaultMouseBehaviour (BlockDiagram diagram) {
 		this.diagram = diagram;
 	}
 }

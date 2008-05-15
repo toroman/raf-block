@@ -9,7 +9,6 @@ import java.awt.image.ImageFilter;
 import java.awt.image.ImageProducer;
 import java.awt.image.RGBImageFilter;
 import java.util.Locale;
-import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 
@@ -117,5 +116,4 @@ public class ResourceHelper {
 		return new Color(r, g, b, alpha);
 	}
 
-	private static final Logger logger = Logger.getLogger(ResourceHelper.class.getName());
 }

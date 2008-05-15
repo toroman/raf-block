@@ -1,7 +1,5 @@
 package edu.raf.flowchart.app.framework;
 
-import java.util.Locale;
-
 import edu.raf.flowchart.app.Resources;
 import edu.raf.flowchart.app.errors.ProgrammingError;
 
@@ -24,8 +22,7 @@ public class PluginContainer {
 
 	public synchronized Resources getResources() {
 		try {
-			return (Resources) pluginClass.getMethod("getResources", Locale.class).invoke(null,
-				Resources.getLocale());
+			return (Resources) pluginClass.getMethod("getResources").invoke(null);
 		} catch (Exception ex) {
 			throw new ProgrammingError(
 					"Invalid plugin! Plugin must have a static getResources() method.");

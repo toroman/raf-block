@@ -1,8 +1,11 @@
 package edu.raf.flowchart.diagram;
 
+import java.io.File;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import edu.raf.flowchart.app.Resources;
 import edu.raf.flowchart.app.framework.EditorPlugin;
 import edu.raf.flowchart.diagram.control.DiagramController;
 import edu.raf.flowchart.diagram.model.DiagramModel;
@@ -13,6 +16,10 @@ public class BlockDiagram implements EditorPlugin {
 	 * 
 	 */
 	private static final long serialVersionUID = -4600587151373699739L;
+
+	static final private Resources resources = new Resources(BlockDiagram.class.getPackage()
+			.getName().replace('.', File.separatorChar)
+			+ "/res/");
 
 	private DiagramModel model;
 	private DiagramView view;
@@ -44,5 +51,9 @@ public class BlockDiagram implements EditorPlugin {
 
 	public JPanel getPanel() {
 		return panel;
+	}
+
+	public static Resources getResources() {
+		return resources;
 	}
 }

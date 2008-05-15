@@ -6,7 +6,6 @@ import javax.swing.JMenuItem;
 
 import edu.raf.flowchart.app.Resources;
 import edu.raf.flowchart.app.framework.ComponentDiscoveryUtils;
-import edu.raf.flowchart.app.framework.EditorPlugin;
 import edu.raf.flowchart.app.framework.PluginContainer;
 import edu.raf.flowchart.gui.actions.ActionGroups;
 import edu.raf.flowchart.gui.actions.CreateDocumentAction;

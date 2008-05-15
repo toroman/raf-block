@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -74,18 +75,13 @@ public class Resources {
 	public Resources(String location) {
 		this.location = location;
 		this.icons = new HashMap<String, ImageIcon>();
-		try {
-			initProperties();
-		} catch (Exception ex) {
-			// TODO: handle exception
-			ex.printStackTrace();
-		}
+		initProperties();
 	}
 
 	/**
 	 * Loads properties / settings.
 	 */
-	private void initProperties() throws IOException {
+	private void initProperties() {
 		properties = new Properties();
 		InputStream fis = null;
 		try {
@@ -93,9 +89,14 @@ public class Resources {
 			URL url = getClass().getClassLoader().getResource(location + "properties.properties");
 			fis = new BufferedInputStream(new FileInputStream(url.getPath()));
 			properties.load(fis);
+		} catch (IOException ex) {
+			log.severe("Couldn't read properties from location: " + location);
 		} finally {
 			if (fis != null) {
-				fis.close();
+				try {
+					fis.close();
+				} catch (IOException ioe) {
+				}
 			}
 		}
 	}
@@ -186,4 +187,5 @@ public class Resources {
 		return new MessageFormat(getBundle().getString(key), locale).format(args);
 	}
 
+	private static final Logger log = Logger.getLogger(Resources.class.getName());
 }

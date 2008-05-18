@@ -9,8 +9,8 @@ import java.io.File;
 
 import javax.swing.JPanel;
 
-import edu.raf.flowchart.app.Resources;
-import edu.raf.flowchart.app.framework.EditorPlugin;
+import edu.raf.gef.app.Resources;
+import edu.raf.gef.app.framework.EditorPlugin;
 
 public class BaseEditorImplementation implements EditorPlugin {
 	/**

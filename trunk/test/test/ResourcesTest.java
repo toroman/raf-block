@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
 
-import edu.raf.flowchart.app.Resources;
-import edu.raf.flowchart.gui.MainFrame;
+import edu.raf.gef.app.Resources;
+import edu.raf.gef.gui.MainFrame;
 
 /**
  * Kreira prozor u određenom jeziku, omogućava promenu jezika i proverava sistem

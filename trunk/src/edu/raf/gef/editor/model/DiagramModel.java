@@ -1,9 +1,9 @@
-package edu.raf.gef.diagram.model;
+package edu.raf.gef.editor.model;
 
 import java.util.ArrayList;
 
-import edu.raf.gef.diagram.BlockDiagram;
-import edu.raf.gef.diagram.model.object.DiagramElement;
+import edu.raf.gef.editor.BlockDiagram;
+import edu.raf.gef.editor.model.object.DiagramElement;
 
 public class DiagramModel {
 	@SuppressWarnings("unused")

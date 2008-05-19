@@ -1,4 +1,4 @@
-package edu.raf.gef.diagram.model.object;
+package edu.raf.gef.editor.model.object;
 
 import java.awt.Graphics2D;
 

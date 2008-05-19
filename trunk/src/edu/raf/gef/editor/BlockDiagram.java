@@ -1,4 +1,4 @@
-package edu.raf.gef.diagram;
+package edu.raf.gef.editor;
 
 import java.io.File;
 
@@ -7,9 +7,9 @@ import javax.swing.JPanel;
 
 import edu.raf.gef.app.Resources;
 import edu.raf.gef.app.framework.EditorPlugin;
-import edu.raf.gef.diagram.control.DiagramController;
-import edu.raf.gef.diagram.model.DiagramModel;
-import edu.raf.gef.diagram.view.DiagramView;
+import edu.raf.gef.editor.control.DiagramController;
+import edu.raf.gef.editor.model.DiagramModel;
+import edu.raf.gef.editor.view.DiagramView;
 
 public class BlockDiagram implements EditorPlugin {
 	/**

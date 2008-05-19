@@ -1,4 +1,4 @@
-package edu.raf.gef.diagram.control.state.util;
+package edu.raf.gef.editor.control.state.util;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;

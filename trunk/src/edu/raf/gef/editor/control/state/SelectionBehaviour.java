@@ -1,6 +1,6 @@
-package edu.raf.gef.diagram.control.state;
+package edu.raf.gef.editor.control.state;
 
-import edu.raf.gef.diagram.BlockDiagram;
+import edu.raf.gef.editor.BlockDiagram;
 
 /**
  * Selekcija elemenata. Multiple selection, lasso i to.

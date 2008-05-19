@@ -1,13 +1,13 @@
-package edu.raf.gef.diagram.control.state;
+package edu.raf.gef.editor.control.state;
 
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import edu.raf.gef.diagram.BlockDiagram;
-import edu.raf.gef.diagram.control.DiagramController;
-import edu.raf.gef.diagram.model.object.DiagramObject;
+import edu.raf.gef.editor.BlockDiagram;
+import edu.raf.gef.editor.control.DiagramController;
+import edu.raf.gef.editor.model.object.DiagramObject;
 
 public class AddDiagramObjectBehaviour extends DefaultMouseBehaviour {
 

@@ -1,4 +1,4 @@
-package edu.raf.foobar;
+package edu.raf.flowchart;
 
 import java.awt.Color;
 import java.awt.Font;

@@ -1,4 +1,4 @@
-package edu.raf.gef.diagram.view;
+package edu.raf.gef.editor.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 
 import edu.raf.gef.app.ResourceHelper;
 import edu.raf.gef.app.Resources;
-import edu.raf.gef.diagram.BlockDiagram;
+import edu.raf.gef.editor.BlockDiagram;
 
 public class DiagramView {
 	private BlockDiagram diagram;

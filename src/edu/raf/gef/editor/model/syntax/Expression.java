@@ -1,4 +1,4 @@
-package edu.raf.gef.diagram.model.syntax;
+package edu.raf.gef.editor.model.syntax;
 
 import java.io.Serializable;
 

@@ -1,12 +1,12 @@
-package edu.raf.gef.diagram.control.action;
+package edu.raf.gef.editor.control.action;
 
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
-import edu.raf.gef.diagram.BlockDiagram;
-import edu.raf.gef.diagram.control.DiagramController;
-import edu.raf.gef.diagram.model.object.TestObject;
+import edu.raf.gef.editor.BlockDiagram;
+import edu.raf.gef.editor.control.DiagramController;
+import edu.raf.gef.editor.model.object.TestObject;
 
 @SuppressWarnings("serial")
 public class AddTestObject extends AbstractAction {

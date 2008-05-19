@@ -1,13 +1,13 @@
-package edu.raf.gef.diagram.control;
+package edu.raf.gef.editor.control;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.ArrayList;
 
-import edu.raf.gef.diagram.BlockDiagram;
-import edu.raf.gef.diagram.control.state.AddDiagramObjectBehaviour;
-import edu.raf.gef.diagram.control.state.SelectionBehaviour;
-import edu.raf.gef.diagram.control.state.util.TotalMouseAdapter;
+import edu.raf.gef.editor.BlockDiagram;
+import edu.raf.gef.editor.control.state.AddDiagramObjectBehaviour;
+import edu.raf.gef.editor.control.state.SelectionBehaviour;
+import edu.raf.gef.editor.control.state.util.TotalMouseAdapter;
 
 public class DiagramController extends TotalMouseAdapter {
 	private int currentStateIndex;

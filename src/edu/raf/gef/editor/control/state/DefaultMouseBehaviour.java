@@ -1,7 +1,7 @@
-package edu.raf.gef.diagram.control.state;
+package edu.raf.gef.editor.control.state;
 
-import edu.raf.gef.diagram.BlockDiagram;
-import edu.raf.gef.diagram.control.state.util.TotalMouseAdapter;
+import edu.raf.gef.editor.BlockDiagram;
+import edu.raf.gef.editor.control.state.util.TotalMouseAdapter;
 
 /**
  * Ovde bi trebalo ubaciti skrolovanje koristeći right-click, zoom preko točka i skrolovanja kada se

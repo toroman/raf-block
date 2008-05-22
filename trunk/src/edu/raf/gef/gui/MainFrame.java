@@ -4,8 +4,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import edu.raf.gef.Main;
 import edu.raf.gef.app.Resources;
-import edu.raf.gef.app.framework.ComponentDiscoveryUtils;
 import edu.raf.gef.app.framework.PluginContainer;
 import edu.raf.gef.gui.actions.ActionGroups;
 import edu.raf.gef.gui.actions.CreateDocumentAction;
@@ -51,7 +51,7 @@ public class MainFrame extends ApplicationMdiFrame {
 			{
 				JMenu inew = new JMenu("New");
 				{
-					for (PluginContainer plugin : ComponentDiscoveryUtils.getPlugins()) {
+					for (PluginContainer plugin : Main.getComponentDiscoveryUtils().getPlugins()) {
 						JMenuItem menuItem = new JMenuItem(new CreateDocumentAction(this, plugin));
 						inew.add(menuItem);
 					}

@@ -1,4 +1,4 @@
-package edu.raf.gef.editor.model.syntax;
+package edu.raf.flowchart.syntax;
 
 /**
  * This represents a function (so it has its own context of execution, but the

@@ -11,6 +11,10 @@ import javax.swing.JToolBar;
 
 import sun.awt.OrientableFlowLayout;
 
+/**
+ * Class that provides access to toolbar and manages its' creation.
+ * 
+ */
 public class ToolbarManager {
 	private JPanel toolbar = null;
 

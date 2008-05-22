@@ -27,6 +27,6 @@ public class DiagramView {
 	}
 
 	public void redraw() {
-		diagram.getPanel().repaint();
+		diagram.createEditor().repaint();
 	}
 }

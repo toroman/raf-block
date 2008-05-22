@@ -49,7 +49,7 @@ public class BlockDiagram implements EditorPlugin {
 		return controller;
 	}
 
-	public JPanel getPanel() {
+	public JPanel createEditor() {
 		return panel;
 	}
 

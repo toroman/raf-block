@@ -1,6 +1,6 @@
 package edu.raf.gef.app.exceptions;
 
-import edu.raf.gef.editor.model.syntax.Expression;
+import edu.raf.flowchart.syntax.Expression;
 
 /**
  * Thrown when expression couldn't be evaluated.

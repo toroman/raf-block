@@ -1,4 +1,4 @@
-package edu.raf.gef.editor.model.syntax;
+package edu.raf.flowchart.syntax;
 
 import java.io.Serializable;
 

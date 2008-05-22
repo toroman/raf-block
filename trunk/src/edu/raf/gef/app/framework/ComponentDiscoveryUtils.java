@@ -6,10 +6,10 @@ import java.util.Set;
 import edu.raf.gef.app.errors.ProgrammingError;
 
 public class ComponentDiscoveryUtils {
-	static final Set<PluginContainer> plugins = new HashSet<PluginContainer>();;
+	final Set<PluginContainer> plugins = new HashSet<PluginContainer>();;
 
 	@SuppressWarnings("unchecked")
-	public static void discover(String[] klasses) {
+	public void discover(String[] klasses) {
 		for (String className : klasses) {
 			Class<?> klass;
 			try {
@@ -26,7 +26,7 @@ public class ComponentDiscoveryUtils {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static PluginContainer[] getPlugins() {
+	public PluginContainer[] getPlugins() {
 		return plugins.toArray(new PluginContainer[0]);
 	}
 }

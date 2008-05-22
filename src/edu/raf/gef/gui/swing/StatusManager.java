@@ -21,7 +21,7 @@ public class StatusManager {
 		statusbar = new JPanel();
 		statusbar.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 		statusbar.setLayout(new BorderLayout());
-		statusbar.add(statusText = new JLabel("..."));
+		statusbar.add(statusText = new JLabel("Status bar"));
 	}
 
 	public Component getStatusbar() {
@@ -29,7 +29,7 @@ public class StatusManager {
 			buildStatusbar();
 		return statusbar;
 	}
-	
+
 	public void setStatusMessage(String statusMessage) {
 		statusText.setText(statusMessage);
 	}

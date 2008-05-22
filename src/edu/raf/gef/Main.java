@@ -9,6 +9,11 @@ import edu.raf.gef.gui.MainFrame;
 
 public final class Main {
 	private static MainFrame mainFrame;
+	private static final ComponentDiscoveryUtils components = new ComponentDiscoveryUtils();
+
+	public static ComponentDiscoveryUtils getComponentDiscoveryUtils() {
+		return components;
+	}
 
 	public static void main(String[] args) {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -24,7 +29,7 @@ public final class Main {
 				String components = Resources.getGlobal().getProperty("components");
 				if (components != null) {
 					String[] klasses = components.split(" ");
-					ComponentDiscoveryUtils.discover(klasses);
+					Main.components.discover(klasses);
 				}
 				mainFrame = new MainFrame();
 				mainFrame.open();

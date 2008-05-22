@@ -43,7 +43,7 @@ public class CreateDocumentAction extends AbstractAction {
 
 		frame.setSize(300, 300);
 		frame.setVisible(true);
-		frame.add(instance.getPanel());
+		frame.add(instance.createEditor());
 		mainFrame.getDesktop().add(frame);
 	}
 

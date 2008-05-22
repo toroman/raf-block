@@ -1,6 +1,6 @@
 package edu.raf.gef.app.framework;
 
-import javax.swing.JPanel;
+import java.awt.Component;
 
 /**
  * This class represents the "editor frame", base of all "main" views.
@@ -8,5 +8,5 @@ import javax.swing.JPanel;
  * Each plugin must have a "public static Resources getResources()" method.
  */
 public interface EditorPlugin {
-	public JPanel getPanel();
+	public Component createEditor();
 }

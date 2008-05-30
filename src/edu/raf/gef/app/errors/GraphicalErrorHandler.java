@@ -37,6 +37,18 @@ public class GraphicalErrorHandler {
 	}
 
 	/**
+	 * Handle "errors" caused by user's invalid actions. Just inform them that
+	 * they can't do it.
+	 * 
+	 * @param title
+	 * @param message
+	 */
+	public void handleUserError(final String title, final String message) {
+		log.logp(Level.INFO, classParent, title, message);
+		JOptionPane.showMessageDialog(guiParent, message, title, JOptionPane.ERROR_MESSAGE);
+	}
+
+	/**
 	 * Creates ErrorHandler for the particular class that will use it.
 	 * <p>
 	 * Create a new instance in every class that uses it.

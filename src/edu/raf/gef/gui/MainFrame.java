@@ -1,11 +1,9 @@
 package edu.raf.gef.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Dialog.ModalityType;
 import java.util.Iterator;
 
 import javax.swing.Action;
-import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 
@@ -134,5 +132,13 @@ public class MainFrame extends ApplicationMdiFrame {
 		frame.addInternalFrameListener(this);
 		getDesktop().add(frame);
 		return frame;
+	}
+
+	public GefDiagram getSelectedDiagram() {
+		JInternalFrame jif = getDesktop().getSelectedFrame();
+		if (jif == null || !(jif instanceof DiagramPluginFrame))
+			return null;
+		DiagramPluginFrame dpf = (DiagramPluginFrame) jif;
+		return dpf.getDiagram();
 	}
 }

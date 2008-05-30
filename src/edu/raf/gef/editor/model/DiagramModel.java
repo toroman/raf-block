@@ -79,5 +79,4 @@ public class DiagramModel extends Observable {
 	public Collection<DrawableElement> getDrawables() {
 		return readOnlyDrawables;
 	}
-
 }

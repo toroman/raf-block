@@ -4,8 +4,8 @@ import javax.swing.UIManager;
 
 import edu.raf.gef.app.Resources;
 import edu.raf.gef.app.errors.GraphicalErrorHandler;
-import edu.raf.gef.app.framework.ComponentDiscoveryUtils;
 import edu.raf.gef.gui.MainFrame;
+import edu.raf.gef.plugin.ComponentDiscoveryUtils;
 
 public final class Main {
 	private static MainFrame mainFrame;
@@ -31,6 +31,7 @@ public final class Main {
 					String[] klasses = components.split(" ");
 					Main.components.discover(klasses);
 				}
+				
 				mainFrame = new MainFrame();
 				mainFrame.open();
 			}

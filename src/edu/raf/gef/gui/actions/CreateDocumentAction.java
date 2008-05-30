@@ -3,12 +3,11 @@ package edu.raf.gef.gui.actions;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.JInternalFrame;
 
 import edu.raf.gef.app.errors.GraphicalErrorHandler;
-import edu.raf.gef.app.framework.EditorPlugin;
-import edu.raf.gef.app.framework.PluginContainer;
 import edu.raf.gef.gui.MainFrame;
+import edu.raf.gef.plugin.DiagramPlugin;
+import edu.raf.gef.plugin.PluginCreationController;
 
 public class CreateDocumentAction extends AbstractAction {
 	/**
@@ -18,33 +17,39 @@ public class CreateDocumentAction extends AbstractAction {
 
 	public static final String ID = "new";
 
-	private PluginContainer plugin;
-
 	private MainFrame mainFrame;
 
 	private GraphicalErrorHandler geh;
 
-	public CreateDocumentAction(MainFrame mf, PluginContainer plugin) {
+	/**
+	 * Factory.
+	 */
+	private PluginCreationController creationController;
+
+	private final DiagramPlugin plugin;
+
+	public CreateDocumentAction(MainFrame mf, DiagramPlugin plugin) {
 		super(plugin.getResources().getString("plugin.name"));
 		this.plugin = plugin;
 		this.mainFrame = mf;
+		/*
+		 * Default factory
+		 */
+		this.creationController = new PluginCreationController(plugin);
+	}
+
+	/**
+	 * Reconfigure the factory.
+	 * 
+	 * @param controller
+	 */
+	public void setCreationController(PluginCreationController controller) {
+		this.creationController = controller;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		JInternalFrame frame = new JInternalFrame("A plugin :P", true, true, true);
-		EditorPlugin instance;
-		try {
-			instance = plugin.getPluginClass().newInstance();
-		} catch (Exception ex) {
-			getGeh().handleError("createDocumentAction", "Plugin failed to initialize", ex);
-			return;
-		}
-
-		frame.setSize(300, 300);
-		frame.setVisible(true);
-		frame.add(instance.createEditor());
-		mainFrame.getDesktop().add(frame);
+		mainFrame.showDiagram(creationController.createDiagram(), plugin);
 	}
 
 	protected GraphicalErrorHandler getGeh() {

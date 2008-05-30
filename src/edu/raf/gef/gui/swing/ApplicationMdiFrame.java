@@ -6,33 +6,43 @@ import java.awt.Container;
 import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenuBar;
 import javax.swing.SwingUtilities;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import edu.raf.gef.app.ResourceHelper;
 import edu.raf.gef.app.Resources;
 import edu.raf.gef.app.errors.GraphicalErrorHandler;
+import edu.raf.gef.app.exceptions.GefException;
+import edu.raf.gef.gui.swing.menus.MenuManager;
+import edu.raf.gef.gui.swing.menus.SAXMenuImporter;
 
 /**
  * Class for representing general MDI (Multiple Document Interface) frame.
  * Toolbar and status bar are optional. All creation methods can be overriden
  * but be careful.
  * 
- * @author toroman
  * 
  */
-public class ApplicationMdiFrame {
-	private String id;
+public abstract class ApplicationMdiFrame implements InternalFrameListener {
+	protected final String id;
 	private GraphicalErrorHandler gErrorHandler;
 	private JFrame frame;
 
 	private ToolbarManager toolbarManager;
 
 	private StatusManager statusManager;
+
+	private MenuManager menuManager;
 
 	private JDesktopPane desktop;
 
@@ -44,6 +54,11 @@ public class ApplicationMdiFrame {
 	public ApplicationMdiFrame(String id) {
 		this.id = id;
 	}
+
+	/**
+	 * Called after all parts have been initialized (see {@link #build()}
+	 */
+	protected abstract void init();
 
 	public void addToolbar() {
 		createToolbar = true;
@@ -81,7 +96,8 @@ public class ApplicationMdiFrame {
 			}
 		});
 		if (createMenubar) {
-			frame.setJMenuBar(createMenubar());
+			menuManager = createMenuManager();
+			frame.setJMenuBar(menuManager.getMenubar());
 		}
 		Container con = frame.getContentPane();
 		con.setLayout(new BorderLayout());
@@ -95,6 +111,8 @@ public class ApplicationMdiFrame {
 		}
 		con.add(desktop = createDesktop(), BorderLayout.CENTER);
 		frame.setIconImage(createIconImage());
+
+		init();
 	}
 
 	/**
@@ -110,6 +128,8 @@ public class ApplicationMdiFrame {
 	protected void restoreFrameState() {
 		try {
 			String state = resources.getProperty(id + ".state");
+			if (state == null)
+				state = "0 133 54 800 600"; // default state
 			ResourceHelper.applyStateToFrame(this.frame, state);
 		} catch (Exception ex) {
 			getGeh().handleError("restoreFrameState", "Couldn't restore frame state!", ex);
@@ -153,7 +173,8 @@ public class ApplicationMdiFrame {
 	}
 
 	protected JDesktopPane createDesktop() {
-		return new JDesktopPane();
+		JDesktopPane pane = new JDesktopPane();
+		return pane;
 	}
 
 	protected String createFrameTitle() {
@@ -164,8 +185,47 @@ public class ApplicationMdiFrame {
 		return title == null ? "" : title;
 	}
 
-	protected JMenuBar createMenubar() {
-		return new JMenuBar();
+	protected MenuManager createMenuManager() {
+		MenuManager menu = new MenuManager();
+		// try restore configuration from XML
+		InputStream is = null;
+		try {
+			is = getResources().getResource(id + ".MenuConfigurationFile");
+		} catch (GefException e) {
+			// no configuration
+			getLog().log(Level.FINEST, "Menu not configured");
+			return menu;
+		} catch (Throwable t) {
+			getGeh().handleErrorBlocking("createMenuManager", "Couldn't read menu configuration!",
+				t);
+			System.exit(-1);
+		}
+
+		try {
+			SAXParserFactory saxFactory = SAXParserFactory.newInstance();
+
+			try {
+				SAXParser parser = saxFactory.newSAXParser();
+				parser.parse(is, new SAXMenuImporter(menu, getResources()));
+			} finally {
+				try {
+					is.close();
+				} catch (Throwable ex) {
+				}
+			}
+		} catch (Throwable e) {
+			try {
+				getGeh().handleErrorBlocking("createMenuManager",
+					"Menu couldn't be restored! Application will now shutdown.", e);
+			} finally {
+				System.exit(-1);
+			}
+		}
+		return menu;
+	}
+
+	public MenuManager getMenuManager() {
+		return menuManager;
 	}
 
 	protected Component createStatusbar() {
@@ -203,12 +263,48 @@ public class ApplicationMdiFrame {
 		return gErrorHandler;
 	}
 
+	protected Logger getLog() {
+		return Logger.getLogger(getClass().getName());
+	}
+
 	protected void setResources(Resources resources) {
 		this.resources = resources;
 	}
 
 	public Resources getResources() {
 		return resources;
+	}
+
+	public abstract void internalFrameActivated(InternalFrameEvent e);
+
+	@Override
+	public void internalFrameClosed(InternalFrameEvent e) {
+	}
+
+	@Override
+	public void internalFrameClosing(InternalFrameEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void internalFrameDeactivated(InternalFrameEvent e) {
+
+	}
+
+	@Override
+	public void internalFrameDeiconified(InternalFrameEvent e) {
+
+	}
+
+	@Override
+	public void internalFrameIconified(InternalFrameEvent e) {
+
+	}
+
+	@Override
+	public void internalFrameOpened(InternalFrameEvent e) {
+
 	}
 
 }

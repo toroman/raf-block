@@ -17,9 +17,9 @@ public class GraphicalErrorHandler {
 	private final String classParent;
 	private final Component guiParent;
 
-	private static final Logger log = Logger.getLogger("edu.raf.flowchart");
+	private static final Logger log = Logger.getLogger(GraphicalErrorHandler.class.getName());
 
-	public void handleError(final String method, final String message, final Exception ex) {
+	public void handleError(final String method, final String message, final Throwable ex) {
 		log.logp(Level.SEVERE, classParent, method, message, ex);
 
 		SwingUtilities.invokeLater(new Runnable() {
@@ -28,6 +28,12 @@ public class GraphicalErrorHandler {
 					JOptionPane.ERROR_MESSAGE);
 			}
 		});
+	}
+
+	public void handleErrorBlocking(final String method, final String message, final Throwable ex) {
+		log.logp(Level.SEVERE, classParent, method, message, ex);
+		JOptionPane.showMessageDialog(guiParent, message, "Information about the error",
+			JOptionPane.ERROR_MESSAGE);
 	}
 
 	/**

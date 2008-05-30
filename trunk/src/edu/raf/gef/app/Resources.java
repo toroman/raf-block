@@ -14,10 +14,13 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+
+import edu.raf.gef.app.exceptions.GefException;
 
 /**
  * Resource holder / wrapper.
@@ -112,6 +115,7 @@ public class Resources {
 	 * Snima promene properties-a.
 	 */
 	public void saveProperties() {
+		log.log(Level.INFO, "Saving properties");
 		OutputStream fos = null;
 		try {
 			synchronized (properties) {
@@ -154,6 +158,8 @@ public class Resources {
 
 	private ImageIcon loadIcon(String key) throws IOException {
 		String name = getBundle().getString(key);
+		if (name == null)
+			name = key;
 		URL url = getClass().getClassLoader().getResource(location + "icons/" + name);
 		Image image = ImageIO.read(url);
 		if (image != null) {
@@ -185,6 +191,28 @@ public class Resources {
 	 */
 	public String getString(String key, Object... args) {
 		return new MessageFormat(getBundle().getString(key), locale).format(args);
+	}
+
+	/**
+	 * First read the value of the <code>key</code> from the properties file,
+	 * then try to return InputStream of the resource from returned path.
+	 * <p>
+	 * Throws exceptions if resource cannot be found.
+	 * 
+	 * @param key
+	 * @param args
+	 * @return
+	 * @throws GefException
+	 *             If key couldn't be read from the bundle.
+	 */
+	public InputStream getResource(String key, Object... args) throws GefException {
+		String resource = getString(key, args);
+		if (resource == null)
+			throw new GefException("No resource under name: " + key);
+		InputStream is = getClass().getClassLoader().getResourceAsStream(resource);
+		if (is == null)
+			throw new NullPointerException();
+		return is;
 	}
 
 	private static final Logger log = Logger.getLogger(Resources.class.getName());

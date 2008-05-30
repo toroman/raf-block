@@ -1,7 +1,9 @@
 package edu.raf.gef.gui.swing;
 
 import java.awt.FlowLayout;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -20,15 +22,22 @@ public class ToolbarManager {
 
 	private Map<String, JToolBar> toolbars = new HashMap<String, JToolBar>();
 
+	private final List<Action> actions;
+
+	public ToolbarManager() {
+		actions = new ArrayList<Action>();
+	}
+
 	public void addAction(String group, Action action) {
 		JToolBar tb = toolbars.get(group);
 		if (tb == null) {
 			tb = new JToolBar(group);
 			toolbars.put(group, tb);
-			if (toolbar != null)
-				toolbar.add(tb);
 		}
 		tb.add(action);
+		if (toolbar != null)
+			toolbar.add(tb);
+		actions.add(action);
 	}
 
 	public synchronized JPanel getToolbar() {
@@ -50,5 +59,9 @@ public class ToolbarManager {
 			toolbar.add(entry.getValue());
 		}
 		return toolbar;
+	}
+
+	public List<Action> getActions() {
+		return actions;
 	}
 }

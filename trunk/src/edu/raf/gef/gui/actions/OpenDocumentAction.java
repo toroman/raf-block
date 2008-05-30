@@ -2,7 +2,6 @@ package edu.raf.gef.gui.actions;
 
 import java.awt.event.ActionEvent;
 
-import edu.raf.gef.app.errors.GraphicalErrorHandler;
 import edu.raf.gef.gui.MainFrame;
 
 public class OpenDocumentAction extends ResourceConfiguredAction {
@@ -16,13 +15,12 @@ public class OpenDocumentAction extends ResourceConfiguredAction {
 	public final static String ID = "open";
 
 	public OpenDocumentAction(MainFrame mainFrame) {
-		super(mainFrame);
+		super(mainFrame.getFrame(), ID);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		new GraphicalErrorHandler(getClass(), mainFrame.getFrame()).handleError("actionPerformed",
-			"Not implemented yet!", null);
+		getGeh().handleError("actionPerformed", "Not implemented yet!", null);
 	}
 
 }

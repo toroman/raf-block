@@ -12,6 +12,7 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -150,14 +151,17 @@ public class Resources {
 			}
 			return icon;
 		} catch (Exception ex) {
-			System.err.println("No icon: " + key);
-			ex.printStackTrace();
 			return null;
 		}
 	}
 
 	private ImageIcon loadIcon(String key) throws IOException {
-		String name = getBundle().getString(key);
+		String name;
+		try {
+			name = getBundle().getString(key);
+		} catch (MissingResourceException ex) {
+			return null;
+		}
 		if (name == null)
 			name = key;
 		URL url = getClass().getClassLoader().getResource(location + "icons/" + name);

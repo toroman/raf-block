@@ -61,7 +61,7 @@ public class GefDiagram {
 		return controller;
 	}
 
-	public GefUndoManager getCommandManager() {
+	public GefUndoManager getUndoManager() {
 		return undoManager;
 	}
 

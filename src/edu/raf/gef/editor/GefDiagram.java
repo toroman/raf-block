@@ -42,7 +42,7 @@ public class GefDiagram {
 	}
 
 	protected DiagramController createController() {
-		return new DiagramController(getModel(), getView());
+		return new DiagramController(this);
 	}
 
 	protected DiagramView createView() {

@@ -4,16 +4,22 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
-import edu.raf.gef.editor.control.DiagramController;
+import edu.raf.gef.editor.GefDiagram;
 
 public class DiagramDefaultState implements IDiagramAbstractState {
 
-	protected final DiagramController controller;
+	protected final GefDiagram diagram;
 
-	public DiagramDefaultState(DiagramController controller) {
-		this.controller = controller;
+	public DiagramDefaultState(GefDiagram diagram) {
+		this.diagram = diagram;
 	}
+	
 
+	@Override
+	public void onStateLeft() {
+		
+	}
+	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 

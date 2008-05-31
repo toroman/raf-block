@@ -6,15 +6,13 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JPanel;
 
 import edu.raf.gef.editor.model.DiagramModel;
-import edu.raf.gef.editor.model.object.DrawableElement;
-import edu.raf.gef.editor.model.object.PositionedElement;
+import edu.raf.gef.editor.model.object.Drawable;
 
 public class DiagramView implements Observer {
 	private final DiagramModel model;
@@ -55,16 +53,16 @@ public class DiagramView implements Observer {
 		g.drawString("Hallo from DiagramView.drawDiagram", 100, 50);
 		g.setTransform(matrix);
 
-		for (DrawableElement de : model.getDrawables()) {
-			if (de instanceof PositionedElement) {
-				PositionedElement pe = (PositionedElement) de;
-				Point2D location = pe.getLocation();
-				g.translate(location.getX(), location.getY());
+		for (Drawable de : model.getDrawables()) {
+//			if (de instanceof PositionedElement) {
+//				PositionedElement pe = (PositionedElement) de;
+//				Point2D location = pe.getLocation();
+//				g.translate(location.getX(), location.getY());
+//				de.paint(g);
+//				g.translate(-location.getX(), -location.getY());
+//			} else {
 				de.paint(g);
-				g.translate(-location.getX(), -location.getY());
-			} else {
-				de.paint(g);
-			}
+//			}
 		}
 	}
 

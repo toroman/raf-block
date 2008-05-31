@@ -9,7 +9,8 @@ import edu.raf.flowchart.blocks.ExecutionBlock;
 import edu.raf.flowchart.diagram.FlowChartDiagram;
 import edu.raf.gef.app.Resources;
 import edu.raf.gef.editor.GefDiagram;
-import edu.raf.gef.editor.model.object.DrawableElement;
+import edu.raf.gef.editor.model.object.Draggable;
+import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.gui.MainFrame;
 import edu.raf.gef.gui.SelectedDiagramProvider;
 import edu.raf.gef.gui.actions.CreateDocumentAction;
@@ -26,7 +27,7 @@ public class FlowChartPlugin implements DiagramPlugin {
 			.getName().replace('.', File.separatorChar)
 			+ "/res/");
 
-	private final List<Class<? extends DrawableElement>> drawables;
+	private final List<Class<? extends Drawable>> drawables;
 
 	/**
 	 * Instead of passing the whole frame, more "nice" would be to pass only
@@ -35,7 +36,7 @@ public class FlowChartPlugin implements DiagramPlugin {
 	private MainFrame mainFrame;
 
 	public FlowChartPlugin() {
-		drawables = new ArrayList<Class<? extends DrawableElement>>();
+		drawables = new ArrayList<Class<? extends Drawable>>();
 		drawables.add(ExecutionBlock.class);
 	}
 
@@ -65,9 +66,11 @@ public class FlowChartPlugin implements DiagramPlugin {
 
 		mf.getMenuManager().addAction(StandardMenuParts.NEW_DIAGRAM_PART,
 			new CreateDocumentAction(mf, this));
-		for (Class<? extends DrawableElement> d : drawables) {
-			mf.getToolbarManager().addAction(getClass().getName(),
-				new AddFlowchartObjectAction(d, d.getName(), sdp));
+		for (Class<? extends Drawable> d : drawables) {
+			if (Draggable.class.isAssignableFrom(d)) {
+				mf.getToolbarManager().addAction(getClass().getName(),
+					new AddFlowchartObjectAction(d.asSubclass(Draggable.class), d.getName(), sdp));
+			}
 		}
 	}
 

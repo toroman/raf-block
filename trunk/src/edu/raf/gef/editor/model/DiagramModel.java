@@ -1,21 +1,23 @@
 package edu.raf.gef.editor.model;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Observable;
+import java.util.Observer;
 
 import edu.raf.gef.editor.model.events.DrawableAddedEvent;
 import edu.raf.gef.editor.model.events.DrawableZOrderEvent;
-import edu.raf.gef.editor.model.object.DrawableElement;
+import edu.raf.gef.editor.model.object.Drawable;
 
-public class DiagramModel extends Observable {
-	private final ArrayList<DrawableElement> drawables;
+public class DiagramModel extends Observable implements Observer {
+	private final ArrayList<Drawable> drawables;
 	/**
 	 * Return unmodifiable version, because the list writing is encapsulated.
 	 */
-	private final Collection<DrawableElement> readOnlyDrawables;
+	private final Collection<Drawable> readOnlyDrawables;
 
 	/**
 	 * Other data to be persisted with the model!
@@ -33,12 +35,12 @@ public class DiagramModel extends Observable {
 	}
 
 	public DiagramModel() {
-		drawables = new ArrayList<DrawableElement>();
+		drawables = new ArrayList<Drawable>();
 		readOnlyDrawables = Collections.unmodifiableCollection(drawables);
 		nonDrawables = new ArrayList<Object>();
 	}
 
-	public boolean addElement(DrawableElement element) {
+	public boolean addElement(Drawable element) {
 		if (drawables.add(element)) {
 			setChanged();
 			notifyObservers(new DrawableAddedEvent(element));
@@ -49,7 +51,7 @@ public class DiagramModel extends Observable {
 		}
 	}
 
-	public boolean removeElement(DrawableElement element) {
+	public boolean removeElement(Drawable element) {
 		if (drawables.remove(element)) {
 			setChanged();
 			notifyObservers(new DrawableAddedEvent(element));
@@ -60,7 +62,7 @@ public class DiagramModel extends Observable {
 		}
 	}
 
-	public boolean moveForward(DrawableElement element) {
+	public boolean moveForward(Drawable element) {
 		int index = drawables.indexOf(element);
 		if (index == drawables.size() - 1)
 			return false;
@@ -71,12 +73,27 @@ public class DiagramModel extends Observable {
 		clearChanged();
 		return true;
 	}
+	
+	public Drawable getDrawableAt (Point2D point) {
+		for (Drawable drawable: drawables) {
+			if (drawable.isUnderLocation (point))
+				return drawable;
+		}
+		return null;
+	}
 
 	/**
 	 * 
 	 * @return The unmodifiable version of drawable elements!
 	 */
-	public Collection<DrawableElement> getDrawables() {
+	public Collection<Drawable> getDrawables() {
 		return readOnlyDrawables;
+	}
+
+	@Override
+	public void update(Observable observable, Object param) {
+		setChanged();
+		notifyObservers();
+		clearChanged();
 	}
 }

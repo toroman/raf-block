@@ -3,6 +3,7 @@ package edu.raf.gef.app;
 import java.awt.Image;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -90,11 +91,12 @@ public class Resources {
 		InputStream fis = null;
 		try {
 			// fis = new FileInputStream(new File("properties.properties"));
-			URL url = getClass().getClassLoader().getResource(location + "properties.properties");
-			fis = new BufferedInputStream(new FileInputStream(url.getPath()));
+			String path = location + "properties.properties";
+			InputStream is = getClass().getClassLoader().getResourceAsStream(path);
+			fis = new BufferedInputStream(is);
 			properties.load(fis);
 		} catch (IOException ex) {
-			log.severe("Couldn't read properties from location: " + location);
+			log.log(Level.SEVERE, "Couldn't load properties!", ex);
 		} finally {
 			if (fis != null) {
 				try {
@@ -107,7 +109,8 @@ public class Resources {
 
 	private ResourceBundle getBundle() {
 		if (bundle == null) {
-			bundle = ResourceBundle.getBundle(location + "locales/LocalMessagesBundle", locale);
+			String path = location + "locales/LocalMessagesBundle";
+			bundle = ResourceBundle.getBundle(path, locale);
 		}
 		return bundle;
 	}
@@ -116,13 +119,13 @@ public class Resources {
 	 * Snima promene properties-a.
 	 */
 	public void saveProperties() {
-		log.log(Level.INFO, "Saving properties");
+//		log.log(Level.INFO, "Saving properties");
 		OutputStream fos = null;
 		try {
 			synchronized (properties) {
 				URL url = getClass().getClassLoader().getResource(
 					location + "properties.properties");
-				fos = new BufferedOutputStream(new FileOutputStream(url.getPath()));
+				fos = new BufferedOutputStream(new FileOutputStream(url.getPath().replaceAll("%20", " ")));
 				properties.store(fos, null);
 			}
 		} catch (IOException e) {

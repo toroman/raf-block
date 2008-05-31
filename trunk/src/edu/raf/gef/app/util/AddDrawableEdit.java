@@ -5,7 +5,7 @@ import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
 import edu.raf.gef.editor.model.DiagramModel;
-import edu.raf.gef.editor.model.object.DrawableElement;
+import edu.raf.gef.editor.model.object.Drawable;
 
 public class AddDrawableEdit extends AbstractUndoableEdit {
 
@@ -14,9 +14,9 @@ public class AddDrawableEdit extends AbstractUndoableEdit {
 	 */
 	private static final long serialVersionUID = -5181813457080488250L;
 	private DiagramModel model;
-	private DrawableElement element;
+	private Drawable element;
 
-	public AddDrawableEdit(DiagramModel model, DrawableElement element) {
+	public AddDrawableEdit(DiagramModel model, Drawable element) {
 		this.model = model;
 		this.element = element;
 	}

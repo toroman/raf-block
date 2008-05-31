@@ -17,7 +17,7 @@ public final class Main {
 
 	public static void main(String[] args) {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-			@Override
+			
 			public void run() {
 				try {
 					// UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -31,7 +31,7 @@ public final class Main {
 					String[] klasses = components.split(" ");
 					Main.components.discover(klasses);
 				}
-				
+
 				mainFrame = new MainFrame();
 				mainFrame.open();
 			}

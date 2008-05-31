@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package edu.raf.gef.gui.swing.menus;
 
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -51,6 +52,11 @@ public class MenuManager {
 	 */
 	private final HashMap<String, MenuPartContainer> containers;
 
+	/**
+	 * Named actions, like standard actions (Cut copy paste)
+	 */
+	private final Map<String, Action> namedActions = new HashMap<String, Action>();
+
 	public MenuManager() {
 		menubar = new JMenuBar();
 		parts = new HashMap<String, MenuPart>();
@@ -67,6 +73,17 @@ public class MenuManager {
 			throw new GefRuntimeException("Invalid menu part id!");
 		MenuPart part = parts.get(partId);
 		part.add(action);
+	}
+
+	public void addAction(String partId, Action action, String actionId) {
+		if (!parts.containsKey(partId))
+			throw new GefRuntimeException("Invalid menu part id!");
+		MenuPart part = parts.get(partId);
+		namedActions.put(actionId, action);
+	}
+
+	public void overrideAction(String actionId, ActionListener listener) {
+		
 	}
 
 	public void removeAction(String partId, Action action) {

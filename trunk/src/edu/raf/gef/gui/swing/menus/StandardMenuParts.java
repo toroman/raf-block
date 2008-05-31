@@ -53,4 +53,8 @@ public interface StandardMenuParts {
 	/** All Window operations - cascade, maximize etc */
 	String WINDOW_ARRANGEMENT_PART = "p_window_arrangement";
 
+	String ABOUT = "p_about";
+
+	String HELP_CONTENTS = "p_help_contents";
+
 }

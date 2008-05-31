@@ -1,11 +1,14 @@
 package edu.raf.gef.gui;
 
 import java.awt.BorderLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 
 import javax.swing.Action;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 
 import edu.raf.gef.Main;
 import edu.raf.gef.app.Resources;
@@ -26,7 +29,7 @@ import edu.raf.gef.workspace.panel.WorkspaceComponent;
  * Main window, defines creational functions.
  * 
  */
-public class MainFrame extends ApplicationMdiFrame {
+public class MainFrame extends ApplicationMdiFrame implements InternalFrameListener {
 	protected static final long serialVersionUID = 4040204356233038729L;
 
 	private WorkspaceComponent workspace;
@@ -42,9 +45,25 @@ public class MainFrame extends ApplicationMdiFrame {
 	@Override
 	protected void init() {
 		initWorkspaceComponents();
+		wireEvents();
 		for (AbstractPlugin plugin : Main.getComponentDiscoveryUtils().getPlugins()) {
 			plugin.setMainFrame(this);
 		}
+	}
+
+	private void wireEvents() {
+		addPropertyChangeListener(SELECTED_FRAME_PROPERTY, new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent e) {
+				JInternalFrame frame = (JInternalFrame) e.getNewValue();
+				AbstractPlugin plugin = null;
+				if (frame instanceof DiagramPluginFrame) {
+					plugin = ((DiagramPluginFrame) frame).getPlugin();
+				}
+				validateActions(getToolbarManager().getActions().iterator(), plugin);
+				validateActions(getMenuManager().getActions(), plugin);
+				getStatusManager().setStatusMessage("Frame " + frame + " activated.");
+			}
+		});
 	}
 
 	private void initWorkspaceComponents() {
@@ -52,12 +71,13 @@ public class MainFrame extends ApplicationMdiFrame {
 		restore.setWorkspaceLocationToProperties(getResources());
 		workspace = new WorkspaceComponent(restore);
 
-		JInternalFrame dialog = new JInternalFrame("Workspace", false, false, false, false);
-		dialog.setLayout(new BorderLayout());
-		dialog.add(workspace, BorderLayout.CENTER);
-		dialog.setBounds(100, 100, 200, 500);
-		dialog.setVisible(true);
-		getDesktop().add(dialog);
+		JInternalFrame wsFrame = new JInternalFrame("Workspace", true, false, false, false);
+		wsFrame.setLayout(new BorderLayout());
+		wsFrame.add(workspace, BorderLayout.CENTER);
+		wsFrame.setBounds(100, 100, 200, 500);
+		wsFrame.setVisible(true);
+		wsFrame.addInternalFrameListener(this);
+		getDesktop().add(wsFrame);
 	}
 
 	public void setWorkspace(Workspace workspace) {
@@ -79,26 +99,6 @@ public class MainFrame extends ApplicationMdiFrame {
 		ToolbarManager tbm = super.createToolbarManager();
 		tbm.addAction(StandardToolbars.STANDARD.name(), new OpenDocumentAction(this));
 		return tbm;
-	}
-
-	@Override
-	public void internalFrameActivated(InternalFrameEvent e) {
-		JInternalFrame frame = e.getInternalFrame();
-		AbstractPlugin plugin = null;
-		if (frame instanceof DiagramPluginFrame) {
-			plugin = ((DiagramPluginFrame) frame).getPlugin();
-		}
-		validateActions(getToolbarManager().getActions().iterator(), plugin);
-		validateActions(getMenuManager().getActions(), plugin);
-		getStatusManager().setStatusMessage("Frame " + frame.getTitle() + " activated.");
-	}
-
-	@Override
-	public void internalFrameDeactivated(InternalFrameEvent e) {
-		validateActions(getToolbarManager().getActions().iterator(), null);
-		validateActions(getMenuManager().getActions(), null);
-		getStatusManager().setStatusMessage(
-			"Frame " + e.getInternalFrame().getTitle() + " deactivated.");
 	}
 
 	/**
@@ -140,5 +140,34 @@ public class MainFrame extends ApplicationMdiFrame {
 			return null;
 		DiagramPluginFrame dpf = (DiagramPluginFrame) jif;
 		return dpf.getDiagram();
+	}
+
+	@Override
+	public void internalFrameClosed(InternalFrameEvent e) {
+	}
+
+	@Override
+	public void internalFrameClosing(InternalFrameEvent e) {
+
+	}
+
+	@Override
+	public void internalFrameDeactivated(InternalFrameEvent e) {
+		pcs.firePropertyChange(SELECTED_FRAME_PROPERTY, Integer.MIN_VALUE, null);
+	}
+
+	@Override
+	public void internalFrameDeiconified(InternalFrameEvent e) {
+
+	}
+
+	@Override
+	public void internalFrameIconified(InternalFrameEvent e) {
+
+	}
+
+	@Override
+	public void internalFrameOpened(InternalFrameEvent e) {
+
 	}
 }

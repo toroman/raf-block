@@ -10,5 +10,5 @@ public interface ContextSensitiveAction {
 	 *            Ask about the plugin
 	 * @return false if this action can't be applied while this plugin is active
 	 */
-	public boolean worksOn(AbstractPlugin lugin);
+	public boolean worksOn(AbstractPlugin plugin);
 }

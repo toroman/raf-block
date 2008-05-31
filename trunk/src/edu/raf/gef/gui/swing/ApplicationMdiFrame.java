@@ -6,16 +6,18 @@ import java.awt.Container;
 import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -33,9 +35,14 @@ import edu.raf.gef.gui.swing.menus.SAXMenuImporter;
  * 
  * 
  */
-public abstract class ApplicationMdiFrame implements InternalFrameListener {
+public abstract class ApplicationMdiFrame {
+
+	public static final String SELECTED_FRAME_PROPERTY = "selectedFrame";
+
 	protected final String id;
+
 	private GraphicalErrorHandler gErrorHandler;
+
 	private JFrame frame;
 
 	private ToolbarManager toolbarManager;
@@ -45,6 +52,8 @@ public abstract class ApplicationMdiFrame implements InternalFrameListener {
 	private MenuManager menuManager;
 
 	private JDesktopPane desktop;
+
+	protected final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	private boolean createToolbar = false;
 	private boolean createStatusbar = false;
@@ -275,36 +284,27 @@ public abstract class ApplicationMdiFrame implements InternalFrameListener {
 		return resources;
 	}
 
-	public abstract void internalFrameActivated(InternalFrameEvent e);
-
-	@Override
-	public void internalFrameClosed(InternalFrameEvent e) {
+	public final void internalFrameActivated(InternalFrameEvent e) {
+		pcs.firePropertyChange(SELECTED_FRAME_PROPERTY, Integer.MIN_VALUE, e.getInternalFrame());
 	}
 
-	@Override
-	public void internalFrameClosing(InternalFrameEvent e) {
-		// TODO Auto-generated method stub
-
+	public JInternalFrame getSelectedFrame() {
+		return getDesktop().getSelectedFrame();
 	}
 
-	@Override
-	public void internalFrameDeactivated(InternalFrameEvent e) {
-
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		pcs.addPropertyChangeListener(listener);
 	}
 
-	@Override
-	public void internalFrameDeiconified(InternalFrameEvent e) {
-
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		pcs.removePropertyChangeListener(listener);
 	}
 
-	@Override
-	public void internalFrameIconified(InternalFrameEvent e) {
-
+	public void addPropertyChangeListener(String property, PropertyChangeListener listener) {
+		pcs.addPropertyChangeListener(property, listener);
 	}
 
-	@Override
-	public void internalFrameOpened(InternalFrameEvent e) {
-
+	public void removePropertyChangeListener(String property, PropertyChangeListener listener) {
+		pcs.removePropertyChangeListener(property, listener);
 	}
-
 }

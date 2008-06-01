@@ -2,6 +2,7 @@ package edu.raf.gef.editor.control.state;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.lang.reflect.Constructor;
 
 import edu.raf.gef.app.exceptions.GefCreationalException;
@@ -42,12 +43,14 @@ public class DiagramAddDraggableState extends DiagramDefaultState {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void mousePressed(MouseEvent arg0) {
+	public boolean mousePressed(MouseEvent e, Point2D userSpaceLocation) {
+		if (super.mousePressed(e, userSpaceLocation))
+			return true;
 		try {
 			Constructor<Draggable> constructor = (Constructor<Draggable>) objectType
 					.getConstructor(DiagramModel.class);
 			Draggable draggable = constructor.newInstance(diagram.getModel());
-			draggable.setLocation(arg0.getPoint());
+			draggable.setLocation(userSpaceLocation);
 			diagram.getModel().addElement(draggable);
 			if (nextState == null) {
 				diagram.getController().setState(new DiagramSelectionState (diagram, draggable));
@@ -61,15 +64,20 @@ public class DiagramAddDraggableState extends DiagramDefaultState {
 			diagram.getController().setState(fallbackState);
 			throw new GefCreationalException(ex);
 		}
+		return true;
 	}
 
 	@Override
-	public void keyPressed(KeyEvent e) {
+	public boolean keyPressed(KeyEvent e) {
+		if (super.keyPressed(e))
+			return true;
 		/*
 		 * Operation canceled
 		 */
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			diagram.getController().setState(fallbackState);
+			return true;
 		}
+		return false;
 	}
 }

@@ -20,8 +20,8 @@ public final class Main {
 			
 			public void run() {
 				try {
-					// UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-					UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+//					 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					 UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 				} catch (Exception e) {
 					geh.handleError("main", "Couldn't set look and feel (aka skin)", e);
 				}

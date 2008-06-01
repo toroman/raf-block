@@ -3,8 +3,12 @@ package edu.raf.gef.editor.control.state.util;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.Point2D;
 
 import edu.raf.gef.editor.GefDiagram;
+import edu.raf.gef.editor.view.util.AffineTransformManager;
+import edu.raf.gef.editor.view.util.RepaintAndInertionThread;
+import edu.raf.gef.util.GeomHelper;
 
 public class DiagramDefaultState implements IDiagramAbstractState {
 
@@ -13,66 +17,92 @@ public class DiagramDefaultState implements IDiagramAbstractState {
 	public DiagramDefaultState(GefDiagram diagram) {
 		this.diagram = diagram;
 	}
-	
 
 	@Override
 	public void onStateLeft() {
-		
-	}
-	
-	@Override
-	public void mouseClicked(MouseEvent arg0) {
 
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent arg0) {
-
+	public boolean mouseClicked(MouseEvent arg0, Point2D userSpaceLocation) {
+		return false;
 	}
 
 	@Override
-	public void mouseExited(MouseEvent arg0) {
-
+	public boolean mouseEntered(MouseEvent arg0, Point2D userSpaceLocation) {
+		return false;
 	}
 
 	@Override
-	public void mousePressed(MouseEvent arg0) {
-
+	public boolean mouseExited(MouseEvent arg0, Point2D userSpaceLocation) {
+		return false;
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent arg0) {
-
+	public boolean mousePressed(MouseEvent e, Point2D userSpaceLocation) {
+		RepaintAndInertionThread repainter = diagram.getView().getRepaintAndInertionThread();
+		if (repainter != null)
+			repainter.setRadi(false);
+		if (e.getButton() == MouseEvent.BUTTON3) {
+			AffineTransformManager atm = diagram.getView().getAffineTransformManager();
+			atm.setAutoMatchTransform(false);
+			atm.setDeviceSpaceLocation(GeomHelper.castTo2D(e.getPoint()));
+			atm.setUserSpaceLocation(userSpaceLocation);
+			atm.matchTransform();
+			return true;
+		}
+		return false;
 	}
 
 	@Override
-	public void mouseDragged(MouseEvent arg0) {
-
+	public boolean mouseReleased(MouseEvent e, Point2D userSpaceLocation) {
+		RepaintAndInertionThread repainter = diagram.getView().getRepaintAndInertionThread();
+		if (repainter != null)
+			repainter.setRadi(true);
+		if ((e.getModifiersEx() & MouseEvent.BUTTON3_DOWN_MASK) != 0)
+			return true;
+		return false;
 	}
 
 	@Override
-	public void mouseMoved(MouseEvent arg0) {
-
+	public boolean mouseDragged(MouseEvent e, Point2D userSpaceLocation) {
+		if ((e.getModifiersEx() & MouseEvent.BUTTON3_DOWN_MASK) != 0) {
+			AffineTransformManager atm = diagram.getView().getAffineTransformManager();
+			atm.setDeviceSpaceLocation(GeomHelper.castTo2D(e.getPoint()));
+			return true;
+		}
+		return false;
 	}
 
 	@Override
-	public void mouseWheelMoved(MouseWheelEvent arg0) {
-
+	public boolean mouseMoved(MouseEvent e, Point2D userSpaceLocation) {
+		return false;
 	}
 
 	@Override
-	public void keyPressed(KeyEvent e) {
-
+	public boolean mouseWheelMoved(MouseWheelEvent e, Point2D userSpaceLocation) {
+		AffineTransformManager atm = diagram.getView().getAffineTransformManager();
+		atm.setAutoMatchTransform(false);
+		atm.setDeviceSpaceLocation(GeomHelper.castTo2D(e.getPoint()));
+		atm.setUserSpaceLocation(userSpaceLocation);
+		diagram.getView().getAffineTransformManager().modifyScale (e.getWheelRotation() * -1);
+		atm.matchTransform();
+		return true;
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {
-
+	public boolean keyPressed(KeyEvent e) {
+		return false;
 	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {
+	public boolean keyReleased(KeyEvent e) {
+		return false;
+	}
 
+	@Override
+	public boolean keyTyped(KeyEvent e) {
+		return false;
 	}
 
 }

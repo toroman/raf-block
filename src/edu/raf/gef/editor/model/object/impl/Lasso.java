@@ -29,8 +29,8 @@ public class Lasso extends Observable implements Drawable {
 	}
 
 	@Override
-	public boolean isUnderLocation(Point2D location) {
-		return false;
+	public Drawable getDrawableUnderLocation(Point2D location) {
+		return null;
 	}
 
 	@Override

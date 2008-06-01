@@ -18,6 +18,7 @@ import edu.raf.gef.editor.control.state.DiagramSelectionState;
 import edu.raf.gef.editor.control.state.util.IDiagramAbstractState;
 import edu.raf.gef.editor.model.DiagramModel;
 import edu.raf.gef.editor.model.object.Focusable;
+import edu.raf.gef.util.GeomHelper;
 
 public class DiagramController implements MouseListener, MouseWheelListener, MouseMotionListener,
 		KeyListener {
@@ -125,7 +126,8 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		state.mouseClicked(e);
+		state.mouseClicked(e, diagram.getView().getAffineTransformManager().getInverseTransform().transform(
+			GeomHelper.castTo2D(e.getPoint()), null));
 	}
 
 	@Override
@@ -140,17 +142,20 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		state.mousePressed(e);
+		state.mousePressed(e, diagram.getView().getAffineTransformManager().getInverseTransform().transform(
+			GeomHelper.castTo2D(e.getPoint()), null));
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		state.mouseReleased(e);
+		state.mouseReleased(e, diagram.getView().getAffineTransformManager().getInverseTransform().transform(
+			GeomHelper.castTo2D(e.getPoint()), null));
 	}
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		state.mouseWheelMoved(e);
+		state.mouseWheelMoved(e, diagram.getView().getAffineTransformManager().getInverseTransform().transform(
+			GeomHelper.castTo2D(e.getPoint()), null));
 	}
 
 	@Override
@@ -170,15 +175,17 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		state.mouseDragged(e);
+		state.mouseDragged(e, diagram.getView().getAffineTransformManager().getInverseTransform().transform(
+			GeomHelper.castTo2D(e.getPoint()), null));
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		state.mouseMoved(e);
+		state.mouseMoved(e, diagram.getView().getAffineTransformManager().getInverseTransform().transform(
+			GeomHelper.castTo2D(e.getPoint()), null));
 	}
 
-	public final Set<Focusable> getFocusedObjects() {		
+	public final Set<Focusable> getFocusedObjects() {
 		return Collections.unmodifiableSet(focusedObjects);
 	}
 }

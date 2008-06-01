@@ -46,21 +46,30 @@ public class DiagramSelectionState extends DiagramDefaultState {
 		mousePressedIsDraggable = mousePressedDrawable instanceof Draggable;
 		mousePressedIsFocusable = mousePressedDrawable instanceof Focusable;
 		startLocation = newObjectToDrag.getLocation();
+		if (mousePressedIsFocusable) {
+			diagram.getController().clearFocusedObjects();
+			diagram.getController().addToFocusedObjects((Focusable)newObjectToDrag);
+		}
 	}
 
 	@Override
-	public void mousePressed(MouseEvent e) {
-		mousePressedDrawable = diagram.getModel().getDrawableAt(e.getPoint());
+	public boolean mousePressed(MouseEvent e, Point2D userSpaceLocation) {
+		if (super.mousePressed(e, userSpaceLocation))
+			return true;
+		mousePressedDrawable = diagram.getModel().getDrawableAt(userSpaceLocation);
 		hasDragOccured = false;
 		mousePressedIsDraggable = mousePressedDrawable != null
 				&& mousePressedDrawable instanceof Draggable;
 		mousePressedIsFocusable = mousePressedDrawable != null
 				&& mousePressedDrawable instanceof Focusable;
-		startLocation = e.getPoint();
+		startLocation = userSpaceLocation;
+		return false;
 	}
 
 	@Override
-	public void mouseDragged(MouseEvent e) {
+	public boolean mouseDragged(MouseEvent e, Point2D userSpaceLocation) {
+		if (super.mouseDragged(e, userSpaceLocation))
+			return true;
 		boolean firstTime = !hasDragOccured;
 		Set<Focusable> focusedObjects = diagram.getController().getFocusedObjects();
 		hasDragOccured = true;
@@ -69,8 +78,8 @@ public class DiagramSelectionState extends DiagramDefaultState {
 				lasso = new Lasso(diagram.getModel());
 				diagram.getModel().addElement(lasso);
 			}
-			lasso.setCoords(startLocation, e.getPoint());
-			return;
+			lasso.setCoords(startLocation, userSpaceLocation);
+			return true;
 		}
 		if (mousePressedIsDraggable && !mousePressedIsFocusable) {
 			// Dragging of a non-focusable object is possible, and it won't
@@ -78,8 +87,8 @@ public class DiagramSelectionState extends DiagramDefaultState {
 			if (firstTime)
 				((Draggable) mousePressedDrawable).dragStartedAt(startLocation);
 			else
-				((Draggable) mousePressedDrawable).dragTo(e.getPoint());
-			return;
+				((Draggable) mousePressedDrawable).dragTo(userSpaceLocation);
+			return true;
 		}
 		if (mousePressedIsDraggable && mousePressedIsFocusable) {
 			Focusable object = (Focusable) mousePressedDrawable;
@@ -92,15 +101,18 @@ public class DiagramSelectionState extends DiagramDefaultState {
 					if (firstTime)
 						draggable.dragStartedAt(startLocation);
 					else
-						draggable.dragTo(e.getPoint());
+						draggable.dragTo(userSpaceLocation);
 				}
 		}
+		return true;
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent e) {
+	public boolean mouseReleased(MouseEvent e, Point2D userSpaceLocation) {
+		if (super.mouseReleased(e, userSpaceLocation))
+			return true;
 		if (hasDragOccured) {
-			if (!mousePressedIsDraggable && !mousePressedIsFocusable) {
+			if (!mousePressedIsDraggable && !mousePressedIsFocusable && lasso != null) {
 				Rectangle2D lassoBounds = lasso.getBounds();
 				diagram.getModel().removeElement(lasso);
 				lasso = null;
@@ -119,7 +131,7 @@ public class DiagramSelectionState extends DiagramDefaultState {
 				for (Focusable focusable : allFocusables)
 					if (lassoBounds.contains(focusable.getBoundingRectangle()))
 						diagram.getController().addToFocusedObjects(focusable);
-				return;
+				return true;
 			}
 		} else {
 			if (mousePressedIsFocusable) {
@@ -132,10 +144,6 @@ public class DiagramSelectionState extends DiagramDefaultState {
 			else
 				diagram.getController().clearFocusedObjects();
 		}
-	}
-
-	@Override
-	public void onStateLeft() {
-		// diagram.getController().clearFocusedObjects();
+		return true;
 	}
 }

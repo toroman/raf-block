@@ -40,7 +40,7 @@ public class DiagramModel extends Observable implements Observer {
 		nonDrawables = new ArrayList<Object>();
 	}
 
-	public boolean addElement(Drawable element) {
+	public synchronized boolean addElement(Drawable element) {
 		if (drawables.add(element)) {
 			setChanged();
 			notifyObservers(new DrawableAddedEvent(element));
@@ -51,7 +51,7 @@ public class DiagramModel extends Observable implements Observer {
 		}
 	}
 
-	public boolean removeElement(Drawable element) {
+	public synchronized boolean removeElement(Drawable element) {
 		if (drawables.remove(element)) {
 			setChanged();
 			notifyObservers(new DrawableAddedEvent(element));
@@ -62,7 +62,7 @@ public class DiagramModel extends Observable implements Observer {
 		}
 	}
 
-	public boolean moveForward(Drawable element) {
+	public synchronized boolean moveForward(Drawable element) {
 		int index = drawables.indexOf(element);
 		if (index == drawables.size() - 1)
 			return false;
@@ -74,9 +74,10 @@ public class DiagramModel extends Observable implements Observer {
 		return true;
 	}
 	
-	public Drawable getDrawableAt (Point2D point) {
-		for (Drawable drawable: drawables) {
-			if (drawable.isUnderLocation (point))
+	public synchronized Drawable getDrawableAt (Point2D point) {
+		for (int i = drawables.size() - 1; i >= 0; i--) {
+			Drawable drawable = drawables.get(i).getDrawableUnderLocation (point);
+			if (drawable != null)
 				return drawable;
 		}
 		return null;
@@ -86,7 +87,7 @@ public class DiagramModel extends Observable implements Observer {
 	 * 
 	 * @return The unmodifiable version of drawable elements!
 	 */
-	public Collection<Drawable> getDrawables() {
+	public synchronized Collection<Drawable> getDrawables() {
 		return readOnlyDrawables;
 	}
 

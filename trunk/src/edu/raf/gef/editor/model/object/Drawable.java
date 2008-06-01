@@ -11,7 +11,7 @@ import java.awt.geom.Rectangle2D;
  */
 public interface Drawable {
 	public void paint(Graphics2D g);
-	public boolean isUnderLocation (Point2D location);
+	public Drawable getDrawableUnderLocation (Point2D location);
 	public Rectangle2D getBoundingRectangle();
 	public void onClick (MouseEvent e);
 }

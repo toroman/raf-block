@@ -7,13 +7,18 @@ import javax.swing.Action;
 import javax.swing.JLabel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTree;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 
 import edu.raf.gef.Main;
 import edu.raf.gef.app.Resources;
+import edu.raf.gef.editor.DefaultDiagramTreeModel;
 import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.gui.actions.ActionExitApplication;
+import edu.raf.gef.gui.actions.ActionNewProject;
 import edu.raf.gef.gui.actions.ActionShowPluginManager;
 import edu.raf.gef.gui.actions.ContextSensitiveAction;
 import edu.raf.gef.gui.actions.OpenDocumentAction;
@@ -74,6 +79,10 @@ public class MainFrame extends ApplicationWindow {
 		return workspace.getWorkspace();
 	}
 
+	public WorkspaceComponent getWorkspaceComponent() {
+		return workspace;
+	}
+
 	@Override
 	protected ToolbarManager createToolbarManager() {
 		ToolbarManager tbm = super.createToolbarManager();
@@ -84,17 +93,20 @@ public class MainFrame extends ApplicationWindow {
 	@Override
 	protected MenuManager createMenuManager() {
 		MenuManager menu = super.createMenuManager();
+		menu.getPart(StandardMenuParts.FILE_CREATION_PART).add(new ActionNewProject(this));
 		menu.getPart(StandardMenuParts.PLUGIN_MANAGER).add(new ActionShowPluginManager(this));
 		menu.getPart(StandardMenuParts.FILE_EXIT_PART).add(new ActionExitApplication(this));
 		return menu;
 	}
 
-	public DiagramPluginFrame showDiagram(GefDiagram diagram, AbstractPlugin plugin) {
-		DiagramPluginFrame frame = new DiagramPluginFrame(diagram, plugin);
-		frame.setDoubleBuffered(false);
-		tabbedDiagrams.addTab(diagram.getModel().getTitle(), frame);
+	protected void showDiagram(DefaultDiagramTreeModel selectedDiagram) {
+		DiagramPluginFrame frame = selectedDiagram.getDiagramEditorComponent();
+		if (frame == null) {
+			frame = new DiagramPluginFrame(selectedDiagram.getDiagram());
+			selectedDiagram.setDiagramEditorComponent(frame);
+			tabbedDiagrams.addTab(selectedDiagram.getDiagram().getModel().getTitle(), frame);
+		}
 		tabbedDiagrams.setSelectedComponent(frame);
-		return frame;
 	}
 
 	public GefDiagram getSelectedDiagram() {
@@ -108,6 +120,17 @@ public class MainFrame extends ApplicationWindow {
 	public Component createContents() {
 		initWorkspaceComponents();
 		initTabbedDiagramComponents();
+
+		JTree tree = workspace.getTree();
+		tree.addTreeSelectionListener(new TreeSelectionListener() {
+			public void valueChanged(TreeSelectionEvent e) {
+				Object sel = e.getNewLeadSelectionPath().getLastPathComponent();
+				if (sel instanceof DefaultDiagramTreeModel) {
+					showDiagram((DefaultDiagramTreeModel) sel);
+				}
+			}
+		});
+
 		mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, workspace, tabbedDiagrams);
 		mainSplitPane.setOneTouchExpandable(true);
 		return mainSplitPane;

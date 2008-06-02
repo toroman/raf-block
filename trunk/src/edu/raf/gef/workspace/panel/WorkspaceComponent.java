@@ -3,18 +3,13 @@ package edu.raf.gef.workspace.panel;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.io.File;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTree;
-import javax.swing.SwingUtilities;
+import javax.swing.tree.TreePath;
 
-import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.workspace.Workspace;
-import edu.raf.gef.workspace.diagram.DiagramProject;
+import edu.raf.gef.workspace.project.DiagramProject;
 
 public class WorkspaceComponent extends JPanel {
 
@@ -34,7 +29,7 @@ public class WorkspaceComponent extends JPanel {
 
 	private void initComponents() {
 		trWorkspace = new JTree();
-		trWorkspace.setRootVisible(false);
+		trWorkspace.setRootVisible(true);
 		Container con = this;
 		con.setLayout(new BorderLayout());
 		con.add(trWorkspace, BorderLayout.CENTER);
@@ -43,6 +38,7 @@ public class WorkspaceComponent extends JPanel {
 	public void setWorkspace(Workspace workspace) {
 		if (workspace == null)
 			throw new NullPointerException();
+		this.workspace = workspace;
 		trWorkspace.setModel(workspace);
 	}
 
@@ -50,39 +46,18 @@ public class WorkspaceComponent extends JPanel {
 		return workspace;
 	}
 
-	public static void main(final String[] args) {
-		if (!SwingUtilities.isEventDispatchThread()) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					main(args);
-				}
-			});
-			return;
+	public JTree getTree() {
+		return trWorkspace;
+	}
+
+	public DiagramProject getSelectedProject() {
+		if (trWorkspace.getSelectionCount() != 1)
+			return null;
+		TreePath path = trWorkspace.getSelectionPath();
+		for (Object node : path.getPath()) {
+			if (node instanceof DiagramProject)
+				return (DiagramProject) node;
 		}
-		JFrame frame = new JFrame("Dude");
-		frame.setBounds(100, 100, 700, 600);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		final Workspace ws = new Workspace(new File(File.listRoots()[0], "workspace_test"));
-		WorkspaceComponent wsc = new WorkspaceComponent(ws);
-
-		Container con = frame.getContentPane();
-		con.setLayout(new BorderLayout());
-		con.add(wsc, BorderLayout.CENTER);
-		frame.setVisible(true);
-		// filling workspace
-		GefDiagram dg = new GefDiagram();
-		DiagramProject p1 = new DiagramProject(ws, dg);
-
-		Timer t = new Timer();
-		t.schedule(new TimerTask() {
-			public void run() {
-				System.out.println("Running free");
-				GefDiagram dg = new GefDiagram();
-				dg.getModel().setTitle("NEWWWWWW");
-				DiagramProject p2 = new DiagramProject(ws, dg);
-			}
-		}, 5000);
+		return null;
 	}
 }

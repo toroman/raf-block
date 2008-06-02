@@ -15,23 +15,23 @@ public class ActionSetLookAndFeel extends AbstractAction {
 	 */
 	private static final long serialVersionUID = -8617413697277506264L;
 
-	private String name;
+	private String className;
 
 	final private GraphicalErrorHandler geh;
 
 	final private Component component;
 
 	public ActionSetLookAndFeel(String name, Component component) {
-		super(name);
 		this.component = component;
-		this.name = name;
+		this.className = name;
+		putValue(NAME, className.substring(className.lastIndexOf('.') + 1));
 		this.geh = new GraphicalErrorHandler(getClass(), component);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
-			UIManager.setLookAndFeel(name);
+			UIManager.setLookAndFeel(className);
 		} catch (Exception ex) {
 			geh.handleErrorBlocking("actionPerformed", "Couldn't change look and feel!", ex);
 		}

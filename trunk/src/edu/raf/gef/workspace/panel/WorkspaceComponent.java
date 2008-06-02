@@ -2,6 +2,7 @@ package edu.raf.gef.workspace.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -28,6 +29,7 @@ public class WorkspaceComponent extends JPanel {
 	public WorkspaceComponent(Workspace workspace) {
 		initComponents();
 		setWorkspace(workspace);
+		setPreferredSize(new Dimension(250, 300));
 	}
 
 	private void initComponents() {

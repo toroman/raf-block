@@ -9,7 +9,7 @@ import edu.raf.gef.gui.MainFrame;
 import edu.raf.gef.plugin.DiagramPlugin;
 import edu.raf.gef.plugin.PluginCreationController;
 
-public class CreateDiagramAction extends AbstractAction {
+public class ActionCreateDiagram extends AbstractAction {
 	/**
 	 * 
 	 */
@@ -28,7 +28,7 @@ public class CreateDiagramAction extends AbstractAction {
 
 	private final DiagramPlugin plugin;
 
-	public CreateDiagramAction(MainFrame mf, DiagramPlugin plugin) {
+	public ActionCreateDiagram(MainFrame mf, DiagramPlugin plugin) {
 		super(plugin.getResources().getString("plugin.name"));
 		this.plugin = plugin;
 		this.mainFrame = mf;

@@ -2,7 +2,7 @@ package edu.raf.gef.editor.actions;
 
 import java.awt.event.ActionEvent;
 
-import edu.raf.gef.app.Resources;
+import edu.raf.gef.app.IResources;
 import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.editor.control.state.DiagramAddDraggableState;
 import edu.raf.gef.editor.control.state.DiagramSelectionState;
@@ -55,5 +55,5 @@ public abstract class AddDraggableAction extends ResourceConfiguredAction {
 	 * Since add drawable action is used by plugins (mostly), the getResources
 	 * function is abstractized here :)
 	 */
-	protected abstract Resources getResources();
+	protected abstract IResources getResources();
 }

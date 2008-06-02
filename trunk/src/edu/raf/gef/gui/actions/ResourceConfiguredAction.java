@@ -8,6 +8,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
 
+import edu.raf.gef.app.IResources;
 import edu.raf.gef.app.Resources;
 import edu.raf.gef.app.errors.GraphicalErrorHandler;
 
@@ -17,7 +18,7 @@ public abstract class ResourceConfiguredAction extends AbstractAction {
 
 	public ResourceConfiguredAction(Component onErrorComponent, String id) {
 		this.onErrorComponent = onErrorComponent;
-		Resources res = getResources();
+		IResources res = getResources();
 		String name = res.getString(id + ".name");
 		if (name == null)
 			name = id;
@@ -37,7 +38,7 @@ public abstract class ResourceConfiguredAction extends AbstractAction {
 		}
 	}
 
-	protected Resources getResources() {
+	protected IResources getResources() {
 		return Resources.getGlobal();
 	}
 

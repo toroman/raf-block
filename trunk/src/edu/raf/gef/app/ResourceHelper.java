@@ -1,7 +1,9 @@
 package edu.raf.gef.app;
 
 import java.awt.Color;
+import java.awt.Dialog;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.FilteredImageSource;
@@ -59,12 +61,24 @@ public class ResourceHelper {
 	}
 
 	/**
+	 * Serialize dialog's state to a String
+	 * 
+	 * @param frame
+	 * @return
+	 */
+	public static String dialogStateToString(Dialog dialog) {
+		String state = (int) dialog.getX() + " " + (int) dialog.getY() + " " + dialog.getWidth()
+				+ " " + dialog.getHeight();
+		return state;
+	}
+
+	/**
 	 * Apply the serialized state to the frame.
 	 * 
 	 * @param frame
 	 * @param state
 	 */
-	public static void applyStateToFrame(JFrame frame, String state) {
+	public static void applyStateToFrame(Frame frame, String state) {
 		String[] coords = state.split(" ");
 		frame.setExtendedState(Integer.parseInt(coords[0]));
 		int x = Integer.parseInt(coords[1]);
@@ -73,6 +87,16 @@ public class ResourceHelper {
 		int height = Integer.parseInt(coords[4]);
 		frame.setBounds(x, y, width, height);
 		frame.setPreferredSize(new Dimension(width, height));
+	}
+
+	public static void applyStateToDialog(Dialog dialog, String state) {
+		String[] coords = state.split(" ");
+		int x = Integer.parseInt(coords[0]);
+		int y = Integer.parseInt(coords[1]);
+		int width = Integer.parseInt(coords[2]);
+		int height = Integer.parseInt(coords[3]);
+		dialog.setBounds(x, y, width, height);
+		dialog.setPreferredSize(new Dimension(width, height));
 	}
 
 	/**

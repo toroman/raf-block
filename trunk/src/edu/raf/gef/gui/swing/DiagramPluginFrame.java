@@ -1,14 +1,15 @@
 package edu.raf.gef.gui.swing;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 
-import javax.swing.JInternalFrame;
+import javax.swing.JPanel;
 
 import edu.raf.gef.editor.GefDiagram;
+import edu.raf.gef.gui.ActionContextController;
+import edu.raf.gef.gui.MainFrame;
 import edu.raf.gef.plugin.AbstractPlugin;
 
-public class DiagramPluginFrame extends JInternalFrame {
+public class DiagramPluginFrame extends JPanel implements ActionContextController {
 
 	/**
 	 * 
@@ -20,12 +21,10 @@ public class DiagramPluginFrame extends JInternalFrame {
 	protected final GefDiagram diagram;
 
 	public DiagramPluginFrame(GefDiagram diagram, AbstractPlugin plugin) {
-		super(diagram.getModel().getTitle(), true, true, true);
 		this.plugin = plugin;
 		this.diagram = diagram;
-		Container c = getContentPane();
-		c.setLayout(new BorderLayout());
-		c.add(diagram.getView().getCanvas(), BorderLayout.CENTER);
+		setLayout(new BorderLayout());
+		add(diagram.getView().getCanvas(), BorderLayout.CENTER);
 	}
 
 	public AbstractPlugin getPlugin() {
@@ -34,5 +33,15 @@ public class DiagramPluginFrame extends JInternalFrame {
 
 	public GefDiagram getDiagram() {
 		return diagram;
+	}
+
+	@Override
+	public void onActivated(MainFrame main, ActionContextController previousContext) {
+		getDiagram().onActivated(main, previousContext);
+	}
+
+	@Override
+	public void onDeactivated(MainFrame main, ActionContextController nextContext) {
+		getDiagram().onDeactivated(main, nextContext);
 	}
 }

@@ -1,4 +1,4 @@
-package edu.raf.gef.gui.swing;
+package edu.raf.gef.gui.standard;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -6,18 +6,15 @@ import java.awt.Container;
 import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.event.InternalFrameEvent;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -25,6 +22,8 @@ import edu.raf.gef.app.ResourceHelper;
 import edu.raf.gef.app.Resources;
 import edu.raf.gef.app.errors.GraphicalErrorHandler;
 import edu.raf.gef.app.exceptions.GefException;
+import edu.raf.gef.gui.swing.StatusManager;
+import edu.raf.gef.gui.swing.ToolbarManager;
 import edu.raf.gef.gui.swing.menus.MenuManager;
 import edu.raf.gef.gui.swing.menus.SAXMenuImporter;
 
@@ -35,7 +34,7 @@ import edu.raf.gef.gui.swing.menus.SAXMenuImporter;
  * 
  * 
  */
-public abstract class ApplicationMdiFrame {
+public abstract class ApplicationWindow {
 
 	public static final String SELECTED_FRAME_PROPERTY = "selectedFrame";
 
@@ -51,7 +50,7 @@ public abstract class ApplicationMdiFrame {
 
 	private MenuManager menuManager;
 
-	private JDesktopPane desktop;
+	private Component contents;
 
 	protected final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
@@ -60,7 +59,7 @@ public abstract class ApplicationMdiFrame {
 	private boolean createMenubar = false;
 	private Resources resources;
 
-	public ApplicationMdiFrame(String id) {
+	public ApplicationWindow(String id) {
 		this.id = id;
 	}
 
@@ -118,7 +117,8 @@ public abstract class ApplicationMdiFrame {
 			statusManager = createStatusManager();
 			con.add(statusManager.getStatusbar(), BorderLayout.SOUTH);
 		}
-		con.add(desktop = createDesktop(), BorderLayout.CENTER);
+		// con.add(desktop = createDesktop(), BorderLayout.CENTER);
+		con.add(contents = createContents(), BorderLayout.CENTER);
 		frame.setIconImage(createIconImage());
 
 		init();
@@ -138,8 +138,9 @@ public abstract class ApplicationMdiFrame {
 		try {
 			String state = resources.getProperty(id + ".state");
 			if (state == null)
-				state = "0 133 54 800 600"; // default state
-			ResourceHelper.applyStateToFrame(this.frame, state);
+				this.frame.pack();
+			else
+				ResourceHelper.applyStateToFrame(this.frame, state);
 		} catch (Exception ex) {
 			getGeh().handleError("restoreFrameState", "Couldn't restore frame state!", ex);
 		}
@@ -166,7 +167,9 @@ public abstract class ApplicationMdiFrame {
 	}
 
 	public void close() {
+		onFrameClosing(null);
 		frame.setVisible(false);
+		frame.dispose();
 	}
 
 	/**
@@ -181,9 +184,8 @@ public abstract class ApplicationMdiFrame {
 		return frame;
 	}
 
-	protected JDesktopPane createDesktop() {
-		JDesktopPane pane = new JDesktopPane();
-		return pane;
+	public Component createContents() {
+		return new JPanel();
 	}
 
 	protected String createFrameTitle() {
@@ -249,8 +251,8 @@ public abstract class ApplicationMdiFrame {
 		return new StatusManager();
 	}
 
-	public final JDesktopPane getDesktop() {
-		return desktop;
+	public Component getContents() {
+		return contents;
 	}
 
 	public StatusManager getStatusManager() {
@@ -284,27 +286,4 @@ public abstract class ApplicationMdiFrame {
 		return resources;
 	}
 
-	public final void internalFrameActivated(InternalFrameEvent e) {
-		pcs.firePropertyChange(SELECTED_FRAME_PROPERTY, Integer.MIN_VALUE, e.getInternalFrame());
-	}
-
-	public JInternalFrame getSelectedFrame() {
-		return getDesktop().getSelectedFrame();
-	}
-
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		pcs.addPropertyChangeListener(listener);
-	}
-
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		pcs.removePropertyChangeListener(listener);
-	}
-
-	public void addPropertyChangeListener(String property, PropertyChangeListener listener) {
-		pcs.addPropertyChangeListener(property, listener);
-	}
-
-	public void removePropertyChangeListener(String property, PropertyChangeListener listener) {
-		pcs.removePropertyChangeListener(property, listener);
-	}
 }

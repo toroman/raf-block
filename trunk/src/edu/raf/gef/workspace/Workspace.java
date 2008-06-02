@@ -5,6 +5,7 @@ import java.io.File;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
+import edu.raf.gef.app.IResources;
 import edu.raf.gef.app.Resources;
 import edu.raf.gef.app.exceptions.GefRuntimeException;
 
@@ -39,7 +40,7 @@ public class Workspace extends DefaultTreeModel {
 		return (DefaultMutableTreeNode) super.getRoot();
 	}
 
-	public static File getWorkspaceFileFromResources(Resources resources) {
+	public static File getWorkspaceFileFromResources(IResources resources) {
 		String value = resources.getProperty("workspace");
 		File dir;
 		if (value != null)

@@ -78,12 +78,11 @@ public class MenuManager {
 	public void addAction(String partId, Action action, String actionId) {
 		if (!parts.containsKey(partId))
 			throw new GefRuntimeException("Invalid menu part id!");
-		MenuPart part = parts.get(partId);
 		namedActions.put(actionId, action);
 	}
 
 	public void overrideAction(String actionId, ActionListener listener) {
-		
+
 	}
 
 	public void removeAction(String partId, Action action) {

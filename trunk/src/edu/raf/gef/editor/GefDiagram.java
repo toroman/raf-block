@@ -4,11 +4,13 @@ import edu.raf.gef.app.util.GefUndoManager;
 import edu.raf.gef.editor.control.DiagramController;
 import edu.raf.gef.editor.model.DiagramModel;
 import edu.raf.gef.editor.view.DiagramView;
+import edu.raf.gef.gui.ActionContextController;
+import edu.raf.gef.gui.MainFrame;
 
 /**
  * GefDiagram is an composition of GEF MVC components.
  */
-public class GefDiagram {
+public class GefDiagram implements ActionContextController {
 	/**
 	 * 
 	 */
@@ -63,6 +65,16 @@ public class GefDiagram {
 
 	public GefUndoManager getUndoManager() {
 		return undoManager;
+	}
+
+	@Override
+	public void onActivated(MainFrame main, ActionContextController previousContext) {
+		// restore clicked state
+	}
+
+	@Override
+	public void onDeactivated(MainFrame main, ActionContextController nextContext) {
+		// TODO Auto-generated method stub
 	}
 
 }

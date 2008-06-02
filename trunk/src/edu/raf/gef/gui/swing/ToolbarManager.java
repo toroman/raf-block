@@ -3,6 +3,7 @@ package edu.raf.gef.gui.swing;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +47,7 @@ public class ToolbarManager {
 		return toolbarPanel;
 	}
 
-	public List<Action> getActions() {
-		return actions;
+	public Iterator<Action> getActions() {
+		return actions.iterator();
 	}
 }

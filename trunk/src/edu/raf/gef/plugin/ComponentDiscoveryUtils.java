@@ -6,10 +6,13 @@ import java.util.Set;
 import edu.raf.gef.app.errors.GefError;
 
 public class ComponentDiscoveryUtils {
-	final Set<AbstractPlugin> plugins = new HashSet<AbstractPlugin>();;
+	final Set<AbstractPlugin> plugins = new HashSet<AbstractPlugin>();
+	private String[] klasses;;
 
 	@SuppressWarnings("unchecked")
 	public void discover(String[] klasses) {
+		this.klasses = klasses;
+
 		for (String className : klasses) {
 			Class<?> klass;
 			try {
@@ -17,8 +20,8 @@ public class ComponentDiscoveryUtils {
 			} catch (ClassNotFoundException e) {
 				throw new RuntimeException(e);
 			}
-			if (!DiagramPlugin.class.isAssignableFrom(klass)) {
-				throw new GefError("Invalid plugin!");
+			if (!AbstractPlugin.class.isAssignableFrom(klass)) {
+				throw new GefError("Invalid plugin " + className);
 			}
 
 			try {
@@ -29,6 +32,10 @@ public class ComponentDiscoveryUtils {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public String[] getKlasses() {
+		return klasses;
 	}
 
 	@SuppressWarnings("unchecked")

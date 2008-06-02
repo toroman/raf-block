@@ -8,5 +8,4 @@ public class FlowChartDiagram extends GefDiagram {
 		super();
 		getView().setGrid(new DefaultGrid(getView()));
 	}
-
 }

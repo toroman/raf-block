@@ -33,7 +33,7 @@ public class DiagramView implements Observer {
 		affineTransformManager = new AffineTransformManager(this);
 		grid = null;
 		repaintAndInertionThread = new RepaintAndInertionThread (this);
-		repaintAndInertionThread.start();
+		//repaintAndInertionThread.start();
 	}
 
 	/**

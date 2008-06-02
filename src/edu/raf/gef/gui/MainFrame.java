@@ -17,6 +17,8 @@ import edu.raf.gef.Main;
 import edu.raf.gef.app.Resources;
 import edu.raf.gef.editor.DefaultDiagramTreeModel;
 import edu.raf.gef.editor.GefDiagram;
+import edu.raf.gef.editor.model.object.Drawable;
+import edu.raf.gef.editor.model.object.Focusable;
 import edu.raf.gef.gui.actions.ActionExitApplication;
 import edu.raf.gef.gui.actions.ActionNewProject;
 import edu.raf.gef.gui.actions.ActionShowPluginManager;
@@ -93,7 +95,7 @@ public class MainFrame extends ApplicationWindow {
 	@Override
 	protected MenuManager createMenuManager() {
 		MenuManager menu = super.createMenuManager();
-		menu.getPart(StandardMenuParts.FILE_CREATION_PART).add(new ActionNewProject(this));
+		menu.getPart(StandardMenuParts.NEW_PROJECT_PART).add(new ActionNewProject(this));
 		menu.getPart(StandardMenuParts.PLUGIN_MANAGER).add(new ActionShowPluginManager(this));
 		menu.getPart(StandardMenuParts.FILE_EXIT_PART).add(new ActionExitApplication(this));
 		return menu;
@@ -127,6 +129,16 @@ public class MainFrame extends ApplicationWindow {
 				Object sel = e.getNewLeadSelectionPath().getLastPathComponent();
 				if (sel instanceof DefaultDiagramTreeModel) {
 					showDiagram((DefaultDiagramTreeModel) sel);
+				} else if (sel instanceof Drawable && sel instanceof Focusable) {
+					GefDiagram diagram = null;
+					for (Object o : e.getPath().getPath()) {
+						if (o instanceof DefaultDiagramTreeModel) {
+							diagram = (GefDiagram) o;
+							break;
+						}
+					}
+					diagram.getController().clearFocusedObjects();
+					diagram.getController().addToFocusedObjects((Focusable) sel);
 				}
 			}
 		});

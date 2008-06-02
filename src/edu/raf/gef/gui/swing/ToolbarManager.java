@@ -35,12 +35,16 @@ public class ToolbarManager {
 	public void addAction(String group, Action action) {
 		JToolBar toolbar = toolbars.get(group);
 		if (toolbar == null) {
-			toolbar = new JToolBar(group);
+			toolbar = createToolbar(group);
 			toolbarPanel.add(toolbar);
 			toolbars.put(group, toolbar);
 		}
 		toolbar.add(action);
 		actions.add(action);
+	}
+
+	private JToolBar createToolbar(String group) {
+		return new JToolBar(group);
 	}
 
 	public JPanel getToolbar() {

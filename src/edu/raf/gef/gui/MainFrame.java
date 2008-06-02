@@ -93,6 +93,7 @@ public class MainFrame extends ApplicationWindow {
 		DiagramPluginFrame frame = new DiagramPluginFrame(diagram, plugin);
 		frame.setDoubleBuffered(false);
 		tabbedDiagrams.addTab(diagram.getModel().getTitle(), frame);
+		tabbedDiagrams.setSelectedComponent(frame);
 		return frame;
 	}
 
@@ -108,7 +109,7 @@ public class MainFrame extends ApplicationWindow {
 		initWorkspaceComponents();
 		initTabbedDiagramComponents();
 		mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, workspace, tabbedDiagrams);
-		mainSplitPane.setDividerLocation(0.5);
+		mainSplitPane.setOneTouchExpandable(true);
 		return mainSplitPane;
 	}
 

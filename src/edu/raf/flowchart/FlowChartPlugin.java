@@ -14,7 +14,7 @@ import edu.raf.gef.editor.model.object.Draggable;
 import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.gui.MainFrame;
 import edu.raf.gef.gui.SelectedDiagramProvider;
-import edu.raf.gef.gui.actions.CreateDiagramAction;
+import edu.raf.gef.gui.actions.ActionCreateDiagram;
 import edu.raf.gef.gui.swing.menus.StandardMenuParts;
 import edu.raf.gef.plugin.DiagramPlugin;
 
@@ -62,7 +62,7 @@ public class FlowChartPlugin implements DiagramPlugin {
 	public void setMainFrame(MainFrame mf) {
 		this.mainFrame = mf;
 		mf.getMenuManager().addAction(StandardMenuParts.NEW_DIAGRAM_PART,
-			new CreateDiagramAction(mf, this));
+			new ActionCreateDiagram(mf, this));
 		SelectedDiagramProvider sdp = new SelectedDiagramProvider() {
 			public GefDiagram getSelectedDiagram() {
 				return FlowChartPlugin.this.mainFrame.getSelectedDiagram();

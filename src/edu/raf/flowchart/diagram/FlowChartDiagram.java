@@ -1,7 +1,6 @@
 package edu.raf.flowchart.diagram;
 
 import edu.raf.gef.editor.GefDiagram;
-import edu.raf.gef.editor.view.DiagramView;
 import edu.raf.gef.editor.view.grid.DefaultGrid;
 
 public class FlowChartDiagram extends GefDiagram {
@@ -10,8 +9,4 @@ public class FlowChartDiagram extends GefDiagram {
 		getView().setGrid(new DefaultGrid(getView()));
 	}
 
-	@Override
-	protected DiagramView createView() {
-		return new FlowChartView(getModel());
-	}
 }

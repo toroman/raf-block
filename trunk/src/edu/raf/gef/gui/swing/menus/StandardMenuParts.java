@@ -44,6 +44,8 @@ public interface StandardMenuParts {
 	 */
 	String NEW_DIAGRAM_PART = "p_new_diagram";
 
+	String NEW_PROJECT_PART = "p_new_project";
+
 	/**
 	 * Most recently used list.
 	 * <p>

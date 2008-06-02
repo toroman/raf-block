@@ -6,6 +6,7 @@
 	<container id="c_file" text="File" mnemonic="F">
 		<part id="p_file_creation">
 			<container id="c_file_new" text="New">
+				<part id="p_new_project"></part>
 				<part id="p_new_diagram"></part>
 			</container>
 		</part>

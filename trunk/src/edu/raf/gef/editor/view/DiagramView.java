@@ -45,7 +45,7 @@ public class DiagramView implements Observer {
 			private static final long serialVersionUID = -4189098950039589957L;
 
 			@Override
-			public void paint(Graphics g1) {
+			public void paintComponent(Graphics g1) {
 				Graphics2D g = (Graphics2D) g1;
 				DiagramView.this.drawDiagram(g);
 			}
@@ -60,7 +60,7 @@ public class DiagramView implements Observer {
 		g.clearRect(0, 0, (int) r.getWidth() + 1, (int) r.getHeight() + 1);
 		if (getGrid() != null)
 			getGrid().paintGrid(g, canvas.getSize());
-		g.setTransform(affineTransformManager.getAffineTransform());
+		g.transform(affineTransformManager.getAffineTransform());
 		List<Drawable> focused = new LinkedList<Drawable>();
 		for (Drawable de : model.getDrawables()) {
 			if (de instanceof Focusable && ((Focusable) de).isFocused())
@@ -79,8 +79,7 @@ public class DiagramView implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		if (o == model || o == affineTransformManager)
-			repaintAndInertionThread.setRepaintNeeded(true);
+		getCanvas().repaint();
 		return;
 	}
 

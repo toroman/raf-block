@@ -151,16 +151,20 @@ public class RepaintAndInertionThread implements Runnable {
 						oldDeviceSpaceLocation = newDeviceSpaceLocation;
 					}
 
-				synchronized (repaintNeeded) {
-					doRepaint = doRepaint || isRepaintNeeded();
-					setRepaintNeeded(false);
-				}
-
-				if (doRepaint) {
-					synchronized (view.getModel()) {
-						view.getCanvas().repaint();
-					}
-				}
+				if (repaintNeeded)
+					view.getCanvas().repaint();
+				
+//				synchronized (repaintNeeded) {
+//					doRepaint = doRepaint || isRepaintNeeded();
+//					setRepaintNeeded(false);
+//				}
+//
+//				if (doRepaint) {
+//					synchronized (view.getModel()) {
+//						view.getCanvas().repaint();
+//					}
+//				}
+				
 				Thread.sleep(10);
 			}
 		} catch (InterruptedException e) {

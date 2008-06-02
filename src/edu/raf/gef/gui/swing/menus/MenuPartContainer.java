@@ -85,10 +85,9 @@ public class MenuPartContainer {
 	}
 
 	int getChildPosition(MenuPart child) {
-		int position = 0;
+		int position = -1;		
 		for (MenuPart part : parts) {
-			if (position > 0)
-				++position; // because of separator
+			++position; // because of separator
 
 			if (part == child)
 				return position;

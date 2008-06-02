@@ -23,7 +23,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import edu.raf.gef.app.Resources;
+import edu.raf.gef.app.IResources;
 
 /**
  * Parses Menu XML file and fills the menu manager with the standard menus
@@ -40,9 +40,9 @@ import edu.raf.gef.app.Resources;
 public class SAXMenuImporter extends DefaultHandler {
 	private MenuManager manager;
 	private Stack<String> xpath;
-	private Resources resources;
+	private IResources resources;
 
-	public SAXMenuImporter(MenuManager manager, Resources resources) {
+	public SAXMenuImporter(MenuManager manager, IResources resources) {
 		this.manager = manager;
 		this.resources = resources;
 	}
@@ -70,7 +70,7 @@ public class SAXMenuImporter extends DefaultHandler {
 			String mnemonic = attr.getValue("mnemonic");
 			if (mnemonic != null)
 				container.getMenu().setMnemonic(mnemonic.charAt(0));
-
+			
 			String icon = attr.getValue("icon");
 			container.getMenu().setIcon(icon != null ? resources.getIcon(icon) : null);
 			xpath.push(id);

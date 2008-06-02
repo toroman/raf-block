@@ -37,6 +37,8 @@ public interface StandardMenuParts {
 	/** All "persisting" actions/containers like Save, Save as, Export etc */
 	String FILE_PERSISTING_PART = "p_file_persisting";
 
+	String FILE_EXIT_PART = "p_file_exit";
+
 	/**
 	 * Part that contains all Actions that create Diagrams.
 	 */
@@ -56,5 +58,9 @@ public interface StandardMenuParts {
 	String ABOUT = "p_about";
 
 	String HELP_CONTENTS = "p_help_contents";
+
+	String WINDOW_LOOK_AND_FEEL = "p_look_and_feel";
+
+	String PLUGIN_MANAGER = "p_plugin_manager";
 
 }

@@ -3,6 +3,7 @@ package edu.raf.gef.gui.actions;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 
+import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.plugin.AbstractPlugin;
 import edu.raf.gef.plugin.DiagramPlugin;
 
@@ -35,8 +36,8 @@ public class SaveAsDocumentAction extends ResourceConfiguredAction implements
 	 * you be saved now? Is there need to be saved now? etc.
 	 */
 	@Override
-	public boolean worksOn(AbstractPlugin plugin) {
-		return plugin instanceof DiagramPlugin;
+	public boolean worksOn(Object focused) {
+		return focused instanceof GefDiagram;
 	}
 
 }

@@ -1,12 +1,13 @@
 package edu.raf.flowchart.actions;
 
 import edu.raf.flowchart.FlowChartPlugin;
-import edu.raf.gef.app.Resources;
+import edu.raf.flowchart.diagram.FlowChartDiagram;
+import edu.raf.gef.app.IResources;
 import edu.raf.gef.editor.actions.AddDraggableAction;
 import edu.raf.gef.editor.model.object.Draggable;
 import edu.raf.gef.gui.SelectedDiagramProvider;
 import edu.raf.gef.gui.actions.ContextSensitiveAction;
-import edu.raf.gef.plugin.AbstractPlugin;
+import edu.raf.gef.gui.swing.DiagramPluginFrame;
 
 public class AddFlowchartObjectAction extends AddDraggableAction implements ContextSensitiveAction {
 	/**
@@ -20,11 +21,12 @@ public class AddFlowchartObjectAction extends AddDraggableAction implements Cont
 	}
 
 	@Override
-	protected Resources getResources() {
+	protected IResources getResources() {
 		return FlowChartPlugin.resources;
 	}
 
-	public boolean worksOn(AbstractPlugin plugin) {
-		return plugin != null && plugin instanceof FlowChartPlugin;
+	public boolean worksOn(Object focused) {
+		return focused != null && (focused instanceof DiagramPluginFrame)
+				&& (((DiagramPluginFrame) focused).getPlugin() instanceof FlowChartPlugin);
 	}
 }

@@ -42,7 +42,7 @@ import edu.raf.gef.app.exceptions.GefException;
  */
 
 @SuppressWarnings("serial")
-public class Resources {
+public class Resources implements IResources {
 	private static Locale locale = null;
 
 	public static Locale getLocale() {
@@ -141,10 +141,8 @@ public class Resources {
 		}
 	}
 
-	/**
-	 * @param key
-	 * 
-	 * @return traženu sliku
+	/* (non-Javadoc)
+	 * @see edu.raf.gef.app.IResources#getIcon(java.lang.String)
 	 */
 	public ImageIcon getIcon(String key) {
 		try {
@@ -177,6 +175,9 @@ public class Resources {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see edu.raf.gef.app.IResources#getProperty(java.lang.String)
+	 */
 	public String getProperty(String key) {
 		return properties.getProperty(key);
 	}
@@ -185,16 +186,8 @@ public class Resources {
 		this.properties.setProperty(key, value);
 	}
 
-	/**
-	 * Kreira string od templejta koji se nalazi pod imenom <i>patternName</i>,
-	 * i ubacuje odgovarajuće argumente na odgovarajuća mesta u odgovarajućem
-	 * formatu. Koristi globalni Locale za odabir svih pod-formata.
-	 * 
-	 * @param key
-	 *            ldentifikator tog paterna u LanguageBundle-u
-	 * @param args
-	 *            lista argumenata
-	 * @return sklopljena poruka
+	/* (non-Javadoc)
+	 * @see edu.raf.gef.app.IResources#getString(java.lang.String, java.lang.Object)
 	 */
 	public String getString(String key, Object... args) {
 		return new MessageFormat(getBundle().getString(key), locale).format(args);

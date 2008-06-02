@@ -1,13 +1,13 @@
 package edu.raf.gef.plugin;
 
-import edu.raf.gef.app.Resources;
+import edu.raf.gef.app.IResources;
 import edu.raf.gef.gui.MainFrame;
 
 public interface AbstractPlugin {
 	/**
 	 * @return Plugin's Resources
 	 */
-	public Resources getResources();
+	public IResources getResources();
 
 	/**
 	 * This method will be called after Main Frame has been completely

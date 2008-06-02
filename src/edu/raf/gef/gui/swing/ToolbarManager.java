@@ -1,6 +1,8 @@
 package edu.raf.gef.gui.swing;
 
 import java.awt.FlowLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
@@ -44,7 +47,7 @@ public class ToolbarManager {
 	}
 
 	private JToolBar createToolbar(String group) {
-		return new JToolBar(group);
+		return new BiggerBetterToolBar(group);
 	}
 
 	public JPanel getToolbar() {
@@ -53,5 +56,33 @@ public class ToolbarManager {
 
 	public Iterator<Action> getActions() {
 		return actions.iterator();
+	}
+
+	@SuppressWarnings("serial")
+	private class BiggerBetterToolBar extends JToolBar {
+		private Integer enabledActionCount = 0;
+
+		@Override
+		public JButton add(Action a) {
+			enabledActionCount ++;
+			final JButton button = new JButton(a);
+			button.addPropertyChangeListener(new PropertyChangeListener() {
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					if (evt.getPropertyName().equals("enabled")) {
+						if (evt.getNewValue().equals(evt.getOldValue()))
+							return;
+						button.setVisible((Boolean) evt.getNewValue());
+						enabledActionCount += button.isVisible() ? 1 : -1;
+						BiggerBetterToolBar.this.setVisible(enabledActionCount > 0);
+					}
+				}
+			});
+			return (JButton)super.add(button);
+		}
+
+		public BiggerBetterToolBar(String name) {
+			super(name);
+		}
 	}
 }

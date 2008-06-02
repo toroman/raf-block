@@ -27,6 +27,6 @@ public class AddFlowchartObjectAction extends AddDraggableAction implements Cont
 
 	public boolean worksOn(Object focused) {
 		return focused != null && (focused instanceof DiagramPluginFrame)
-				&& (((DiagramPluginFrame) focused).getPlugin() instanceof FlowChartPlugin);
+				&& (((DiagramPluginFrame) focused).getDiagram() instanceof FlowChartDiagram);
 	}
 }

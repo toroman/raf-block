@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.gui.ActionContextController;
 import edu.raf.gef.gui.MainFrame;
-import edu.raf.gef.plugin.AbstractPlugin;
 
 public class DiagramPluginFrame extends JPanel implements ActionContextController {
 
@@ -16,19 +15,12 @@ public class DiagramPluginFrame extends JPanel implements ActionContextControlle
 	 */
 	private static final long serialVersionUID = 8896598624804157856L;
 
-	protected final AbstractPlugin plugin;
-
 	protected final GefDiagram diagram;
 
-	public DiagramPluginFrame(GefDiagram diagram, AbstractPlugin plugin) {
-		this.plugin = plugin;
+	public DiagramPluginFrame(GefDiagram diagram) {
 		this.diagram = diagram;
 		setLayout(new BorderLayout());
 		add(diagram.getView().getCanvas(), BorderLayout.CENTER);
-	}
-
-	public AbstractPlugin getPlugin() {
-		return plugin;
 	}
 
 	public GefDiagram getDiagram() {

@@ -8,14 +8,13 @@ import edu.raf.gef.app.errors.GraphicalErrorHandler;
 import edu.raf.gef.gui.MainFrame;
 import edu.raf.gef.plugin.DiagramPlugin;
 import edu.raf.gef.plugin.PluginCreationController;
+import edu.raf.gef.workspace.project.DiagramProject;
 
-public class ActionCreateDiagram extends AbstractAction {
+public class ActionAddDiagram extends AbstractAction {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2834774936418220606L;
-
-	public static final String ID = "new";
 
 	private MainFrame mainFrame;
 
@@ -28,7 +27,7 @@ public class ActionCreateDiagram extends AbstractAction {
 
 	private final DiagramPlugin plugin;
 
-	public ActionCreateDiagram(MainFrame mf, DiagramPlugin plugin) {
+	public ActionAddDiagram(MainFrame mf, DiagramPlugin plugin) {
 		super(plugin.getResources().getString("plugin.name"));
 		this.plugin = plugin;
 		this.mainFrame = mf;
@@ -49,7 +48,12 @@ public class ActionCreateDiagram extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		mainFrame.showDiagram(creationController.createDiagram(), plugin);
+		DiagramProject project = mainFrame.getWorkspaceComponent().getSelectedProject();
+		if (project == null) {
+			getGeh().handleUserError("Wrong usage", "You must select one project only!");
+			return;
+		}
+		project.addDiagram(creationController.createDiagram());
 	}
 
 	protected GraphicalErrorHandler getGeh() {

@@ -13,5 +13,5 @@ public interface Drawable {
 	public void paint(Graphics2D g);
 	public Drawable getDrawableUnderLocation (Point2D location);
 	public Rectangle2D getBoundingRectangle();
-	public void onClick (MouseEvent e);
+	public void onClick (MouseEvent e, Point2D userSpaceLocation);
 }

@@ -13,6 +13,8 @@ import edu.raf.gef.editor.model.object.Draggable;
 import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.editor.model.object.Focusable;
 import edu.raf.gef.editor.model.object.impl.Lasso;
+import edu.raf.gef.editor.model.object.impl.Link;
+import edu.raf.gef.editor.model.object.impl.ResizeControlPoint;
 
 public class DiagramSelectionState extends DiagramDefaultState {
 
@@ -39,16 +41,19 @@ public class DiagramSelectionState extends DiagramDefaultState {
 		super(diagram);
 	}
 
-	public DiagramSelectionState(GefDiagram diagram, Draggable newObjectToDrag) {
+	public DiagramSelectionState(GefDiagram diagram, Drawable newObject) {
 		this(diagram);
-		mousePressedDrawable = newObjectToDrag;
+		mousePressedDrawable = newObject;		
 		hasDragOccured = false;
+		
 		mousePressedIsDraggable = mousePressedDrawable instanceof Draggable;
 		mousePressedIsFocusable = mousePressedDrawable instanceof Focusable;
-		startLocation = newObjectToDrag.getLocation();
+		if (mousePressedDrawable instanceof Draggable) {
+			startLocation = ((Draggable)mousePressedDrawable).getLocation();
+		}
 		if (mousePressedIsFocusable) {
 			diagram.getController().clearFocusedObjects();
-			diagram.getController().addToFocusedObjects((Focusable)newObjectToDrag);
+			diagram.getController().addToFocusedObjects((Focusable) mousePressedDrawable);
 		}
 	}
 
@@ -57,6 +62,20 @@ public class DiagramSelectionState extends DiagramDefaultState {
 		if (super.mousePressed(e, userSpaceLocation))
 			return true;
 		mousePressedDrawable = diagram.getModel().getDrawableAt(userSpaceLocation);
+		if (mousePressedDrawable instanceof ResizeControlPoint &&
+				((ResizeControlPoint)mousePressedDrawable).getParent() instanceof Link &&
+				(e.getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) != 0) {
+			Link link = (Link)((ResizeControlPoint)mousePressedDrawable).getParent();
+			ResizeControlPoint rcp = (ResizeControlPoint)mousePressedDrawable;
+			if (rcp == link.getResizePoins().getFirst()) {
+				diagram.getController().setState(new DiagramReLinkState (diagram, link, true, new DiagramSelectionState(diagram)));
+				return true;
+			}
+			if (rcp == link.getResizePoins().getLast()) {
+				diagram.getController().setState(new DiagramReLinkState (diagram, link, false, new DiagramSelectionState(diagram)));
+				return true;
+			}
+		}			
 		hasDragOccured = false;
 		mousePressedIsDraggable = mousePressedDrawable != null
 				&& mousePressedDrawable instanceof Draggable;
@@ -95,7 +114,7 @@ public class DiagramSelectionState extends DiagramDefaultState {
 			if (!object.isFocused())
 				diagram.getController().toggleFocus(object,
 					(e.getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) != 0);
-			for (Focusable focusable : focusedObjects)
+			for (Focusable focusable : focusedObjects) {
 				if (focusable instanceof Draggable) {
 					Draggable draggable = (Draggable) focusable;
 					if (firstTime)
@@ -103,6 +122,7 @@ public class DiagramSelectionState extends DiagramDefaultState {
 					else
 						draggable.dragTo(userSpaceLocation);
 				}
+			}
 		}
 		return true;
 	}
@@ -140,7 +160,7 @@ public class DiagramSelectionState extends DiagramDefaultState {
 					(e.getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) != 0);
 			}
 			if (mousePressedDrawable != null)
-				mousePressedDrawable.onClick(e);
+				mousePressedDrawable.onClick(e, userSpaceLocation);
 			else
 				diagram.getController().clearFocusedObjects();
 		}

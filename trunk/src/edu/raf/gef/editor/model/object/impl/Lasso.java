@@ -34,11 +34,6 @@ public class Lasso extends Observable implements Drawable {
 	}
 
 	@Override
-	public void onClick(MouseEvent e) {
-		
-	}
-
-	@Override
 	public void paint(Graphics2D g) {
 		Stroke tempStroke = g.getStroke();
 		g.setStroke(dashedStroke);
@@ -79,5 +74,11 @@ public class Lasso extends Observable implements Drawable {
 	public Lasso(DiagramModel model) {
 		super();
 		this.addObserver(model);
+	}
+
+	@Override
+	public void onClick(MouseEvent e, Point2D userSpaceLocation) {
+		// TODO Auto-generated method stub
+		
 	}
 }

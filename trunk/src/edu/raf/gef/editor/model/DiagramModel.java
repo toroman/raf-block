@@ -10,7 +10,10 @@ import java.util.Observer;
 
 import edu.raf.gef.editor.model.events.DrawableAddedEvent;
 import edu.raf.gef.editor.model.events.DrawableZOrderEvent;
+import edu.raf.gef.editor.model.object.AnchorPointContainer;
 import edu.raf.gef.editor.model.object.Drawable;
+import edu.raf.gef.editor.model.object.impl.AnchorPoint;
+import edu.raf.gef.editor.model.object.impl.Link;
 
 public class DiagramModel extends Observable implements Observer {
 	private final ArrayList<Drawable> drawables;
@@ -73,14 +76,55 @@ public class DiagramModel extends Observable implements Observer {
 		clearChanged();
 		return true;
 	}
-	
-	public synchronized Drawable getDrawableAt (Point2D point) {
+
+	public synchronized Drawable getDrawableAt(Point2D point) {
 		for (int i = drawables.size() - 1; i >= 0; i--) {
-			Drawable drawable = drawables.get(i).getDrawableUnderLocation (point);
+			Drawable drawable = drawables.get(i).getDrawableUnderLocation(point);
 			if (drawable != null)
 				return drawable;
 		}
 		return null;
+	}
+
+	/**
+	 * Gets the anchor point at <i>location</i>, that will accept <i>link</i>
+	 * as source/destination.
+	 * 
+	 * @param location
+	 * @param link
+	 * @param asSource
+	 * @return AnchorPoint if found, else null
+	 */
+	public synchronized AnchorPoint getAcceptingAnchorAt(Point2D location, Link link,
+			boolean asSource) {
+
+		AnchorPoint acceptingAnchor = null;
+
+		if (asSource)
+			for (Drawable d : getDrawables()) {
+				if (d instanceof AnchorPointContainer) {
+					AnchorPoint point = ((AnchorPointContainer) d).getSourcePointAt(location, link);
+					if ((point != null) && link.willAcceptAnchorAsSource(point)
+							&& point.willAcceptLinkAsSource(link)) {
+						acceptingAnchor = point;
+						break;
+					}
+				}
+			}
+		else
+			for (Drawable d : getDrawables()) {
+				if (d instanceof AnchorPointContainer) {
+					AnchorPoint point = ((AnchorPointContainer) d).getDestinationPointAt(location,
+						link);
+					if ((point != null) && link.willAcceptAnchorAsDestination(point)
+							&& point.willAcceptLinkAsDestination(link)) {
+						acceptingAnchor = point;
+						break;
+					}
+				}
+			}
+
+		return acceptingAnchor;
 	}
 
 	/**

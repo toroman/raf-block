@@ -30,7 +30,8 @@ public class LookAndFeelPlugin implements AbstractPlugin {
 
 	@Override
 	public void setMainFrame(MainFrame mf) {
-		this.geh = new GraphicalErrorHandler(getClass(), mf.getFrame());
+		this.mainFrame = mf;
+		this.geh = new GraphicalErrorHandler(getClass(), mainFrame.getFrame());
 		String lf = getResources().getProperty("lookAndFeel");
 		if (!"".equals(lf)) {
 			activateLookAndFeel(lf);

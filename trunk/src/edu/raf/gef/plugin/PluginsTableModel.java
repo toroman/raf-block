@@ -28,7 +28,7 @@ public class PluginsTableModel extends AbstractTableModel {
 
 	HashSet<String> all = new HashSet<String>();
 
-	HashSet<String> off = new HashSet<String>();
+	HashSet<Object> off = new HashSet<Object>();
 
 	private String[] columnNames = { "Active", "Running", "Component" };
 
@@ -106,15 +106,16 @@ public class PluginsTableModel extends AbstractTableModel {
 			return;
 		row.status = !row.status;
 		if (row.status) {
-			off.remove(row.plugin.getClass().getName());
+			off.remove(row.plugin);
 		} else {
-			off.add(row.plugin.getClass().getName());
+			off.add(row.plugin);
 		}
 		StringBuilder disabled = new StringBuilder();
 
-		for (String klass : off) {
+		for (Object klass : off) {
 			disabled.append(' ');
-			disabled.append(klass);
+			disabled.append(klass instanceof AbstractPlugin ? klass.getClass().getName() : klass
+					.toString());
 		}
 		Resources.getGlobal().setProperty(DISABLED_COMPONENTS, disabled.toString());
 		fireTableCellUpdated(rowIndex, columnIndex);

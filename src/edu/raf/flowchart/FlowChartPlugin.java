@@ -24,9 +24,7 @@ public class FlowChartPlugin implements DiagramPlugin {
 	 */
 	private static final long serialVersionUID = -4600587151373699739L;
 
-	static public final IResources resources = new Resources(FlowChartPlugin.class.getPackage()
-			.getName().replace('.', File.separatorChar)
-			+ "/res/");
+	static public final IResources resources = new Resources(FlowChartPlugin.class.getPackage());
 
 	private final List<Class<? extends Drawable>> drawables;
 

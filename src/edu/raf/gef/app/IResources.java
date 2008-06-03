@@ -25,5 +25,6 @@ public interface IResources {
 	 * @return sklopljena poruka
 	 */
 	public abstract String getString(String key, Object... args);
+	
 
 }

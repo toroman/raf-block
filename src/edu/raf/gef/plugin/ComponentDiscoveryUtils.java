@@ -1,5 +1,6 @@
 package edu.raf.gef.plugin;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,12 +8,13 @@ import edu.raf.gef.app.errors.GefError;
 
 public class ComponentDiscoveryUtils {
 	final Set<AbstractPlugin> plugins = new HashSet<AbstractPlugin>();
-	private String[] klasses;;
+	private HashSet<String> klasses = new HashSet<String>();
 
 	@SuppressWarnings("unchecked")
-	public void discover(String[] klasses) {
-		this.klasses = klasses;
-
+	public void discover(String on, String off) {
+		klasses.clear();
+		klasses.addAll(Arrays.asList(on.split("\\s")));
+		klasses.removeAll(Arrays.asList(off.split("\\s")));
 		for (String className : klasses) {
 			Class<?> klass;
 			try {
@@ -35,7 +37,7 @@ public class ComponentDiscoveryUtils {
 	}
 
 	public String[] getKlasses() {
-		return klasses;
+		return klasses.toArray(new String[0]);
 	}
 
 	@SuppressWarnings("unchecked")

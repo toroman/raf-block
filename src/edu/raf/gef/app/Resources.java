@@ -4,7 +4,6 @@ import java.awt.Image;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,7 +52,7 @@ public class Resources implements IResources {
 	private ResourceBundle bundle;
 	private HashMap<String, ImageIcon> icons;
 
-	private String location;
+	protected final String location;
 
 	private static class GlobalInstanceHolder {
 		static final Resources instance = new Resources("");
@@ -83,6 +82,10 @@ public class Resources implements IResources {
 		initProperties();
 	}
 
+	public Resources(Package rootPackage) {
+		this(rootPackage.getName().replace('.', File.separatorChar) + File.separatorChar);
+	}
+
 	/**
 	 * Loads properties / settings.
 	 */
@@ -107,25 +110,29 @@ public class Resources implements IResources {
 		}
 	}
 
-	private ResourceBundle getBundle() {
+	public ResourceBundle getBundle() {
 		if (bundle == null) {
-			String path = location + "locales/LocalMessagesBundle";
-			bundle = ResourceBundle.getBundle(path, locale);
+			bundle = ResourceBundle.getBundle(getBundlePath(), locale);
 		}
 		return bundle;
+	}
+
+	protected String getBundlePath() {
+		return location + "locales" + File.separator + "LocalMessagesBundle";
 	}
 
 	/**
 	 * Snima promene properties-a.
 	 */
 	public void saveProperties() {
-//		log.log(Level.INFO, "Saving properties");
+		// log.log(Level.INFO, "Saving properties");
 		OutputStream fos = null;
 		try {
 			synchronized (properties) {
 				URL url = getClass().getClassLoader().getResource(
 					location + "properties.properties");
-				fos = new BufferedOutputStream(new FileOutputStream(url.getPath().replaceAll("%20", " ")));
+				fos = new BufferedOutputStream(new FileOutputStream(url.getPath().replaceAll("%20",
+					" ")));
 				properties.store(fos, null);
 			}
 		} catch (IOException e) {
@@ -141,7 +148,9 @@ public class Resources implements IResources {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.raf.gef.app.IResources#getIcon(java.lang.String)
 	 */
 	public ImageIcon getIcon(String key) {
@@ -175,7 +184,9 @@ public class Resources implements IResources {
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see edu.raf.gef.app.IResources#getProperty(java.lang.String)
 	 */
 	public String getProperty(String key) {
@@ -186,8 +197,11 @@ public class Resources implements IResources {
 		this.properties.setProperty(key, value);
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.raf.gef.app.IResources#getString(java.lang.String, java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see edu.raf.gef.app.IResources#getString(java.lang.String,
+	 *      java.lang.Object)
 	 */
 	public String getString(String key, Object... args) {
 		return new MessageFormat(getBundle().getString(key), locale).format(args);

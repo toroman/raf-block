@@ -1,19 +1,23 @@
 package edu.raf.gef.editor;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeNode;
 
 import edu.raf.gef.editor.model.object.Drawable;
 
 public class DefaultDrawableTreeNode extends DefaultMutableTreeNode {
 
-	private TreeNode parent;
-	private Drawable drawable;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2588579623932593298L;
 
-	public DefaultDrawableTreeNode(TreeNode parent, Drawable drawable) {
-		super(drawable.getClass().getName());
-		this.parent = parent;
-		this.drawable = drawable;
+	public DefaultDrawableTreeNode(Drawable drawable) {
+		super(drawable);
+	}
+
+	@Override
+	public String toString() {
+		return userObject.toString();
 	}
 
 }

@@ -26,6 +26,7 @@ public class ActionNewProject extends ResourceConfiguredAction {
 	public void actionPerformed(ActionEvent e) {
 		DiagramProject project = new DiagramProject("Untitled");
 		mainFrame.getWorkspace().addProject(project);
+		mainFrame.getWorkspaceComponent().setSelectedProject(project);
 	}
 
 	public PluginsManager getManager() {

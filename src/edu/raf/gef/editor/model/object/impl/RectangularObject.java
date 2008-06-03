@@ -1,12 +1,12 @@
 package edu.raf.gef.editor.model.object.impl;
 
 import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.util.Vector;
 
 import edu.raf.gef.editor.model.DiagramModel;
-import edu.raf.gef.editor.model.object.ControlPoint;
 import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
 import edu.raf.gef.util.MathHelper;
@@ -54,11 +54,15 @@ public abstract class RectangularObject extends DraggableDiagramObject {
 			width = prefDimension.getWidth();
 			height = prefDimension.getHeight();
 		}
+		initControlPoints();
+		updateControlPointLocations();
+		setControlPointConstraints();
+	}
+
+	protected void initControlPoints() {
 		controlPoints = new Vector<ControlPoint>();
 		for (int i = 0; i < 8; i++)
 			controlPoints.add(new ResizeControlPoint(this, null));
-		updateControlPointLocations();
-		setControlPointConstraints();
 	}
 
 	private void setControlPointConstraints() {
@@ -225,7 +229,7 @@ public abstract class RectangularObject extends DraggableDiagramObject {
 			cp.setY(getY() + getHeight() / 2);
 	}
 
-	private void updateControlPointLocations() {
+	protected void updateControlPointLocations() {
 		for (int i = 0; i < 8; i++)
 			updateResizePoint(i);
 	}
@@ -313,6 +317,11 @@ public abstract class RectangularObject extends DraggableDiagramObject {
 		paintRectangular(g);
 		for (int i = 0; i < 8; i++)
 			controlPoints.get(i).paint(g);
+		paintChildren(g);
+	}
+
+	protected void paintChildren(Graphics2D g) {
+		
 	}
 
 	protected abstract void paintRectangular(Graphics2D g);
@@ -320,5 +329,15 @@ public abstract class RectangularObject extends DraggableDiagramObject {
 	@Override
 	public Point2D getLocation() {
 		return new Point2D.Double(x, y);
+	}
+	
+	@Override
+	public void onClick(MouseEvent e, Point2D userSpaceLocation) {
+		
+	}
+	
+	@Override
+	public void onControlPointClicked(ControlPoint controlPoint, MouseEvent e, Point2D userSpaceLocation) {
+		
 	}
 }

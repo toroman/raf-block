@@ -1,6 +1,7 @@
 package edu.raf.gef.editor.model.object.impl;
 
 import java.awt.event.MouseEvent;
+import java.awt.geom.Point2D;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeSupport;
@@ -63,7 +64,7 @@ public abstract class DiagramObject extends Observable implements Focusable, Con
 	}
 	
 	@Override
-	public void onClick(MouseEvent e) {
+	public void onClick(MouseEvent e, Point2D userSpaceLocation) {
 		
 	}
 }

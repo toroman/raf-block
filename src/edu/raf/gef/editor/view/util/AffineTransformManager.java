@@ -6,6 +6,7 @@ import java.awt.geom.Point2D;
 import java.util.Observable;
 
 import edu.raf.gef.editor.view.DiagramView;
+import edu.raf.gef.util.MathHelper;
 
 /**
  * This class is used to manage the AffineTransform of the DiagramView. It might
@@ -26,6 +27,8 @@ public class AffineTransformManager extends Observable {
 	 * Scale
 	 */
 	double scaleValue;
+	
+	private static final double SCALE_ROUNDING_FACTOR = 0.05;
 	
 	public AffineTransformManager(DiagramView view) {
 		transform = new AffineTransform();
@@ -96,7 +99,8 @@ public class AffineTransformManager extends Observable {
 	}
 	
 	public synchronized void setScale (double scale) {
-		this.scaleValue = scale;
+		this.scaleValue = Math.exp(Math.floor(Math.log(scaleValue) / SCALE_ROUNDING_FACTOR) * SCALE_ROUNDING_FACTOR);
+		this.scaleValue = MathHelper.setBetween(scale, 0.1, 4);
 		if (autoMatchTransform)
 			matchTransform();
 	}

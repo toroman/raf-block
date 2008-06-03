@@ -1,9 +1,12 @@
-package edu.raf.gef.editor.model.object;
+package edu.raf.gef.editor.model.object.impl;
 
+import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.raf.gef.editor.model.object.ControlPointContainer;
+import edu.raf.gef.editor.model.object.Draggable;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
 
 public abstract class ControlPoint implements Draggable {
@@ -65,5 +68,10 @@ public abstract class ControlPoint implements Draggable {
 
 	public ControlPointContainer getParent() {
 		return parent;
+	}
+	
+	@Override
+	public void onClick(MouseEvent e, Point2D userSpaceLocation) {
+		parent.onControlPointClicked(this, e, userSpaceLocation);
 	}
 }

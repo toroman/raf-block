@@ -3,14 +3,16 @@ package edu.raf.flowchart;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.raf.flowchart.actions.AddFlowchartObjectAction;
+import edu.raf.flowchart.actions.AddFlowchartDraggableAction;
+import edu.raf.flowchart.actions.AddFlowchartLinkAction;
 import edu.raf.flowchart.blocks.ExecutionBlock;
 import edu.raf.flowchart.diagram.FlowChartDiagram;
+import edu.raf.flowchart.link.FlowchartLink;
 import edu.raf.gef.app.IResources;
 import edu.raf.gef.app.Resources;
 import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.editor.model.object.Draggable;
-import edu.raf.gef.editor.model.object.Drawable;
+import edu.raf.gef.editor.model.object.impl.Link;
 import edu.raf.gef.gui.MainFrame;
 import edu.raf.gef.gui.SelectedDiagramProvider;
 import edu.raf.gef.gui.actions.ActionAddDiagram;
@@ -25,9 +27,10 @@ public class FlowChartPlugin implements DiagramPlugin {
 
 	static public final IResources resources = new Resources(FlowChartPlugin.class.getPackage());
 
-	private final List<Class<? extends Drawable>> drawables;
+	private final List<Class<? extends Draggable>> draggables;
+	private final List<Class<? extends Link>> links;
 
-	private final List<AddFlowchartObjectAction> addObjects = new ArrayList<AddFlowchartObjectAction>();
+//	private final List<AddFlowchartDraggableAction> addObjects = new ArrayList<AddFlowchartDraggableAction>();
 
 	/**
 	 * Instead of passing the whole frame, more "nice" would be to pass only
@@ -36,8 +39,11 @@ public class FlowChartPlugin implements DiagramPlugin {
 	protected MainFrame mainFrame;
 
 	public FlowChartPlugin() {
-		drawables = new ArrayList<Class<? extends Drawable>>();
-		drawables.add(ExecutionBlock.class);
+		draggables = new ArrayList<Class<? extends Draggable>>();
+		draggables.add(ExecutionBlock.class);
+		
+		links = new ArrayList<Class<? extends Link>>();
+		links.add(FlowchartLink.class);
 	}
 
 	@Override
@@ -65,10 +71,16 @@ public class FlowChartPlugin implements DiagramPlugin {
 				return FlowChartPlugin.this.mainFrame.getSelectedDiagram();
 			}
 		};
-		for (Class<? extends Drawable> d : drawables) {
+		for (Class<? extends Draggable> d : draggables) {
 			if (Draggable.class.isAssignableFrom(d)) {
 				mf.getToolbarManager().addAction(getClass().getName(),
-					new AddFlowchartObjectAction(d.asSubclass(Draggable.class), d.getName(), sdp));
+					new AddFlowchartDraggableAction(d.asSubclass(Draggable.class), d.getName(), sdp));
+			}
+		}
+		for (Class<? extends Link> d : links) {
+			if (Link.class.isAssignableFrom(d)) {
+				mf.getToolbarManager().addAction(getClass().getName(),
+					new AddFlowchartLinkAction(d.asSubclass(Link.class), d.getName(), sdp));
 			}
 		}
 	}

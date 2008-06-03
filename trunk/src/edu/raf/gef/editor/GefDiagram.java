@@ -1,7 +1,5 @@
 package edu.raf.gef.editor;
 
-import javax.swing.tree.MutableTreeNode;
-
 import edu.raf.gef.app.util.GefUndoManager;
 import edu.raf.gef.editor.control.DiagramController;
 import edu.raf.gef.editor.model.DiagramModel;
@@ -22,7 +20,7 @@ public class GefDiagram implements ActionContextController {
 	protected final DiagramView view;
 	protected final DiagramController controller;
 	protected final GefUndoManager undoManager;
-	protected final DefaultDiagramTreeModel treeModel;
+	protected final IDiagramTreeModel treeModel;
 
 	public GefDiagram() {
 		// models knows nothing
@@ -41,7 +39,7 @@ public class GefDiagram implements ActionContextController {
 		treeModel = createTreeModel(this);
 	}
 
-	private DefaultDiagramTreeModel createTreeModel(GefDiagram gefDiagram) {
+	private IDiagramTreeModel createTreeModel(GefDiagram gefDiagram) {
 		return new DefaultDiagramTreeModel(this);
 	}
 
@@ -87,7 +85,7 @@ public class GefDiagram implements ActionContextController {
 		// TODO Auto-generated method stub
 	}
 
-	public MutableTreeNode getTreeModel() {
+	public IDiagramTreeModel getTreeModel() {
 		return treeModel;
 	}
 

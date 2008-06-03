@@ -15,8 +15,8 @@ import javax.swing.event.TreeSelectionListener;
 
 import edu.raf.gef.Main;
 import edu.raf.gef.app.Resources;
-import edu.raf.gef.editor.DefaultDiagramTreeModel;
 import edu.raf.gef.editor.GefDiagram;
+import edu.raf.gef.editor.IDiagramTreeModel;
 import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.editor.model.object.Focusable;
 import edu.raf.gef.gui.actions.ActionExitApplication;
@@ -101,7 +101,7 @@ public class MainFrame extends ApplicationWindow {
 		return menu;
 	}
 
-	protected void showDiagram(DefaultDiagramTreeModel selectedDiagram) {
+	protected void showDiagram(IDiagramTreeModel selectedDiagram) {
 		DiagramPluginFrame frame = selectedDiagram.getDiagramEditorComponent();
 		if (frame == null) {
 			frame = new DiagramPluginFrame(selectedDiagram.getDiagram());
@@ -126,26 +126,30 @@ public class MainFrame extends ApplicationWindow {
 		JTree tree = workspace.getTree();
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
 			public void valueChanged(TreeSelectionEvent e) {
-				Object sel = e.getNewLeadSelectionPath().getLastPathComponent();
-				if (sel instanceof DefaultDiagramTreeModel) {
-					showDiagram((DefaultDiagramTreeModel) sel);
-				} else if (sel instanceof Drawable && sel instanceof Focusable) {
-					GefDiagram diagram = null;
-					for (Object o : e.getPath().getPath()) {
-						if (o instanceof DefaultDiagramTreeModel) {
-							diagram = (GefDiagram) o;
-							break;
-						}
-					}
-					diagram.getController().clearFocusedObjects();
-					diagram.getController().addToFocusedObjects((Focusable) sel);
-				}
+				onWorkspaceSelectionChanged(e);
 			}
 		});
 
 		mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, workspace, tabbedDiagrams);
 		mainSplitPane.setOneTouchExpandable(true);
 		return mainSplitPane;
+	}
+
+	protected void onWorkspaceSelectionChanged(TreeSelectionEvent e) {
+		Object sel = e.getNewLeadSelectionPath().getLastPathComponent();
+		if (sel instanceof IDiagramTreeModel) {
+			showDiagram((IDiagramTreeModel) sel);
+		} else if (sel instanceof Drawable && sel instanceof Focusable) {
+			GefDiagram diagram = null;
+			for (Object o : e.getPath().getPath()) {
+				if (o instanceof IDiagramTreeModel) {
+					diagram = (GefDiagram) o;
+					break;
+				}
+			}
+			diagram.getController().clearFocusedObjects();
+			diagram.getController().addToFocusedObjects((Focusable) sel);
+		}
 	}
 
 	private void initTabbedDiagramComponents() {

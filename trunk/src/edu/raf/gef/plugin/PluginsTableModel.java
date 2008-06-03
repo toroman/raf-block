@@ -59,12 +59,15 @@ public class PluginsTableModel extends AbstractTableModel {
 		off.addAll(Arrays.asList(stroff.split("\\s")));
 
 		for (String klass : all) {
-			PluginRow row = new PluginRow();
-			row.status = !off.contains(klass);
-			row.running = plugins.containsKey(klass);
-			if (row.running)
-				row.plugin = plugins.get(klass);
-			rows.add(row);
+			Object plugin = plugins.get(klass);
+			try {
+				if (plugin == null)
+					// uninitialized plugin
+					plugin = Class.forName(klass).getName();
+			} catch (Exception ex) {
+				plugin = "Class not available.";
+			}
+			rows.add(new PluginRow(!off.contains(klass), plugins.containsKey(klass), plugin));
 		}
 
 		fireTableRowsInserted(0, rows.size() - 1);
@@ -82,13 +85,14 @@ public class PluginsTableModel extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
+		final PluginRow row = rows.get(rowIndex);
 		switch (columnIndex) {
 		case 0:
-			return rows.get(rowIndex).status;
+			return row.status;
 		case 1:
-			return rows.get(rowIndex).running;
+			return row.running;
 		case 2:
-			return rows.get(rowIndex).plugin.getClass().getName();
+			return row.plugin.toString();
 		default:
 			return null;
 		}
@@ -122,9 +126,16 @@ public class PluginsTableModel extends AbstractTableModel {
 	}
 
 	private static class PluginRow {
-		public boolean status;
-		public boolean running;
-		public AbstractPlugin plugin;
+		private boolean status;
+		private boolean running;
+		private Object plugin;
+
+		public PluginRow(boolean status, boolean running, Object plugin) {
+			this.status = status;
+			this.running = running;
+			this.plugin = plugin;
+		}
+
 	}
 
 	@Override

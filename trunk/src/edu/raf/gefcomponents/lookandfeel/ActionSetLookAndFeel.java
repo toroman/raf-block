@@ -1,13 +1,8 @@
 package edu.raf.gefcomponents.lookandfeel;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-
-import edu.raf.gef.app.errors.GraphicalErrorHandler;
 
 public class ActionSetLookAndFeel extends AbstractAction {
 	/**
@@ -17,25 +12,18 @@ public class ActionSetLookAndFeel extends AbstractAction {
 
 	private String className;
 
-	final private GraphicalErrorHandler geh;
+	private LookAndFeelPlugin plugin;
 
-	final private Component component;
-
-	public ActionSetLookAndFeel(String name, Component component) {
-		this.component = component;
+	public ActionSetLookAndFeel(String name, LookAndFeelPlugin plugin) {
+		this.plugin = plugin;
 		this.className = name;
 		putValue(NAME, className.substring(className.lastIndexOf('.') + 1));
-		this.geh = new GraphicalErrorHandler(getClass(), component);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		try {
-			UIManager.setLookAndFeel(className);
-		} catch (Exception ex) {
-			geh.handleErrorBlocking("actionPerformed", "Couldn't change look and feel!", ex);
-		}
-		SwingUtilities.updateComponentTreeUI(component);
+		plugin.activateLookAndFeel(className);
+		plugin.getResources().setProperty("lookAndFeel", className);
+		plugin.getResources().saveProperties();
 	}
-
 }

@@ -17,19 +17,21 @@ public final class Main {
 
 	public static void main(String[] args) {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-			
+
 			public void run() {
 				try {
-//					 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-					 UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+					// UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+					UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 				} catch (Exception e) {
 					geh.handleError("main", "Couldn't set look and feel (aka skin)", e);
 				}
 
 				String components = Resources.getGlobal().getProperty("components");
+				String off = Resources.getGlobal().getProperty("disabled_components");
 				if (components != null) {
-					String[] klasses = components.split(" ");
-					Main.components.discover(klasses);
+					if (off == null)
+						off = "";
+					Main.components.discover(components, off);
 				}
 
 				mainFrame = new MainFrame();

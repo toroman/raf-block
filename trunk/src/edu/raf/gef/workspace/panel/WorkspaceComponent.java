@@ -60,4 +60,9 @@ public class WorkspaceComponent extends JPanel {
 		}
 		return null;
 	}
+
+	public void setSelectedProject(DiagramProject project) {
+		trWorkspace.setSelectionPath(new TreePath(new Object[] { getTree().getModel().getRoot(),
+				project }));
+	}
 }

@@ -71,7 +71,6 @@ public class FlowChartPlugin implements DiagramPlugin {
 					new AddFlowchartObjectAction(d.asSubclass(Draggable.class), d.getName(), sdp));
 			}
 		}
-
 	}
 
 	public MainFrame getMainFrame() {

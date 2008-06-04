@@ -32,6 +32,13 @@ public abstract class AnchorPoint extends ControlPoint {
 	public Link getLink() {
 		return link;
 	}
+	
+	@Override
+	public void setLocation(Point2D newLocation) {
+		super.setLocation(newLocation);
+		if (link != null)
+			link.onAnchorMoved();
+	}
 
 	public AnchorPoint(AnchorPointContainer parent, Point2D initLocation) {
 		super(parent, initLocation);

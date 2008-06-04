@@ -5,7 +5,13 @@ import java.util.List;
 
 import edu.raf.flowchart.actions.AddFlowchartDraggableAction;
 import edu.raf.flowchart.actions.AddFlowchartLinkAction;
+import edu.raf.flowchart.blocks.ConditionBlock;
+import edu.raf.flowchart.blocks.EndBlock;
 import edu.raf.flowchart.blocks.ExecutionBlock;
+import edu.raf.flowchart.blocks.InputBlock;
+import edu.raf.flowchart.blocks.JoinBlock;
+import edu.raf.flowchart.blocks.OutputBlock;
+import edu.raf.flowchart.blocks.StartBlock;
 import edu.raf.flowchart.diagram.FlowChartDiagram;
 import edu.raf.flowchart.link.FlowchartLink;
 import edu.raf.gef.app.IResources;
@@ -41,6 +47,12 @@ public class FlowChartPlugin implements DiagramPlugin {
 	public FlowChartPlugin() {
 		draggables = new ArrayList<Class<? extends Draggable>>();
 		draggables.add(ExecutionBlock.class);
+		draggables.add(ConditionBlock.class);
+		draggables.add(JoinBlock.class);
+		draggables.add(InputBlock.class);
+		draggables.add(OutputBlock.class);
+		draggables.add(StartBlock.class);
+		draggables.add(EndBlock.class);
 		
 		links = new ArrayList<Class<? extends Link>>();
 		links.add(FlowchartLink.class);

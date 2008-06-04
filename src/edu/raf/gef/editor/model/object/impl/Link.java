@@ -14,7 +14,7 @@ import edu.raf.gef.util.GeomHelper;
 
 public abstract class Link extends DiagramObject {
 
-	private static final double selectionDistance = 4;
+	private static final double selectionDistance = 5;
 	private static final double snapDistance = 6; // will skip snap if 0 or
 													// less
 
@@ -39,10 +39,10 @@ public abstract class Link extends DiagramObject {
 	}
 
 	public void onAnchorMoved() {
-		if (getSourcePoint() != null)
-			resizePoints.getFirst().setLocation(getSourcePoint().getLocation());
-		if (getDestinationPoint() != null)
-			resizePoints.getLast().setLocation(getDestinationPoint().getLocation());
+		if (getSourceAnchor() != null)
+			resizePoints.getFirst().setLocation(getSourceAnchor().getLocation());
+		if (getDestinationAnchor() != null)
+			resizePoints.getLast().setLocation(getDestinationAnchor().getLocation());
 		setChanged();
 		notifyObservers();
 		clearChanged();
@@ -59,7 +59,7 @@ public abstract class Link extends DiagramObject {
 	/**
 	 * Self explanatory
 	 */
-	private AnchorPoint sourcePoint, destinationPoint;
+	private AnchorPoint sourceAnchor, destinationAnchor;
 
 	public Link(DiagramModel model) {
 		super(model);
@@ -87,10 +87,20 @@ public abstract class Link extends DiagramObject {
 
 	@Override
 	public Drawable getDrawableUnderLocation(Point2D location) {
+		Drawable draggingResizePoint = null;
 		for (ResizeControlPoint resizePoint : resizePoints) {
 			Drawable drawable = resizePoint.getDrawableUnderLocation(location);
 			if (drawable != null)
-				return drawable;
+				draggingResizePoint = resizePoint;
+		}
+		if (draggingResizePoint != null) {
+//			if (draggingResizePoint == resizePoints.getFirst())
+//				if (getSourceAnchor() != null)
+//					return getSourceAnchor();
+//			if (draggingResizePoint == resizePoints.getLast())
+//				if (getDestinationAnchor() != null)
+//					return getDestinationAnchor();
+			return draggingResizePoint;
 		}
 
 		ListIterator<ResizeControlPoint> iterator = resizePoints.listIterator();
@@ -143,10 +153,10 @@ public abstract class Link extends DiagramObject {
 
 	@Override
 	public Point2D onControlPointDragEnded(ControlPoint controlPoint, Point2D location) {
-		if (getSourcePoint() != null && controlPoint == resizePoints.getFirst())
-			return getSourcePoint().getLocation();
-		if (getDestinationPoint() != null && controlPoint == resizePoints.getLast())
-			return getDestinationPoint().getLocation();
+		if (getSourceAnchor() != null && controlPoint == resizePoints.getFirst())
+			return getSourceAnchor().getLocation();
+		if (getDestinationAnchor() != null && controlPoint == resizePoints.getLast())
+			return getDestinationAnchor().getLocation();
 		Point2D returnLocation = (Point2D) location.clone();
 		if (snapDistance > 0) {
 			double bestXDistance = Double.MAX_VALUE, bestYDistance = Double.MAX_VALUE;
@@ -180,10 +190,10 @@ public abstract class Link extends DiagramObject {
 
 	@Override
 	public Point2D onControlPointDragStarted(ControlPoint controlPoint, Point2D location) {
-		if (getSourcePoint() != null && controlPoint == resizePoints.getFirst())
-			return getSourcePoint().getLocation();
-		if (getDestinationPoint() != null && controlPoint == resizePoints.getLast())
-			return getDestinationPoint().getLocation();
+		if (getSourceAnchor() != null && controlPoint == resizePoints.getFirst())
+			return getSourceAnchor().getLocation();
+		if (getDestinationAnchor() != null && controlPoint == resizePoints.getLast())
+			return getDestinationAnchor().getLocation();
 		Point2D returnLocation = (Point2D) location.clone();
 		if (snapDistance > 0) {
 			double bestXDistance = Double.MAX_VALUE, bestYDistance = Double.MAX_VALUE;
@@ -217,10 +227,10 @@ public abstract class Link extends DiagramObject {
 
 	@Override
 	public Point2D onControlPointDragged(ControlPoint controlPoint, Point2D location) {
-		if (getSourcePoint() != null && controlPoint == resizePoints.getFirst())
-			return getSourcePoint().getLocation();
-		if (getDestinationPoint() != null && controlPoint == resizePoints.getLast())
-			return getDestinationPoint().getLocation();
+		if (getSourceAnchor() != null && controlPoint == resizePoints.getFirst())
+			return getSourceAnchor().getLocation();
+		if (getDestinationAnchor() != null && controlPoint == resizePoints.getLast())
+			return getDestinationAnchor().getLocation();
 		Point2D returnLocation = (Point2D) location.clone();
 		if (snapDistance > 0) {
 			double bestXDistance = Double.MAX_VALUE, bestYDistance = Double.MAX_VALUE;
@@ -252,12 +262,12 @@ public abstract class Link extends DiagramObject {
 		return returnLocation;
 	}
 
-	public AnchorPoint getSourcePoint() {
-		return sourcePoint;
+	public AnchorPoint getSourceAnchor() {
+		return sourceAnchor;
 	}
 
 	public void setSourcePoint(AnchorPoint sourcePoint) {
-		this.sourcePoint = sourcePoint;
+		this.sourceAnchor = sourcePoint;
 		if (sourcePoint != null)
 			resizePoints.getFirst().setLocation(sourcePoint.getLocation());
 		setChanged();
@@ -265,12 +275,12 @@ public abstract class Link extends DiagramObject {
 		clearChanged();
 	}
 
-	public AnchorPoint getDestinationPoint() {
-		return destinationPoint;
+	public AnchorPoint getDestinationAnchor() {
+		return destinationAnchor;
 	}
 
 	public void setDestinationPoint(AnchorPoint destinationPoint) {
-		this.destinationPoint = destinationPoint;
+		this.destinationAnchor = destinationPoint;
 		if (destinationPoint != null)
 			resizePoints.getLast().setLocation(destinationPoint.getLocation());
 		setChanged();

@@ -25,14 +25,12 @@ public class DiagramReLinkState extends DiagramDefaultState {
 		this.link = link;
 		this.asSource = asSource;
 		if (asSource) {
-			this.oldAnchorPoint = link.getSourcePoint();
+			this.oldAnchorPoint = link.getSourceAnchor();
 			this.link.setSourcePoint(null);
 		} else {
-			this.oldAnchorPoint = link.getDestinationPoint();
+			this.oldAnchorPoint = link.getDestinationAnchor();
 			this.link.setDestinationPoint(null);
 		}
-		if (oldAnchorPoint != null)
-			oldAnchorPoint.setLink(null);
 		diagram.getController().clearFocusedObjects();
 		diagram.getController().addToFocusedObjects(link);
 	}
@@ -56,6 +54,10 @@ public class DiagramReLinkState extends DiagramDefaultState {
 		AnchorPoint newAnchor = diagram.getModel().getAcceptingAnchorAt(userSpaceLocation, link,
 			asSource);
 		if (newAnchor != null) {
+			
+			if (oldAnchorPoint != null)
+				oldAnchorPoint.setLink(null);
+			
 			if (asSource)
 				link.setSourcePoint(newAnchor);
 			else
@@ -84,7 +86,7 @@ public class DiagramReLinkState extends DiagramDefaultState {
 			}
 		} else {
 			diagram.getModel().removeElement(link);
-			link.getSourcePoint().setLink(null);
+			link.getSourceAnchor().setLink(null);
 			link.setSourcePoint(null);
 			link.deleteObservers();
 			link = null;

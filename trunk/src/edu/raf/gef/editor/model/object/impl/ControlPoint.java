@@ -13,11 +13,14 @@ public abstract class ControlPoint implements Draggable {
 
 	private ControlPointContainer parent;
 	private Point2D location = new Point2D.Double(0, 0);
-	private List <ControlPointConstraint> constraints;
+	protected List <ControlPointConstraint> constraints;
 
 	public ControlPoint(ControlPointContainer parent, Point2D initLocation) {
 		this.parent = parent;
-		setLocation(initLocation);
+		if (initLocation != null)
+			setLocation(initLocation);
+		else
+			setLocation(new Point2D.Double (0, 0));
 		constraints = new LinkedList <ControlPointConstraint>();
 	}
 	

@@ -1,11 +1,9 @@
-package edu.raf.flowchart.link;
+package edu.raf.gef.editor.model.object.impl;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
 
 import edu.raf.gef.editor.model.object.AnchorPointContainer;
-import edu.raf.gef.editor.model.object.impl.AnchorPoint;
-import edu.raf.gef.editor.model.object.impl.Link;
 
 public class SourceAnchorPoint extends AnchorPoint {
 

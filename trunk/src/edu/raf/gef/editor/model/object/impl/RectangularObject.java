@@ -1,19 +1,27 @@
 package edu.raf.gef.editor.model.object.impl;
 
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
 import java.util.Vector;
 
 import edu.raf.gef.editor.model.DiagramModel;
+import edu.raf.gef.editor.model.object.AnchorPointContainer;
 import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
 import edu.raf.gef.util.MathHelper;
 
-public abstract class RectangularObject extends DraggableDiagramObject {
+public abstract class RectangularObject extends DraggableDiagramObject implements
+		AnchorPointContainer {
 
-	private Dimension2D minDimension, maxDimension, prefDimension;
+	private Dimension2D minDimension, maxDimension;
 	private double x, y, width, height;
 
 	private Point2D draggingOffset;
@@ -21,14 +29,14 @@ public abstract class RectangularObject extends DraggableDiagramObject {
 	/*
 	 * 0-1-2 | | 7 3 | | 6-5-4
 	 */
-	private Vector<ControlPoint> controlPoints;
+	protected Vector<ResizeControlPoint> resizeControlPoints;
 
 	protected static int NORTH_MASK = 1;
 	protected static int EAST_MASK = 2;
 	protected static int SOUTH_MASK = 4;
 	protected static int WEST_MASK = 8;
 
-	private int getRoleOfIndex(int index) {
+	protected int getRoleOfIndex(int index) {
 		int res = 0;
 		if (index <= 2)
 			res = res | NORTH_MASK;
@@ -43,26 +51,35 @@ public abstract class RectangularObject extends DraggableDiagramObject {
 
 	public RectangularObject(DiagramModel model) {
 		super(model);
+
+		sourceAnchors = new LinkedList<SourceAnchorPoint>();
+		destinationAnchors = new LinkedList<DestinationAnchorPoint>();
+
 		minDimension = getMinDimension();
 		maxDimension = getMaxDimension();
-		prefDimension = getPrefDimension();
+		Dimension2D prefDimension = getPrefferedDimension();
 		draggingOffset = null;
-		if (prefDimension == null) {
-			width = 100;
-			height = 100;
-		} else {
-			width = prefDimension.getWidth();
-			height = prefDimension.getHeight();
-		}
+		if (prefDimension == null)
+			prefDimension = minDimension;
+		if (prefDimension == null)
+			prefDimension = new Dimension(100, 100);
+
+		width = prefDimension.getWidth();
+		height = prefDimension.getHeight();
 		initControlPoints();
 		updateControlPointLocations();
 		setControlPointConstraints();
 	}
 
+	@Override
+	public Rectangle2D getBoundingRectangle() {
+		return new Rectangle2D.Double(getX(), getY(), getWidth(), getHeight());
+	}
+
 	protected void initControlPoints() {
-		controlPoints = new Vector<ControlPoint>();
+		resizeControlPoints = new Vector<ResizeControlPoint>();
 		for (int i = 0; i < 8; i++)
-			controlPoints.add(new ResizeControlPoint(this, null));
+			resizeControlPoints.add(new ResizeControlPoint(this, null));
 	}
 
 	private void setControlPointConstraints() {
@@ -109,7 +126,7 @@ public abstract class RectangularObject extends DraggableDiagramObject {
 			boolean east = (getRoleOfIndex(index) & EAST_MASK) != 0;
 			boolean south = (getRoleOfIndex(index) & SOUTH_MASK) != 0;
 			boolean west = (getRoleOfIndex(index) & WEST_MASK) != 0;
-			ControlPoint cp = controlPoints.get(index);
+			ResizeControlPoint cp = resizeControlPoints.get(index);
 			if (north)
 				cp.addConstraint(heightMinNorth);
 			if (east)
@@ -148,22 +165,36 @@ public abstract class RectangularObject extends DraggableDiagramObject {
 		clearChanged();
 	}
 
+	protected boolean isPointOverObject(Point2D point) {
+		return (MathHelper.isBetween(point.getX(), getX(), getX() + getWidth()) && MathHelper
+				.isBetween(point.getY(), getY(), getY() + getHeight()));
+	}
+
 	@Override
 	public Drawable getDrawableUnderLocation(Point2D point) {
 		Drawable drawable = null;
 		for (int i = 0; i < 8; i++) {
-			drawable = controlPoints.get(i).getDrawableUnderLocation(point);
+			drawable = resizeControlPoints.get(i).getDrawableUnderLocation(point);
 			if (drawable != null)
 				return drawable;
 		}
-		if (MathHelper.isBetween(point.getX(), getX(), getX() + getWidth())
-				&& MathHelper.isBetween(point.getY(), getY(), getY() + getHeight()))
+		for (AnchorPoint a : sourceAnchors) {
+			drawable = a.getDrawableUnderLocation(point);
+			if (drawable != null)
+				return drawable;
+		}
+		for (AnchorPoint a : destinationAnchors) {
+			drawable = a.getDrawableUnderLocation(point);
+			if (drawable != null)
+				return drawable;
+		}
+		if (isPointOverObject(point))
 			return this;
 		return null;
 	}
 
-	private void resizePointDragged(ControlPoint controlPoint) {
-		int index = controlPoints.indexOf(controlPoint);
+	private void resizePointDragged(ResizeControlPoint controlPoint) {
+		int index = resizeControlPoints.indexOf(controlPoint);
 		boolean north = (getRoleOfIndex(index) & NORTH_MASK) != 0;
 		boolean east = (getRoleOfIndex(index) & EAST_MASK) != 0;
 		boolean south = (getRoleOfIndex(index) & SOUTH_MASK) != 0;
@@ -186,7 +217,7 @@ public abstract class RectangularObject extends DraggableDiagramObject {
 	public Point2D onControlPointDragEnded(ControlPoint controlPoint, Point2D location) {
 		controlPoint.setLocation(location);
 		if (controlPoint instanceof ResizeControlPoint)
-			resizePointDragged(controlPoint);
+			resizePointDragged((ResizeControlPoint) controlPoint);
 		updateControlPointLocations();
 		return controlPoint.getLocation();
 	}
@@ -195,7 +226,7 @@ public abstract class RectangularObject extends DraggableDiagramObject {
 	public Point2D onControlPointDragStarted(ControlPoint controlPoint, Point2D location) {
 		controlPoint.setLocation(location);
 		if (controlPoint instanceof ResizeControlPoint)
-			resizePointDragged(controlPoint);
+			resizePointDragged((ResizeControlPoint) controlPoint);
 		updateControlPointLocations();
 		return controlPoint.getLocation();
 	}
@@ -204,7 +235,7 @@ public abstract class RectangularObject extends DraggableDiagramObject {
 	public Point2D onControlPointDragged(ControlPoint controlPoint, Point2D location) {
 		controlPoint.setLocation(location);
 		if (controlPoint instanceof ResizeControlPoint)
-			resizePointDragged(controlPoint);
+			resizePointDragged((ResizeControlPoint) controlPoint);
 		updateControlPointLocations();
 		return controlPoint.getLocation();
 	}
@@ -214,7 +245,7 @@ public abstract class RectangularObject extends DraggableDiagramObject {
 		boolean east = (getRoleOfIndex(index) & EAST_MASK) != 0;
 		boolean south = (getRoleOfIndex(index) & SOUTH_MASK) != 0;
 		boolean west = (getRoleOfIndex(index) & WEST_MASK) != 0;
-		ControlPoint cp = controlPoints.get(index);
+		ResizeControlPoint cp = resizeControlPoints.get(index);
 		if (west)
 			cp.setX(getX());
 		else if (east)
@@ -232,6 +263,10 @@ public abstract class RectangularObject extends DraggableDiagramObject {
 	protected void updateControlPointLocations() {
 		for (int i = 0; i < 8; i++)
 			updateResizePoint(i);
+		for (SourceAnchorPoint sap : sourceAnchors)
+			sap.setLocation(sap.afterAllConstraints(sap.getLocation()));
+		for (DestinationAnchorPoint dap : destinationAnchors)
+			dap.setLocation(dap.afterAllConstraints(dap.getLocation()));
 	}
 
 	public Dimension2D getMinDimension() {
@@ -250,14 +285,10 @@ public abstract class RectangularObject extends DraggableDiagramObject {
 		this.maxDimension = maxDimension;
 	}
 
-	public Dimension2D getPrefDimension() {
-		return prefDimension;
+	public Dimension2D getPrefferedDimension () {
+		return null;
 	}
-
-	public void setPrefDimension(Dimension2D prefDimension) {
-		this.prefDimension = prefDimension;
-	}
-
+	
 	public double getX() {
 		return x;
 	}
@@ -316,12 +347,11 @@ public abstract class RectangularObject extends DraggableDiagramObject {
 	public final void paint(Graphics2D g) {
 		paintRectangular(g);
 		for (int i = 0; i < 8; i++)
-			controlPoints.get(i).paint(g);
-		paintChildren(g);
-	}
-
-	protected void paintChildren(Graphics2D g) {
-		
+			resizeControlPoints.get(i).paint(g);
+		for (SourceAnchorPoint sap : sourceAnchors)
+			sap.paint(g);
+		for (DestinationAnchorPoint dap : destinationAnchors)
+			dap.paint(g);
 	}
 
 	protected abstract void paintRectangular(Graphics2D g);
@@ -330,14 +360,83 @@ public abstract class RectangularObject extends DraggableDiagramObject {
 	public Point2D getLocation() {
 		return new Point2D.Double(x, y);
 	}
-	
+
 	@Override
 	public void onClick(MouseEvent e, Point2D userSpaceLocation) {
-		
+
 	}
-	
+
 	@Override
-	public void onControlPointClicked(ControlPoint controlPoint, MouseEvent e, Point2D userSpaceLocation) {
-		
+	public void onControlPointClicked(ControlPoint controlPoint, MouseEvent e,
+			Point2D userSpaceLocation) {
+
 	}
+
+	// AnchorPoints
+
+	protected LinkedList<SourceAnchorPoint> sourceAnchors;
+	protected LinkedList<DestinationAnchorPoint> destinationAnchors;
+
+	@Override
+	public AnchorPoint getDestinationPointAt(Point2D location, Link link) {
+		if (getDrawableUnderLocation(location) == null)
+			return null;
+		DestinationAnchorPoint result = null;
+		for (DestinationAnchorPoint dap : destinationAnchors) {
+			if (dap.getBoundingRectangle().contains(location))
+				return dap;
+			if (dap.willAcceptLinkAsDestination(link) && link.willAcceptAnchorAsDestination(dap))
+				result = dap;
+		}
+		return result;
+	}
+
+	@Override
+	public AnchorPoint getSourcePointAt(Point2D location, Link link) {
+		if (getDrawableUnderLocation(location) == null)
+			return null;
+		SourceAnchorPoint result = null;
+		for (SourceAnchorPoint sap : sourceAnchors) {
+			if (sap.getBoundingRectangle().contains(location))
+				return sap;
+			if (sap.willAcceptLinkAsSource(link) && link.willAcceptAnchorAsSource(sap))
+				result = sap;
+		}
+		return result;
+	}
+
+	@Override
+	public Collection<Link> getLinks() {
+		Set<Link> links = new HashSet<Link>();
+		for (SourceAnchorPoint sap : sourceAnchors)
+			if (sap.getLink() != null)
+				links.add(sap.getLink());
+		for (DestinationAnchorPoint dap : destinationAnchors)
+			if (dap.getLink() != null)
+				links.add(dap.getLink());
+		Link[] array = links.toArray(new Link[] {});
+		Vector<Link> vector = new Vector<Link>(array.length);
+		for (Link l : array)
+			vector.add(l);
+		return vector;
+	}
+
+	public AnchorPoint addAnchor(boolean asSource, ControlPointConstraint constraint,
+			Point2D initLocation) {
+		AnchorPoint newAnchor = null;
+		if (asSource) {
+			newAnchor = new SourceAnchorPoint(this, initLocation);
+			sourceAnchors.add((SourceAnchorPoint) newAnchor);
+		} else {
+			newAnchor = new DestinationAnchorPoint(this, initLocation);
+			destinationAnchors.add((DestinationAnchorPoint) newAnchor);
+		}
+		newAnchor.addConstraint(constraint);
+		newAnchor.setLocation(newAnchor.afterAllConstraints(newAnchor.getLocation()));
+		setChanged();
+		notifyObservers();
+		clearChanged();
+		return newAnchor;
+	}
+
 }

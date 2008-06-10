@@ -25,13 +25,14 @@ import edu.raf.gef.app.exceptions.GefException;
 import edu.raf.gef.gui.swing.StatusManager;
 import edu.raf.gef.gui.swing.ToolbarManager;
 import edu.raf.gef.gui.swing.menus.MenuManager;
-import edu.raf.gef.gui.swing.menus.SAXMenuImporter;
+import edu.raf.gef.gui.swing.menus.MenuManagerSAXImporter;
 
 /**
  * Class for representing general MDI (Multiple Document Interface) frame.
  * Toolbar and status bar are optional. All creation methods can be overriden
  * but be careful.
- * 
+ * <p>
+ * Also known as the "Template pattern"
  * 
  */
 public abstract class ApplicationWindow {
@@ -197,7 +198,7 @@ public abstract class ApplicationWindow {
 	}
 
 	protected MenuManager createMenuManager() {
-		MenuManager menu = new MenuManager();
+		MenuManager menu = new MenuManager(getFrame());
 		// try restore configuration from XML
 		InputStream is = null;
 		try {
@@ -217,7 +218,7 @@ public abstract class ApplicationWindow {
 
 			try {
 				SAXParser parser = saxFactory.newSAXParser();
-				parser.parse(is, new SAXMenuImporter(menu, getResources()));
+				parser.parse(is, new MenuManagerSAXImporter(menu, getResources()));
 			} finally {
 				try {
 					is.close();

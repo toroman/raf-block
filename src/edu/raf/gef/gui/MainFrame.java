@@ -24,9 +24,9 @@ import edu.raf.gef.gui.actions.ActionNewProject;
 import edu.raf.gef.gui.actions.ActionShowPluginManager;
 import edu.raf.gef.gui.actions.ContextSensitiveAction;
 import edu.raf.gef.gui.actions.OpenDocumentAction;
-import edu.raf.gef.gui.actions.StandardToolbars;
 import edu.raf.gef.gui.standard.ApplicationWindow;
 import edu.raf.gef.gui.swing.DiagramPluginFrame;
+import edu.raf.gef.gui.swing.StandardToolbars;
 import edu.raf.gef.gui.swing.ToolbarManager;
 import edu.raf.gef.gui.swing.menus.MenuManager;
 import edu.raf.gef.gui.swing.menus.StandardMenuParts;
@@ -47,6 +47,8 @@ public class MainFrame extends ApplicationWindow {
 	private JSplitPane mainSplitPane;
 
 	private JTabbedPane tabbedDiagrams;
+
+	private JTabbedPane tabbedTools;
 
 	private ActionContextController currentActionContext;
 
@@ -71,6 +73,7 @@ public class MainFrame extends ApplicationWindow {
 		Workspace restore = new Workspace(Workspace.getWorkspaceFileFromResources(getResources()));
 		restore.setWorkspaceLocationToProperties(getResources());
 		workspace = new WorkspaceComponent(restore);
+		tabbedTools.addTab("Navigator", workspace);
 	}
 
 	public void setWorkspace(Workspace workspace) {
@@ -120,6 +123,7 @@ public class MainFrame extends ApplicationWindow {
 
 	@Override
 	public Component createContents() {
+		initTabbedTools();
 		initWorkspaceComponents();
 		initTabbedDiagramComponents();
 
@@ -130,13 +134,20 @@ public class MainFrame extends ApplicationWindow {
 			}
 		});
 
-		mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, workspace, tabbedDiagrams);
+		mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, tabbedTools, tabbedDiagrams);
 		mainSplitPane.setOneTouchExpandable(true);
 		return mainSplitPane;
 	}
 
+	private void initTabbedTools() {
+		tabbedTools = new JTabbedPane();
+	}
+
 	protected void onWorkspaceSelectionChanged(TreeSelectionEvent e) {
-		Object sel = e.getNewLeadSelectionPath().getLastPathComponent();
+		Object sel = null;
+		if (e.getNewLeadSelectionPath() != null)
+			sel = e.getNewLeadSelectionPath().getLastPathComponent();
+
 		if (sel instanceof IDiagramTreeModel) {
 			showDiagram((IDiagramTreeModel) sel);
 		} else if (sel instanceof Drawable && sel instanceof Focusable) {
@@ -156,26 +167,38 @@ public class MainFrame extends ApplicationWindow {
 		tabbedDiagrams = new JTabbedPane();
 		tabbedDiagrams.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				Component cmp = tabbedDiagrams.getSelectedComponent();
-				validateActions(new MergeIterator<Action>(getToolbarManager().getActions(),
-						getMenuManager().getActions()), cmp);
-
-				ActionContextController context = null;
-				if (cmp != null && cmp instanceof ActionContextController) {
-					context = (ActionContextController) cmp;
-				}
-				if (currentActionContext != null) {
-					currentActionContext.onDeactivated(MainFrame.this, context);
-				}
-				if (context != null) {
-					context.onActivated(MainFrame.this, currentActionContext);
-				}
-				currentActionContext = context;
-				getFrame().repaint();
+				handleDiagramSelectionChanged();
 			}
 
 		});
 		tabbedDiagrams.addTab("Welcome", new JLabel("Welcome to RAF Graphical Editing Framework!"));
+	}
+
+	protected void handleDiagramSelectionChanged() {
+		Component cmp = tabbedDiagrams.getSelectedComponent();
+		validateActions(new MergeIterator<Action>(getToolbarManager().getActions(),
+				getMenuManager().getActions()), cmp);
+
+		ActionContextController context = null;
+		if (cmp != null && cmp instanceof ActionContextController) {
+			context = (ActionContextController) cmp;
+		}
+		if (currentActionContext != null) {
+			currentActionContext.onDeactivated(MainFrame.this, context);
+		}
+		if (context != null) {
+			context.onActivated(MainFrame.this, currentActionContext);
+		}
+		currentActionContext = context;
+		// getFrame().repaint();
+	}
+
+	public JTabbedPane getTabbedTools() {
+		return tabbedTools;
+	}
+
+	public JTabbedPane getTabbedDiagrams() {
+		return tabbedDiagrams;
 	}
 
 	/**
@@ -204,4 +227,5 @@ public class MainFrame extends ApplicationWindow {
 	public AbstractPlugin[] getPlugins() {
 		return Main.getComponentDiscoveryUtils().getPlugins();
 	}
+
 }

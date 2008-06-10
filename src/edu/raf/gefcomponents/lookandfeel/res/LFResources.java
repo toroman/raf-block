@@ -8,7 +8,6 @@ public class LFResources extends Resources {
 
 	public LFResources() {
 		super(LFResources.class.getPackage());
-		System.out.println("Look and feel resources initialized");
 	}
 
 	@Override

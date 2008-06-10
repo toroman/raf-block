@@ -17,13 +17,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package edu.raf.gef.gui.swing.menus;
 
+import java.awt.Component;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import edu.raf.gef.app.IResources;
+import edu.raf.gef.gui.actions.ResourceConfiguredAction;
+import edu.raf.gef.gui.actions.StandardOverridableAction;
 
 /**
  * Parses Menu XML file and fills the menu manager with the standard menus
@@ -37,12 +42,12 @@ import edu.raf.gef.app.IResources;
  * @author Srecko Toroman (Срећко Тороман) <a
  *         href="mailto:sreckotoroman@gmail.com">sreckotoroman@gmail.com</a>
  */
-public class SAXMenuImporter extends DefaultHandler {
+public class MenuManagerSAXImporter extends DefaultHandler {
 	private MenuManager manager;
 	private Stack<String> xpath;
 	private IResources resources;
 
-	public SAXMenuImporter(MenuManager manager, IResources resources) {
+	public MenuManagerSAXImporter(MenuManager manager, IResources resources) {
 		this.manager = manager;
 		this.resources = resources;
 	}
@@ -70,7 +75,7 @@ public class SAXMenuImporter extends DefaultHandler {
 			String mnemonic = attr.getValue("mnemonic");
 			if (mnemonic != null)
 				container.getMenu().setMnemonic(mnemonic.charAt(0));
-			
+
 			String icon = attr.getValue("icon");
 			container.getMenu().setIcon(icon != null ? resources.getIcon(icon) : null);
 			xpath.push(id);
@@ -83,7 +88,19 @@ public class SAXMenuImporter extends DefaultHandler {
 			}
 			manager.createPart(parentContainer, id);
 			xpath.push(id);
+		} else if ("action".equals(name)) {
+			String id = attr.getValue("id");
+			try {
+				StandardOverridableAction action = new StandardOverridableAction(manager
+						.getParent(), id);
+				String parentPart = xpath.peek();
+				manager.addAction(parentPart, action);
+			} catch (Exception e) {
+				log.log(Level.SEVERE, "Couldn't create action id=" + id, e);
+				return;
+			}
 		}
+
 	}
 
 	@Override
@@ -98,4 +115,5 @@ public class SAXMenuImporter extends DefaultHandler {
 		}
 	}
 
+	private static final Logger log = Logger.getLogger(MenuManagerSAXImporter.class.getName());
 }

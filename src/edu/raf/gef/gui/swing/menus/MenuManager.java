@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package edu.raf.gef.gui.swing.menus;
 
+import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -57,10 +58,17 @@ public class MenuManager {
 	 */
 	private final Map<String, Action> namedActions = new HashMap<String, Action>();
 
-	public MenuManager() {
+	private Component parent;
+
+	public MenuManager(Component parent) {
+		this.parent = parent;
 		menubar = new JMenuBar();
 		parts = new HashMap<String, MenuPart>();
 		containers = new HashMap<String, MenuPartContainer>();
+	}
+
+	public Component getParent() {
+		return parent;
 	}
 
 	/**

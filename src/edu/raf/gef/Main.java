@@ -6,13 +6,30 @@ import edu.raf.gef.app.Resources;
 import edu.raf.gef.app.errors.GraphicalErrorHandler;
 import edu.raf.gef.gui.MainFrame;
 import edu.raf.gef.plugin.ComponentDiscoveryUtils;
+import edu.raf.gef.services.ServiceManager;
 
 public final class Main {
 	private static MainFrame mainFrame;
 	private static final ComponentDiscoveryUtils components = new ComponentDiscoveryUtils();
 
+	private static final ServiceManager services = new ServiceManager();
+
+	/**
+	 * Or use IoC instead.
+	 * 
+	 * @return Currently used instance of the component discovery class
+	 */
 	public static ComponentDiscoveryUtils getComponentDiscoveryUtils() {
 		return components;
+	}
+
+	/**
+	 * Or use IoC instead.
+	 * 
+	 * @return Currently used instance of service manager
+	 */
+	public static ServiceManager getServices() {
+		return services;
 	}
 
 	public static void main(String[] args) {

@@ -12,14 +12,14 @@ import edu.raf.gef.editor.view.util.AffineTransformManager;
 import edu.raf.gef.util.MathHelper;
 
 public class DefaultGrid implements DiagramGrid {
-	
+
 	private final DiagramView view;
 	private double gridDensity;
-	
+
 	public DefaultGrid(DiagramView view) {
-		this (view, 10);
+		this(view, 10);
 	}
-	
+
 	public DefaultGrid(DiagramView view, double density) {
 		this.view = view;
 		this.gridDensity = density;
@@ -37,7 +37,7 @@ public class DefaultGrid implements DiagramGrid {
 	public void paintGrid(Graphics2D g, Dimension2D gridDimension) {
 		double drawToX = gridDimension.getWidth();
 		double drawToY = gridDimension.getHeight();
-		
+
 		AffineTransformManager atm = view.getAffineTransformManager();
 
 		Point2D.Double startFrom = new Point2D.Double(0, 0);
@@ -48,7 +48,7 @@ public class DefaultGrid implements DiagramGrid {
 		Color backgroundColor = UIManager.getColor("Panel.background");
 
 		double scale = atm.getAffineTransform().getScaleX();
-		
+
 		double smallestUnit = scale * getGridDensity();
 		while (smallestUnit < 5)
 			smallestUnit *= 10;

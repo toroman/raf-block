@@ -65,4 +65,8 @@ public interface StandardMenuParts {
 
 	String PLUGIN_MANAGER = "p_plugin_manager";
 
+	String UNDO_REDO_PART = "p_undoredo";
+	
+	String COPY_PASTE_PART = "p_copypaste";
+	
 }

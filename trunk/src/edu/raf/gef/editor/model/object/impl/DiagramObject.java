@@ -43,7 +43,6 @@ public abstract class DiagramObject extends Observable implements Focusable, Con
 			getModel().moveForward(this);
 		setChanged();
 		notifyObservers();
-		clearChanged();
 		try {
 			vcs.fireVetoableChange(Focusable.FOCUSED_PROPERTY, old, focused);
 		} catch (PropertyVetoException e) {

@@ -1,4 +1,4 @@
-package edu.raf.gef.gui.actions;
+package edu.raf.gef.gui.swing;
 
 /**
  * See javadoc for StandardMenus

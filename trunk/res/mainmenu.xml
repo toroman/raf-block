@@ -17,7 +17,13 @@
 
 	<container id="c_edit" text="Edit">
 		<part id="p_unredo">
-			<command id="cut" text="Cut" class="org.eclipse.action.Cut" />
+			<action id="undo" />
+			<action id="redo" />
+		</part>
+		<part id="p_copypaste">
+			<action id="cut" />
+			<action id="copy" />
+			<action id="paste" />
 		</part>
 	</container>
 

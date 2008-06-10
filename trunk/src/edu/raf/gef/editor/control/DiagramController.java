@@ -8,8 +8,10 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import edu.raf.gef.app.errors.GraphicalErrorHandler;
@@ -25,6 +27,21 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 	private IDiagramAbstractState state;
 	private GraphicalErrorHandler geh;
 	private final GefDiagram diagram;
+	private List<GefFocusListener> focusListeners = new ArrayList<GefFocusListener>();
+
+	protected synchronized void fireFocusEvent(Focusable f, boolean given) {
+		GefFocusEvent event = new GefFocusEvent(this, f, given == true ? GefFocusEvent.FOCUS_GIVEN
+				: GefFocusEvent.FOCUS_LOST);
+		for (GefFocusListener gf : focusListeners) {
+			gf.focusChanged(event);
+		}
+	}
+
+	protected synchronized void fireFocusEvent(GefFocusEvent event) {
+		for (GefFocusListener gf : focusListeners) {
+			gf.focusChanged(event);
+		}
+	}
 
 	/**
 	 * A set of focused objects. Should, at all times, be synchronized with the
@@ -48,6 +65,7 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 	public boolean addToFocusedObjects(Focusable focusable) {
 		if (focusedObjects.add(focusable)) {
 			focusable.setFocused(true);
+			fireFocusEvent(focusable, true);
 			return true;
 		}
 		return false;
@@ -64,6 +82,7 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 	public boolean removeFromFocusedObjects(Focusable focusable) {
 		if (focusedObjects.remove(focusable)) {
 			focusable.setFocused(false);
+			fireFocusEvent(focusable, false);
 			return true;
 		}
 		return false;
@@ -76,6 +95,7 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 		for (Focusable object : focusedObjects)
 			object.setFocused(false);
 		focusedObjects.clear();
+		fireFocusEvent(new GefFocusEvent(this, null, GefFocusEvent.FOCUS_CLEARED));
 	}
 
 	/**
@@ -117,7 +137,8 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 		if (this.state != null)
 			this.state.onStateLeft();
 		this.state = state;
-		System.out.println(state.getClass().getName());
+		// plz don't use System.out for logging!
+		// System.out.println(state.getClass().getName());
 	}
 
 	public DiagramModel getModel() {
@@ -126,8 +147,8 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		state.mouseClicked(e, diagram.getView().getAffineTransformManager().getInverseTransform().transform(
-			GeomHelper.castTo2D(e.getPoint()), null));
+		state.mouseClicked(e, diagram.getView().getAffineTransformManager().getInverseTransform()
+				.transform(GeomHelper.castTo2D(e.getPoint()), null));
 	}
 
 	@Override
@@ -142,20 +163,20 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		state.mousePressed(e, diagram.getView().getAffineTransformManager().getInverseTransform().transform(
-			GeomHelper.castTo2D(e.getPoint()), null));
+		state.mousePressed(e, diagram.getView().getAffineTransformManager().getInverseTransform()
+				.transform(GeomHelper.castTo2D(e.getPoint()), null));
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		state.mouseReleased(e, diagram.getView().getAffineTransformManager().getInverseTransform().transform(
-			GeomHelper.castTo2D(e.getPoint()), null));
+		state.mouseReleased(e, diagram.getView().getAffineTransformManager().getInverseTransform()
+				.transform(GeomHelper.castTo2D(e.getPoint()), null));
 	}
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		state.mouseWheelMoved(e, diagram.getView().getAffineTransformManager().getInverseTransform().transform(
-			GeomHelper.castTo2D(e.getPoint()), null));
+		state.mouseWheelMoved(e, diagram.getView().getAffineTransformManager()
+				.getInverseTransform().transform(GeomHelper.castTo2D(e.getPoint()), null));
 	}
 
 	@Override
@@ -175,14 +196,14 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		state.mouseDragged(e, diagram.getView().getAffineTransformManager().getInverseTransform().transform(
-			GeomHelper.castTo2D(e.getPoint()), null));
+		state.mouseDragged(e, diagram.getView().getAffineTransformManager().getInverseTransform()
+				.transform(GeomHelper.castTo2D(e.getPoint()), null));
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		state.mouseMoved(e, diagram.getView().getAffineTransformManager().getInverseTransform().transform(
-			GeomHelper.castTo2D(e.getPoint()), null));
+		state.mouseMoved(e, diagram.getView().getAffineTransformManager().getInverseTransform()
+				.transform(GeomHelper.castTo2D(e.getPoint()), null));
 	}
 
 	public final Set<Focusable> getFocusedObjects() {

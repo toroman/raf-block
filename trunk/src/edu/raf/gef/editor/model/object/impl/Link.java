@@ -184,7 +184,6 @@ public abstract class Link extends DiagramObject {
 		}
 		setChanged();
 		notifyObservers();
-		clearChanged();
 		return returnLocation;
 	}
 
@@ -221,7 +220,6 @@ public abstract class Link extends DiagramObject {
 		}
 		setChanged();
 		notifyObservers();
-		clearChanged();
 		return returnLocation;
 	}
 
@@ -258,7 +256,6 @@ public abstract class Link extends DiagramObject {
 		}
 		setChanged();
 		notifyObservers();
-		clearChanged();
 		return returnLocation;
 	}
 
@@ -272,7 +269,6 @@ public abstract class Link extends DiagramObject {
 			resizePoints.getFirst().setLocation(sourcePoint.getLocation());
 		setChanged();
 		notifyObservers();
-		clearChanged();
 	}
 
 	public AnchorPoint getDestinationAnchor() {
@@ -285,7 +281,6 @@ public abstract class Link extends DiagramObject {
 			resizePoints.getLast().setLocation(destinationPoint.getLocation());
 		setChanged();
 		notifyObservers();
-		clearChanged();
 	}
 
 	public LinkedList<ResizeControlPoint> getResizePoins() {
@@ -321,7 +316,6 @@ public abstract class Link extends DiagramObject {
 		resizePoints.add(whereToInsert, new ResizeControlPoint(this, newResizePointLocation));
 		setChanged();
 		notifyObservers();
-		clearChanged();
 	}
 
 	@Override
@@ -334,6 +328,5 @@ public abstract class Link extends DiagramObject {
 		resizePoints.remove(controlPoint);
 		setChanged();
 		notifyObservers();
-		clearChanged();
 	}
 }

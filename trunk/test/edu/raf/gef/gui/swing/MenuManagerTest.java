@@ -33,7 +33,7 @@ public class MenuManagerTest {
 		final Thread the = Thread.currentThread();
 		SwingUtilities.invokeAndWait(new Runnable() {
 			public void run() {
-				MenuManager manager = new MenuManager();
+				MenuManager manager = new MenuManager(null);
 				manager.createContainer(MenuManager.ROOT, "file").getMenu().setText("File");
 				MenuPart partImpExp = manager.createPart("file", "file.export_import");
 				partImpExp.add(new AbstractAction("Akc1") {

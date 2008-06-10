@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
@@ -25,6 +26,7 @@ public class DiagramView implements Observer {
 	private AffineTransformManager affineTransformManager;
 	private DiagramGrid grid;
 	private final RepaintAndInertionThread repaintAndInertionThread;
+	private boolean antialiasing;
 
 	public DiagramView(DiagramModel model) {
 		this.model = model;
@@ -32,8 +34,9 @@ public class DiagramView implements Observer {
 		canvas = createCanvas();
 		affineTransformManager = new AffineTransformManager(this);
 		grid = null;
-		repaintAndInertionThread = new RepaintAndInertionThread (this);
-		//repaintAndInertionThread.start();
+		repaintAndInertionThread = new RepaintAndInertionThread(this);
+		setAntialiasing(true);
+		// repaintAndInertionThread.start();
 	}
 
 	/**
@@ -56,6 +59,8 @@ public class DiagramView implements Observer {
 	}
 
 	protected void drawDiagram(Graphics2D g) {
+		if (antialiasing)
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		Rectangle r = g.getClipBounds();
 		g.clearRect(0, 0, (int) r.getWidth() + 1, (int) r.getHeight() + 1);
 		if (getGrid() != null)
@@ -105,5 +110,13 @@ public class DiagramView implements Observer {
 
 	public RepaintAndInertionThread getRepaintAndInertionThread() {
 		return repaintAndInertionThread;
+	}
+
+	public void setAntialiasing(boolean antialiasing) {
+		this.antialiasing = antialiasing;
+	}
+
+	public boolean getAntialiasing() {
+		return this.antialiasing;
 	}
 }

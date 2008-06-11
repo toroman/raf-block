@@ -7,7 +7,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.gui.swing.DiagramPluginFrame;
 
-public class DefaultDiagramTreeModel extends DefaultMutableTreeNode implements IDiagramTreeModel {
+public class DefaultDiagramTreeModel extends DefaultMutableTreeNode implements IDiagramTreeNode {
 	/**
 	 * 
 	 */

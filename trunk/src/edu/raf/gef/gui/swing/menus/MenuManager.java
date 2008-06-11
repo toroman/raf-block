@@ -25,7 +25,9 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JMenuBar;
+import javax.swing.JPopupMenu;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import edu.raf.gef.app.exceptions.GefRuntimeException;
@@ -41,7 +43,7 @@ import edu.raf.gef.app.exceptions.GefRuntimeException;
 public class MenuManager {
 	public static final String ROOT = "";
 
-	private JMenuBar menubar;
+	private JComponent root;
 
 	/**
 	 * Parts hold actions and submenus (which are containers)
@@ -60,11 +62,19 @@ public class MenuManager {
 
 	private Component parent;
 
-	public MenuManager(Component parent) {
+	public MenuManager(Component parent, boolean isPopupMenu) {
 		this.parent = parent;
-		menubar = new JMenuBar();
 		parts = new HashMap<String, MenuPart>();
 		containers = new HashMap<String, MenuPartContainer>();
+		if (isPopupMenu) {
+			root = new JPopupMenu();
+		} else {
+			root = new JMenuBar();
+		}
+	}
+
+	public MenuManager(Component parent) {
+		this(parent, false);
 	}
 
 	public Component getParent() {
@@ -143,7 +153,7 @@ public class MenuManager {
 	private MenuPartContainer createRootContainer(String childContainerId) {
 		MenuPartContainer container = new MenuPartContainer(childContainerId);
 		this.containers.put(childContainerId, container);
-		menubar.add(container.getMenu());
+		root.add(container.getMenu());
 		return container;
 	}
 
@@ -155,8 +165,8 @@ public class MenuManager {
 		return new ActionsIterator();
 	}
 
-	public JMenuBar getMenubar() {
-		return menubar;
+	public synchronized JComponent getMenubar() {
+		return root;
 	}
 
 	private class ActionsIterator implements Iterator<Action> {

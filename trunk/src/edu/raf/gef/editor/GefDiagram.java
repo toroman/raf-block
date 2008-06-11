@@ -20,7 +20,7 @@ public class GefDiagram implements ActionContextController {
 	protected final DiagramView view;
 	protected final DiagramController controller;
 	protected final GefUndoManager undoManager;
-	protected final IDiagramTreeModel treeModel;
+	protected final IDiagramTreeNode treeModel;
 
 	public GefDiagram() {
 		// models knows nothing
@@ -39,7 +39,7 @@ public class GefDiagram implements ActionContextController {
 		treeModel = createTreeModel(this);
 	}
 
-	private IDiagramTreeModel createTreeModel(GefDiagram gefDiagram) {
+	protected IDiagramTreeNode createTreeModel(GefDiagram gefDiagram) {
 		return new DefaultDiagramTreeModel(this);
 	}
 
@@ -85,7 +85,7 @@ public class GefDiagram implements ActionContextController {
 		// TODO Auto-generated method stub
 	}
 
-	public IDiagramTreeModel getTreeModel() {
+	public IDiagramTreeNode getTreeModel() {
 		return treeModel;
 	}
 

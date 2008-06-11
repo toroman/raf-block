@@ -6,8 +6,8 @@ import javax.swing.AbstractAction;
 
 import edu.raf.gef.app.errors.GraphicalErrorHandler;
 import edu.raf.gef.gui.MainFrame;
+import edu.raf.gef.plugin.DiagramFactory;
 import edu.raf.gef.plugin.DiagramPlugin;
-import edu.raf.gef.plugin.PluginCreationController;
 import edu.raf.gef.workspace.project.DiagramProject;
 
 public class ActionAddDiagram extends AbstractAction {
@@ -23,7 +23,7 @@ public class ActionAddDiagram extends AbstractAction {
 	/**
 	 * Factory.
 	 */
-	private PluginCreationController creationController;
+	private DiagramFactory creationController;
 
 	private final DiagramPlugin plugin;
 
@@ -34,7 +34,7 @@ public class ActionAddDiagram extends AbstractAction {
 		/*
 		 * Default factory
 		 */
-		this.creationController = new PluginCreationController(plugin);
+		this.creationController = new DiagramFactory(plugin);
 	}
 
 	/**
@@ -42,7 +42,7 @@ public class ActionAddDiagram extends AbstractAction {
 	 * 
 	 * @param controller
 	 */
-	public void setCreationController(PluginCreationController controller) {
+	public void setCreationController(DiagramFactory controller) {
 		this.creationController = controller;
 	}
 

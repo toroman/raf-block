@@ -17,17 +17,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package edu.raf.gef.gui.swing.menus;
 
-import java.awt.Component;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import edu.raf.gef.app.IResources;
-import edu.raf.gef.gui.actions.ResourceConfiguredAction;
 import edu.raf.gef.gui.actions.StandardOverridableAction;
 
 /**
@@ -46,6 +50,21 @@ public class MenuManagerSAXImporter extends DefaultHandler {
 	private MenuManager manager;
 	private Stack<String> xpath;
 	private IResources resources;
+
+	public static void fillMenu(MenuManager menu, InputStream is, IResources resources)
+			throws ParserConfigurationException, SAXException, IOException {
+		SAXParserFactory saxFactory = SAXParserFactory.newInstance();
+
+		try {
+			SAXParser parser = saxFactory.newSAXParser();
+			parser.parse(is, new MenuManagerSAXImporter(menu, resources));
+		} finally {
+			try {
+				is.close();
+			} catch (Throwable ex) {
+			}
+		}
+	}
 
 	public MenuManagerSAXImporter(MenuManager manager, IResources resources) {
 		this.manager = manager;

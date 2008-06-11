@@ -1,7 +1,9 @@
 package edu.raf.gef.gui;
 
 import java.awt.Component;
+import java.io.InputStream;
 import java.util.Iterator;
+import java.util.logging.Level;
 
 import javax.swing.Action;
 import javax.swing.JLabel;
@@ -15,8 +17,9 @@ import javax.swing.event.TreeSelectionListener;
 
 import edu.raf.gef.Main;
 import edu.raf.gef.app.Resources;
+import edu.raf.gef.app.exceptions.GefException;
 import edu.raf.gef.editor.GefDiagram;
-import edu.raf.gef.editor.IDiagramTreeModel;
+import edu.raf.gef.editor.IDiagramTreeNode;
 import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.editor.model.object.Focusable;
 import edu.raf.gef.gui.actions.ActionExitApplication;
@@ -29,6 +32,7 @@ import edu.raf.gef.gui.swing.DiagramPluginFrame;
 import edu.raf.gef.gui.swing.StandardToolbars;
 import edu.raf.gef.gui.swing.ToolbarManager;
 import edu.raf.gef.gui.swing.menus.MenuManager;
+import edu.raf.gef.gui.swing.menus.MenuManagerSAXImporter;
 import edu.raf.gef.gui.swing.menus.StandardMenuParts;
 import edu.raf.gef.plugin.AbstractPlugin;
 import edu.raf.gef.util.MergeIterator;
@@ -51,6 +55,8 @@ public class MainFrame extends ApplicationWindow {
 	private JTabbedPane tabbedTools;
 
 	private ActionContextController currentActionContext;
+
+	private MenuManager diagramContextMenu;
 
 	public MainFrame() {
 		super("mainFrame");
@@ -104,7 +110,7 @@ public class MainFrame extends ApplicationWindow {
 		return menu;
 	}
 
-	protected void showDiagram(IDiagramTreeModel selectedDiagram) {
+	protected void showDiagram(IDiagramTreeNode selectedDiagram) {
 		DiagramPluginFrame frame = selectedDiagram.getDiagramEditorComponent();
 		if (frame == null) {
 			frame = new DiagramPluginFrame(selectedDiagram.getDiagram());
@@ -112,6 +118,23 @@ public class MainFrame extends ApplicationWindow {
 			tabbedDiagrams.addTab(selectedDiagram.getDiagram().getModel().getTitle(), frame);
 		}
 		tabbedDiagrams.setSelectedComponent(frame);
+	}
+
+	private void initDiagramContextMenu() {
+		diagramContextMenu = new MenuManager(getFrame(), true);
+		// try restore configuration from XML
+		InputStream is = null;
+		try {
+			is = getResources().getResource("DiagramContextMenuConfiguration");
+			MenuManagerSAXImporter.fillMenu(diagramContextMenu, is, getResources());
+		} catch (GefException e) {
+			// no configuration
+			getLog().log(Level.FINEST, "Menu not configured");
+		} catch (Throwable t) {
+			getGeh().handleErrorBlocking("createMenuManager", "Couldn't read menu configuration!",
+				t);
+			System.exit(-1);
+		}
 	}
 
 	public GefDiagram getSelectedDiagram() {
@@ -126,6 +149,7 @@ public class MainFrame extends ApplicationWindow {
 		initTabbedTools();
 		initWorkspaceComponents();
 		initTabbedDiagramComponents();
+		initDiagramContextMenu();
 
 		JTree tree = workspace.getTree();
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
@@ -148,12 +172,12 @@ public class MainFrame extends ApplicationWindow {
 		if (e.getNewLeadSelectionPath() != null)
 			sel = e.getNewLeadSelectionPath().getLastPathComponent();
 
-		if (sel instanceof IDiagramTreeModel) {
-			showDiagram((IDiagramTreeModel) sel);
+		if (sel instanceof IDiagramTreeNode) {
+			showDiagram((IDiagramTreeNode) sel);
 		} else if (sel instanceof Drawable && sel instanceof Focusable) {
 			GefDiagram diagram = null;
 			for (Object o : e.getPath().getPath()) {
-				if (o instanceof IDiagramTreeModel) {
+				if (o instanceof IDiagramTreeNode) {
 					diagram = (GefDiagram) o;
 					break;
 				}

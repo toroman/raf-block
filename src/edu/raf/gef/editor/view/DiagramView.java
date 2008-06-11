@@ -1,7 +1,6 @@
 package edu.raf.gef.editor.view;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -11,6 +10,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import edu.raf.gef.editor.model.DiagramModel;
@@ -22,7 +22,7 @@ import edu.raf.gef.editor.view.util.RepaintAndInertionThread;
 
 public class DiagramView implements Observer {
 	private final DiagramModel model;
-	private final Component canvas;
+	private final JComponent canvas;
 	private AffineTransformManager affineTransformManager;
 	private DiagramGrid grid;
 	private final RepaintAndInertionThread repaintAndInertionThread;
@@ -43,8 +43,8 @@ public class DiagramView implements Observer {
 	 * Override to reconfigure
 	 * 
 	 */
-	protected Component createCanvas() {
-		Component c = new JPanel() {
+	protected JComponent createCanvas() {
+		JComponent c = new JPanel() {
 			private static final long serialVersionUID = -4189098950039589957L;
 
 			@Override
@@ -88,7 +88,7 @@ public class DiagramView implements Observer {
 		return;
 	}
 
-	public Component getCanvas() {
+	public JComponent getCanvas() {
 		return canvas;
 	}
 

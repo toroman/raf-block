@@ -13,10 +13,9 @@ import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import edu.raf.gef.app.ResourceHelper;
 import edu.raf.gef.app.Resources;
@@ -106,7 +105,7 @@ public abstract class ApplicationWindow {
 		});
 		if (createMenubar) {
 			menuManager = createMenuManager();
-			frame.setJMenuBar(menuManager.getMenubar());
+			frame.setJMenuBar((JMenuBar) menuManager.getMenubar());
 		}
 		Container con = frame.getContentPane();
 		con.setLayout(new BorderLayout());
@@ -203,6 +202,7 @@ public abstract class ApplicationWindow {
 		InputStream is = null;
 		try {
 			is = getResources().getResource(id + ".MenuConfigurationFile");
+			MenuManagerSAXImporter.fillMenu(menu, is, getResources());
 		} catch (GefException e) {
 			// no configuration
 			getLog().log(Level.FINEST, "Menu not configured");
@@ -213,26 +213,6 @@ public abstract class ApplicationWindow {
 			System.exit(-1);
 		}
 
-		try {
-			SAXParserFactory saxFactory = SAXParserFactory.newInstance();
-
-			try {
-				SAXParser parser = saxFactory.newSAXParser();
-				parser.parse(is, new MenuManagerSAXImporter(menu, getResources()));
-			} finally {
-				try {
-					is.close();
-				} catch (Throwable ex) {
-				}
-			}
-		} catch (Throwable e) {
-			try {
-				getGeh().handleErrorBlocking("createMenuManager",
-					"Menu couldn't be restored! Application will now shutdown.", e);
-			} finally {
-				System.exit(-1);
-			}
-		}
 		return menu;
 	}
 

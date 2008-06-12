@@ -174,13 +174,13 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 	@Override
 	public Drawable getDrawableUnderLocation(Point2D point) {
 		Drawable drawable = null;
-		for (int i = 0; i < 8; i++) {
-			drawable = resizeControlPoints.get(i).getDrawableUnderLocation(point);
+		for (AnchorPoint a : getAllAnchors()) {
+			drawable = a.getDrawableUnderLocation(point);
 			if (drawable != null)
 				return drawable;
 		}
-		for (AnchorPoint a : getAllAnchors()) {
-			drawable = a.getDrawableUnderLocation(point);
+		for (int i = 0; i < 8; i++) {
+			drawable = resizeControlPoints.get(i).getDrawableUnderLocation(point);
 			if (drawable != null)
 				return drawable;
 		}

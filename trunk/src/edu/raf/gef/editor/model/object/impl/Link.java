@@ -93,6 +93,14 @@ public abstract class Link extends DiagramObject {
 			if (drawable != null)
 				draggingResizePoint = resizePoint;
 		}
+		if (draggingResizePoint == null) {
+			Drawable drawable = resizePoints.getFirst().getDrawableUnderLocationIgnoringFocus(location);
+			if (drawable != null)
+				return drawable;
+			drawable = resizePoints.getLast().getDrawableUnderLocationIgnoringFocus(location);
+			if (drawable != null)
+				return drawable;
+		}			
 		if (draggingResizePoint != null) {
 			if (draggingResizePoint == resizePoints.getFirst())
 				if (getSourceAnchor() != null)

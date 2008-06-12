@@ -12,7 +12,7 @@ import edu.raf.gef.util.MathHelper;
 
 public class ResizeControlPoint extends ControlPoint {
 
-	private final static int SIZE_FACTOR = 7; // not an even number
+	public final static int SIZE_FACTOR = 7; // not an even number
 
 	public ResizeControlPoint(ControlPointContainer parent, Point2D initLocation) {
 		super(parent, initLocation);
@@ -23,17 +23,21 @@ public class ResizeControlPoint extends ControlPoint {
 		return new Rectangle2D.Double(getLocation().getX() - SIZE_FACTOR / 2, getLocation().getY()
 				- SIZE_FACTOR / 2, SIZE_FACTOR, SIZE_FACTOR);
 	}
-
-	@Override
-	public Drawable getDrawableUnderLocation(Point2D location) {
-		if (!isParentFocused())
-			return null;
+	
+	public Drawable getDrawableUnderLocationIgnoringFocus (Point2D location) {
 		double x = getLocation().getX();
 		double y = getLocation().getY();
 		if (MathHelper.isBetween(location.getX(), x - SIZE_FACTOR / 2, x + SIZE_FACTOR / 2)
 				&& MathHelper.isBetween(location.getY(), y - SIZE_FACTOR / 2, y + SIZE_FACTOR / 2))
 			return this;
 		return null;
+	}
+
+	@Override
+	public Drawable getDrawableUnderLocation(Point2D location) {
+		if (!isParentFocused())
+			return null;
+		return getDrawableUnderLocationIgnoringFocus(location);
 	}
 	
 	private boolean isParentFocused() {

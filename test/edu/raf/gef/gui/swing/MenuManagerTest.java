@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 import javax.swing.SwingUtilities;
 
 import org.junit.After;
@@ -74,7 +75,7 @@ public class MenuManagerTest {
 
 				});
 
-				fr.setJMenuBar(manager.getMenubar());
+				fr.setJMenuBar((JMenuBar)manager.getMenubar());
 				fr.pack();
 				fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				fr.setVisible(true);

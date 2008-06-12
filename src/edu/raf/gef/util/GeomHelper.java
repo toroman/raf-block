@@ -74,9 +74,23 @@ public class GeomHelper {
 		return pointDistance(a.getX(), a.getY(), b.getX(), b.getY());
 	}
 	
+	/**
+	 * Sabira koordinate. Vratja novu tachku, ove dve ostaju nepromenjene
+	 * @param a prva
+	 * @param b druga
+	 * @return (a.x+b.x, a.y+b.y)
+	 */
+	
 	public static Point2D addPoints (Point2D a, Point2D b) {
 		return new Point2D.Double (a.getX() + b.getX(), a.getY() + b.getY());
 	}
+	
+	/**
+	 * Oduzima koordinate. Vratja novu tachku, ove dve ostaju nepromenjene
+	 * @param a prva
+	 * @param b druga
+	 * @return (a.x-b.x, a.y-b.y)
+	 */
 	
 	public static Point2D substractPoints (Point2D a, Point2D b) {
 		return new Point2D.Double (a.getX() - b.getX(), a.getY() - b.getY());

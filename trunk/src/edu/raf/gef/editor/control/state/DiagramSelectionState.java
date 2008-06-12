@@ -14,6 +14,7 @@ import edu.raf.gef.editor.model.object.AnchorPointContainer;
 import edu.raf.gef.editor.model.object.Draggable;
 import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.editor.model.object.Focusable;
+import edu.raf.gef.editor.model.object.impl.AnchorPoint;
 import edu.raf.gef.editor.model.object.impl.Lasso;
 import edu.raf.gef.editor.model.object.impl.Link;
 import edu.raf.gef.editor.model.object.impl.ResizeControlPoint;
@@ -64,20 +65,42 @@ public class DiagramSelectionState extends DiagramDefaultState {
 		if (super.mousePressed(e, userSpaceLocation))
 			return true;
 		mousePressedDrawable = diagram.getModel().getDrawableAt(userSpaceLocation);
-		if (mousePressedDrawable instanceof ResizeControlPoint &&
+		boolean isCtrlDown = (e.getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) != 0;
+		boolean isLinkFinalPoint = mousePressedDrawable instanceof ResizeControlPoint &&
 				((ResizeControlPoint)mousePressedDrawable).getParent() instanceof Link &&
-				(e.getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) != 0) {
-			Link link = (Link)((ResizeControlPoint)mousePressedDrawable).getParent();
-			ResizeControlPoint rcp = (ResizeControlPoint)mousePressedDrawable;
-			if (rcp == link.getResizePoins().getFirst()) {
-				diagram.getController().setState(new DiagramReLinkState (diagram, link, true, new DiagramSelectionState(diagram)));
-				return true;
+				(((Link)((ResizeControlPoint)mousePressedDrawable).getParent()).getResizePoins().getFirst() == mousePressedDrawable ||
+				((Link)((ResizeControlPoint)mousePressedDrawable).getParent()).getResizePoins().getLast() == mousePressedDrawable);
+		boolean isAnchorPoint = mousePressedDrawable instanceof AnchorPoint;
+		if ((isAnchorPoint && ((AnchorPoint)mousePressedDrawable).getLink() != null)
+				|| (isLinkFinalPoint)) {
+			if (isCtrlDown) {
+					Link link;
+					ResizeControlPoint rcp;
+					if (mousePressedDrawable instanceof ResizeControlPoint) {
+						link = (Link)((ResizeControlPoint)mousePressedDrawable).getParent();
+						rcp = (ResizeControlPoint)mousePressedDrawable;
+					} else {
+						link = ((AnchorPoint)mousePressedDrawable).getLink();
+						rcp = link.getSourceAnchor() == mousePressedDrawable ? link.getResizePoins().getFirst() : link.getResizePoins().getLast();
+					}
+					if (rcp == link.getResizePoins().getFirst()) {
+						diagram.getController().setState(new DiagramReLinkState (diagram, link, true, new DiagramSelectionState(diagram)));
+						return true;
+					}
+					if (rcp == link.getResizePoins().getLast()) {
+						diagram.getController().setState(new DiagramReLinkState (diagram, link, false, new DiagramSelectionState(diagram)));
+						return true;
+					}
+			} else {
+				if (isLinkFinalPoint) {
+					if (((Link)((ResizeControlPoint)mousePressedDrawable).getParent()).getResizePoins().getFirst() == mousePressedDrawable)
+						mousePressedDrawable = ((Link)((ResizeControlPoint)mousePressedDrawable).getParent()).getSourceAnchor();
+					else
+						mousePressedDrawable = ((Link)((ResizeControlPoint)mousePressedDrawable).getParent()).getDestinationAnchor();
+				}
 			}
-			if (rcp == link.getResizePoins().getLast()) {
-				diagram.getController().setState(new DiagramReLinkState (diagram, link, false, new DiagramSelectionState(diagram)));
-				return true;
-			}
-		}			
+		}
+		
 		hasDragOccured = false;
 		mousePressedIsDraggable = mousePressedDrawable != null
 				&& mousePressedDrawable instanceof Draggable;

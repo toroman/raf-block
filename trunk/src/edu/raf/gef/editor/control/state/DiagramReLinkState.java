@@ -15,6 +15,7 @@ public class DiagramReLinkState extends DiagramDefaultState {
 	private Link link;
 	private AnchorPoint oldAnchorPoint;
 	private boolean asSource;
+	private boolean firstTime = true;
 
 	private IDiagramAbstractState fallbackState;
 
@@ -34,16 +35,30 @@ public class DiagramReLinkState extends DiagramDefaultState {
 		diagram.getController().clearFocusedObjects();
 		diagram.getController().addToFocusedObjects(link);
 	}
+	
+	@Override
+	public boolean mousePressed(MouseEvent e, Point2D userSpaceLocation) {
+		if (super.mousePressed(e, userSpaceLocation))
+			return true;
+		firstTime = true;
+		return true;
+	}
 
 	@Override
 	public boolean mouseDragged(MouseEvent e, Point2D userSpaceLocation) {
 		if (super.mouseDragged(e, userSpaceLocation))
 			return true;
-		if (asSource)
-			link.getResizePoins().getFirst().dragTo(userSpaceLocation);
+		if (firstTime)
+			if (asSource)
+				link.getResizePoins().getFirst().dragStartedAt(userSpaceLocation);
+			else
+				link.getResizePoins().getLast().dragStartedAt(userSpaceLocation);
 		else
-			link.getResizePoins().getLast().dragTo(userSpaceLocation);
-			
+			if (asSource)
+				link.getResizePoins().getFirst().dragTo(userSpaceLocation);
+			else
+				link.getResizePoins().getLast().dragTo(userSpaceLocation);
+		firstTime = false;
 		return true;
 	}
 
@@ -51,6 +66,7 @@ public class DiagramReLinkState extends DiagramDefaultState {
 	public boolean mouseReleased(MouseEvent e, Point2D userSpaceLocation) {
 		if (super.mouseReleased(e, userSpaceLocation))
 			return true;
+		firstTime = true;
 		AnchorPoint newAnchor = diagram.getModel().getAcceptingAnchorAt(userSpaceLocation, link,
 			asSource);
 		if (newAnchor != null) {

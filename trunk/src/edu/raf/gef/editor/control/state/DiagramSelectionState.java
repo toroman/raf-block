@@ -4,11 +4,13 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
 import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.editor.control.state.util.DiagramDefaultState;
+import edu.raf.gef.editor.model.object.AnchorPointContainer;
 import edu.raf.gef.editor.model.object.Draggable;
 import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.editor.model.object.Focusable;
@@ -114,6 +116,7 @@ public class DiagramSelectionState extends DiagramDefaultState {
 			if (!object.isFocused())
 				diagram.getController().toggleFocus(object,
 					(e.getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) != 0);
+			Set <Link> linksToDrag = new HashSet <Link>();
 			for (Focusable focusable : focusedObjects) {
 				if (focusable instanceof Draggable) {
 					Draggable draggable = (Draggable) focusable;
@@ -122,6 +125,23 @@ public class DiagramSelectionState extends DiagramDefaultState {
 					else
 						draggable.dragTo(userSpaceLocation);
 				}
+				if (focusable instanceof AnchorPointContainer) {
+					for (Link link: ((AnchorPointContainer)focusable).getLinks()) {
+						AnchorPointContainer source = link.getSourceAnchor().getParent();
+						AnchorPointContainer dest = link.getDestinationAnchor().getParent();
+						if (source instanceof Focusable && dest instanceof Focusable
+								&& ((Focusable)source).isFocused() && ((Focusable)dest).isFocused())
+							linksToDrag.add(link);
+					}
+				}
+			}
+			for (Link link: linksToDrag) {
+				if (firstTime)
+					for (ResizeControlPoint point: link.getResizePoins())
+						point.dragStartedAt(startLocation);
+				else
+					for (ResizeControlPoint point: link.getResizePoins())
+						point.dragTo(userSpaceLocation);
 			}
 		}
 		return true;

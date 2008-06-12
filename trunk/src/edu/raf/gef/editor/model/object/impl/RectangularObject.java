@@ -16,6 +16,7 @@ import edu.raf.gef.editor.model.DiagramModel;
 import edu.raf.gef.editor.model.object.AnchorPointContainer;
 import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
+import edu.raf.gef.util.GeomHelper;
 import edu.raf.gef.util.MathHelper;
 
 public abstract class RectangularObject extends DraggableDiagramObject implements
@@ -159,7 +160,7 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 
 	@Override
 	public void dragStartedAt(Point2D point) {
-		draggingOffset = new Point2D.Double(point.getX() - this.getX(), point.getY() - this.getY());
+		draggingOffset = GeomHelper.substractPoints(point, getLocation());
 		setChanged();
 		notifyObservers();
 		clearChanged();
@@ -178,12 +179,7 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 			if (drawable != null)
 				return drawable;
 		}
-		for (AnchorPoint a : sourceAnchors) {
-			drawable = a.getDrawableUnderLocation(point);
-			if (drawable != null)
-				return drawable;
-		}
-		for (AnchorPoint a : destinationAnchors) {
+		for (AnchorPoint a : getAllAnchors()) {
 			drawable = a.getDrawableUnderLocation(point);
 			if (drawable != null)
 				return drawable;
@@ -263,10 +259,8 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 	protected void updateControlPointLocations() {
 		for (int i = 0; i < 8; i++)
 			updateResizePoint(i);
-		for (SourceAnchorPoint sap : sourceAnchors)
-			sap.setLocation(sap.afterAllConstraints(sap.getLocation()));
-		for (DestinationAnchorPoint dap : destinationAnchors)
-			dap.setLocation(dap.afterAllConstraints(dap.getLocation()));
+		for (AnchorPoint point : getAllAnchors())			
+			point.setLocation(point.afterAllConstraints(point.getLocation()));
 	}
 
 	public Dimension2D getMinDimension() {
@@ -293,8 +287,11 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		return x;
 	}
 
-	public void setX(double x) {
-		this.x = x;
+	public void setX(double newX) {
+		for (AnchorPoint anchor: getAllAnchors()) {
+			anchor.setX(anchor.getX() + newX - getX());
+		}
+		this.x = newX;
 		setChanged();
 		notifyObservers();
 		clearChanged();
@@ -304,8 +301,11 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		return y;
 	}
 
-	public void setY(double y) {
-		this.y = y;
+	public void setY(double newY) {
+		for (AnchorPoint anchor: getAllAnchors()) {
+			anchor.setY(anchor.getY() + newY - getY());
+		}
+		this.y = newY;
 		setChanged();
 		notifyObservers();
 		clearChanged();
@@ -315,8 +315,10 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		return width;
 	}
 
-	public void setWidth(double width) {
-		this.width = width;
+	public void setWidth(double newWidth) {
+		for (AnchorPoint point: getAllAnchors())
+			point.setX(getX() + (point.getX()-getX())*(newWidth/width));
+		this.width = newWidth;
 		setChanged();
 		notifyObservers();
 		clearChanged();
@@ -326,8 +328,10 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		return height;
 	}
 
-	public void setHeight(double height) {
-		this.height = height;
+	public void setHeight(double newHeight) {
+		for (AnchorPoint point: getAllAnchors())
+			point.setY(getY() + (point.getY()-getY())*(newHeight/height));
+		this.height = newHeight;
 		setChanged();
 		notifyObservers();
 		clearChanged();
@@ -348,10 +352,8 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		paintRectangular(g);
 		for (int i = 0; i < 8; i++)
 			resizeControlPoints.get(i).paint(g);
-		for (SourceAnchorPoint sap : sourceAnchors)
-			sap.paint(g);
-		for (DestinationAnchorPoint dap : destinationAnchors)
-			dap.paint(g);
+		for (AnchorPoint point : getAllAnchors())
+			point.paint(g);
 	}
 
 	protected abstract void paintRectangular(Graphics2D g);
@@ -377,6 +379,15 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 	protected LinkedList<SourceAnchorPoint> sourceAnchors;
 	protected LinkedList<DestinationAnchorPoint> destinationAnchors;
 
+	public Collection <AnchorPoint> getAllAnchors() {
+		Vector <AnchorPoint> vector = new Vector<AnchorPoint>(sourceAnchors.size() + destinationAnchors.size());
+		for (AnchorPoint point: sourceAnchors)
+			vector.add(point);
+		for (AnchorPoint point: destinationAnchors)
+			vector.add(point);
+		return vector;
+	}
+	
 	@Override
 	public AnchorPoint getDestinationPointAt(Point2D location, Link link) {
 		if (getDrawableUnderLocation(location) == null)
@@ -408,12 +419,9 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 	@Override
 	public Collection<Link> getLinks() {
 		Set<Link> links = new HashSet<Link>();
-		for (SourceAnchorPoint sap : sourceAnchors)
-			if (sap.getLink() != null)
-				links.add(sap.getLink());
-		for (DestinationAnchorPoint dap : destinationAnchors)
-			if (dap.getLink() != null)
-				links.add(dap.getLink());
+		for (AnchorPoint point : getAllAnchors())
+			if (point.getLink() != null)
+				links.add(point.getLink());
 		Link[] array = links.toArray(new Link[] {});
 		Vector<Link> vector = new Vector<Link>(array.length);
 		for (Link l : array)
@@ -438,5 +446,4 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		clearChanged();
 		return newAnchor;
 	}
-
 }

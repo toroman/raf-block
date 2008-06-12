@@ -8,12 +8,14 @@ import java.util.List;
 import edu.raf.gef.editor.model.object.ControlPointContainer;
 import edu.raf.gef.editor.model.object.Draggable;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
+import edu.raf.gef.util.GeomHelper;
 
 public abstract class ControlPoint implements Draggable {
 
 	private ControlPointContainer parent;
 	private Point2D location = new Point2D.Double(0, 0);
 	protected List <ControlPointConstraint> constraints;
+	private Point2D dragOffset = null;
 
 	public ControlPoint(ControlPointContainer parent, Point2D initLocation) {
 		this.parent = parent;
@@ -37,17 +39,21 @@ public abstract class ControlPoint implements Draggable {
 	
 	@Override
 	public void dragEndedAt(Point2D point) {
-		location = parent.onControlPointDragEnded(this, afterAllConstraints(point));
+		Point2D shouldBeLocation = GeomHelper.substractPoints(point, dragOffset);
+		location = parent.onControlPointDragEnded(this, afterAllConstraints(shouldBeLocation));
 	}
 
 	@Override
 	public void dragTo(Point2D point) {
-		location = parent.onControlPointDragged(this, afterAllConstraints(point));
+		Point2D shouldBeLocation = GeomHelper.substractPoints(point, dragOffset);
+		location = parent.onControlPointDragged(this, afterAllConstraints(shouldBeLocation));
 	}
 
 	@Override
 	public void dragStartedAt(Point2D point) {
-		location = parent.onControlPointDragStarted(this, afterAllConstraints(point));
+		dragOffset = GeomHelper.substractPoints(point, location);
+		Point2D shouldBeLocation = GeomHelper.substractPoints(point, dragOffset);
+		location = parent.onControlPointDragStarted(this, afterAllConstraints(shouldBeLocation));
 	}
 
 	public void setLocation(Point2D newLocation) {
@@ -67,6 +73,14 @@ public abstract class ControlPoint implements Draggable {
 	
 	public void setY(double y) {
 		location.setLocation(location.getX(), y);
+	}
+	
+	public double getX() {
+		return location.getX();
+	}
+	
+	public double getY() {
+		return location.getY();
 	}
 
 	public ControlPointContainer getParent() {

@@ -2,7 +2,7 @@
 
 <menubar>
 	<!-- Those starting with "c_" are Standard Containers, and those starting with "p_" are standard parts -->
-
+ 
 	<container id="c_popup_root">
 		<part id="p_unredo">
 			<action id="undo" />
@@ -14,7 +14,7 @@
 			<action id="paste" />
 		</part>
 		<part id="p_properties">
-			<action id="ShowProperties" />
+			<action id="properties" />
 		</part>
 	</container>
 

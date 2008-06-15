@@ -55,11 +55,6 @@ public class MenuManager {
 	 */
 	private final HashMap<String, MenuPartContainer> containers;
 
-	/**
-	 * Named actions, like standard actions (Cut copy paste)
-	 */
-	private final Map<String, Action> namedActions = new HashMap<String, Action>();
-
 	private Component parent;
 
 	public MenuManager(Component parent, boolean isPopupMenu) {
@@ -93,11 +88,11 @@ public class MenuManager {
 		part.add(action);
 	}
 
-	public void addAction(String partId, Action action, String actionId) {
-		if (!parts.containsKey(partId))
-			throw new GefRuntimeException("Invalid menu part id!");
-		namedActions.put(actionId, action);
-	}
+	// public void addAction(String partId, Action action, String actionId) {
+	// if (!parts.containsKey(partId))
+	// throw new GefRuntimeException("Invalid menu part id!");
+	// addAction(partId, action);
+	//	}
 
 	public void overrideAction(String actionId, ActionListener listener) {
 

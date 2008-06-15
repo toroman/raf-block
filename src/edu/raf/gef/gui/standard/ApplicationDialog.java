@@ -35,7 +35,7 @@ public abstract class ApplicationDialog {
 	protected final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	private boolean createStatusbar = false;
-
+	
 	public ApplicationDialog(String id) {
 		this.id = id;
 	}
@@ -126,10 +126,11 @@ public abstract class ApplicationDialog {
 		}
 	}
 
-	public void open(Window owner) {
+	public Object open(Window owner) {
 		build(owner);
 		restoreFrameState();
 		dialog.setVisible(true);
+		return null;
 	}
 
 	protected void close() {

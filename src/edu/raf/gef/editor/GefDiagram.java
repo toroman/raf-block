@@ -1,11 +1,17 @@
 package edu.raf.gef.editor;
 
+import java.util.WeakHashMap;
+
+import com.thoughtworks.xstream.XStream;
+
 import edu.raf.gef.app.util.GefUndoManager;
 import edu.raf.gef.editor.control.DiagramController;
 import edu.raf.gef.editor.model.DiagramModel;
 import edu.raf.gef.editor.view.DiagramView;
 import edu.raf.gef.gui.ActionContextController;
 import edu.raf.gef.gui.MainFrame;
+import edu.raf.gef.workspace.Workspace;
+import edu.raf.gef.workspace.project.DiagramProject;
 
 /**
  * GefDiagram is an composition of GEF MVC components.
@@ -20,9 +26,12 @@ public class GefDiagram implements ActionContextController {
 	protected final DiagramView view;
 	protected final DiagramController controller;
 	protected final GefUndoManager undoManager;
-	protected final IDiagramTreeNode treeModel;
+	// lazy
+	protected WeakHashMap<Workspace, IDiagramTreeNode> tree;
 
-	public GefDiagram() {
+	private final DiagramProject project;
+
+	public GefDiagram(DiagramProject project) {
 		// models knows nothing
 		model = createModel();
 
@@ -34,13 +43,14 @@ public class GefDiagram implements ActionContextController {
 
 		// every diagram has its' own undo manager
 		undoManager = createUndoManager();
-
-		// tree model is representing this diagram in a workspace explorer
-		treeModel = createTreeModel(this);
+		
+		// add to parent
+		this.project = project;
+		project.addDiagram(this);
 	}
 
-	protected IDiagramTreeNode createTreeModel(GefDiagram gefDiagram) {
-		return new DefaultDiagramTreeModel(this);
+	protected IDiagramTreeNode createTreeModel(Workspace ws) {
+		return new DefaultDiagramTreeModel(this, ws);
 	}
 
 	protected DiagramModel createModel() {
@@ -75,18 +85,37 @@ public class GefDiagram implements ActionContextController {
 		return undoManager;
 	}
 
+	public XStream getSerializator() {
+		return new XStream();
+	}
+	
+	public DiagramProject getProject() {
+		return project;
+	}
+
 	@Override
-	public void onActivated(MainFrame main, ActionContextController previousContext) {
+	public void onActivated(MainFrame main,
+			ActionContextController previousContext) {
 		// restore clicked state
 	}
 
 	@Override
-	public void onDeactivated(MainFrame main, ActionContextController nextContext) {
+	public void onDeactivated(MainFrame main,
+			ActionContextController nextContext) {
 		// TODO Auto-generated method stub
 	}
 
-	public IDiagramTreeNode getTreeModel() {
-		return treeModel;
+	/**
+	 * Tree model is representing this diagram in a workspace explorer
+	 */
+	public synchronized IDiagramTreeNode getTreeModel(Workspace workspace) {
+		if (tree == null)
+			tree = new WeakHashMap<Workspace, IDiagramTreeNode>();
+		IDiagramTreeNode node = tree.get(workspace);
+		if (node == null) {
+			tree.put(workspace, node = createTreeModel(workspace));
+		}
+		return node;
 	}
 
 }

@@ -3,9 +3,11 @@ package edu.raf.gef.workspace.panel;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.util.LinkedList;
 
 import javax.swing.JPanel;
 import javax.swing.JTree;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import edu.raf.gef.workspace.Workspace;
@@ -64,5 +66,14 @@ public class WorkspaceComponent extends JPanel {
 	public void setSelectedProject(DiagramProject project) {
 		trWorkspace.setSelectionPath(new TreePath(new Object[] { getTree().getModel().getRoot(),
 				project }));
+	}
+
+	public void setSelected(TreeNode lastNode) {
+		LinkedList<TreeNode> list = new LinkedList<TreeNode>();
+		list.addLast(lastNode);
+		while (lastNode.getParent() != null) {
+			list.addFirst(lastNode = lastNode.getParent());
+		}
+		trWorkspace.setSelectionPath(new TreePath(list.toArray()));
 	}
 }

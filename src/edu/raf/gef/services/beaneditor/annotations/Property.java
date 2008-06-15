@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package edu.raf.gefcomponents.beaneditor.annotations;
+package edu.raf.gef.services.beaneditor.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

@@ -30,15 +30,16 @@ public abstract class AddLinkAction extends ResourceConfiguredAction {
 	public void actionPerformed(ActionEvent e) {
 		final GefDiagram dg = selDiagram.getSelectedDiagram();
 		if (dg == null) {
-			getGeh().handleUserError("Can't add object", "Diagram not selected!");
+			getGeh().handleUserError("Can't add object",
+					"Diagram not selected!");
 			return;
 		}
 		DiagramSelectionState defState = new DiagramSelectionState(dg);
-		dg.getController().setState(
-			new DiagramAddLinkState (dg, type, defState));
+		dg.getController()
+				.setState(new DiagramAddLinkState(dg, type, defState));
 	}
-	
-	public GefDiagram getSelectedDiagram () {
+
+	public GefDiagram getSelectedDiagram() {
 		return selDiagram.getSelectedDiagram();
 	}
 

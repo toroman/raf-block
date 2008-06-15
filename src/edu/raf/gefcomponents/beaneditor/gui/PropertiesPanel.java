@@ -32,7 +32,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
-import edu.raf.gefcomponents.beaneditor.annotations.Property;
+import edu.raf.gef.services.beaneditor.annotations.Property;
 
 /**
  * Prikazuje osobine nekog objekta.

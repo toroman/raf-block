@@ -36,15 +36,6 @@ public abstract class AddDraggableAction extends ResourceConfiguredAction {
 		DiagramSelectionState defState = new DiagramSelectionState(dg);
 		dg.getController().setState(
 			new DiagramAddDraggableState (dg, type, defState, null));
-//		Draggable de;
-//		try {
-//			de = this.type.newInstance();
-//		} catch (Exception ex) {
-//			getGeh().handleError("actionPerformed", "Error creating object!", ex);
-//			return;
-//		}
-//		dg.getUndoManager().undoableEditHappened(
-//			new UndoableEditEvent(dg.getModel(), new AddDrawableEdit(dg.getModel(), de)));
 	}
 	
 	public GefDiagram getSelectedDiagram () {

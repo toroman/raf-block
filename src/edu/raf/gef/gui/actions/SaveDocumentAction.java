@@ -3,9 +3,7 @@ package edu.raf.gef.gui.actions;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 
-import edu.raf.gef.editor.GefDiagram;
-
-public class SaveDocumentAction extends ResourceConfiguredAction implements ContextSensitiveAction {
+public class SaveDocumentAction extends GlobalAction {
 
 	/**
 	 * 
@@ -21,20 +19,6 @@ public class SaveDocumentAction extends ResourceConfiguredAction implements Cont
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-	}
-
-	/**
-	 * This action can be applied to plugins which can be saved.
-	 * <p>
-	 * Those are diagram plugins at the moment, but since this can be changed in
-	 * the future, this mechanism may change.
-	 * <p>
-	 * TODO: For example, perhaps the best way is to "ask" the plugin - hey, can
-	 * you be saved now? Is there need to be saved now? etc.
-	 */
-	@Override
-	public boolean worksOn(Object focused) {
-		return focused instanceof GefDiagram;
 	}
 
 }

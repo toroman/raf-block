@@ -52,15 +52,16 @@ public class DiagramView implements Observer {
 				Graphics2D g = (Graphics2D) g1;
 				DiagramView.this.drawDiagram(g);
 			}
-		};
 
+		};
 		c.setBackground(Color.GRAY);
 		return c;
 	}
 
 	protected void drawDiagram(Graphics2D g) {
 		if (antialiasing)
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+					RenderingHints.VALUE_ANTIALIAS_ON);
 		Rectangle r = g.getClipBounds();
 		g.clearRect(0, 0, (int) r.getWidth() + 1, (int) r.getHeight() + 1);
 		if (getGrid() != null)

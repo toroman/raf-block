@@ -6,10 +6,9 @@ import edu.raf.gef.app.IResources;
 import edu.raf.gef.editor.actions.AddLinkAction;
 import edu.raf.gef.editor.model.object.impl.Link;
 import edu.raf.gef.gui.SelectedDiagramProvider;
-import edu.raf.gef.gui.actions.ContextSensitiveAction;
 import edu.raf.gef.gui.swing.DiagramPluginFrame;
 
-public class AddFlowchartLinkAction extends AddLinkAction implements ContextSensitiveAction {
+public class AddFlowchartLinkAction extends AddLinkAction {
 	/**
 	 * 
 	 */

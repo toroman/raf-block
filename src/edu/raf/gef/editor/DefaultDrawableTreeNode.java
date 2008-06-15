@@ -1,18 +1,49 @@
 package edu.raf.gef.editor;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 import edu.raf.gef.editor.model.object.Drawable;
 
-public class DefaultDrawableTreeNode extends DefaultMutableTreeNode {
+public class DefaultDrawableTreeNode extends DefaultMutableTreeNode implements
+		IDrawableNode {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2588579623932593298L;
+	private Drawable drawable;
+	private IDiagramTreeNode diagramTree;
 
-	public DefaultDrawableTreeNode(Drawable drawable) {
-		super(drawable);
+	public DefaultDrawableTreeNode(Drawable drawable,
+			IDiagramTreeNode diagramTree) {
+		super(getNameFromDrawable(drawable));
+		this.drawable = drawable;
+		this.diagramTree = diagramTree;
+	}
+
+	private static Object getNameFromDrawable(Drawable drawable) {
+		String name = drawable.getClass().getName();
+		int indexOfDot = name.lastIndexOf('.');
+		if (indexOfDot >= 0)
+			name = name.substring(indexOfDot + 1);
+		return name;
+	}
+
+	@Override
+	public Drawable getDrawable() {
+		return drawable;
+	}
+
+	@Override
+	public TreeNode getParent() {
+		return diagramTree;
+	}
+
+	@Override
+	public void setParent(MutableTreeNode newParent) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

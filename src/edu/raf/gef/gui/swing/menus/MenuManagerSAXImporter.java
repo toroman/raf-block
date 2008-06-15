@@ -32,7 +32,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import edu.raf.gef.app.IResources;
-import edu.raf.gef.gui.actions.StandardOverridableAction;
+import edu.raf.gef.gui.actions.GlobalAction;
 
 /**
  * Parses Menu XML file and fills the menu manager with the standard menus
@@ -110,8 +110,10 @@ public class MenuManagerSAXImporter extends DefaultHandler {
 		} else if ("action".equals(name)) {
 			String id = attr.getValue("id");
 			try {
-				StandardOverridableAction action = new StandardOverridableAction(manager
-						.getParent(), id);
+				// StandardOverridableAction action = new
+				// StandardOverridableAction(manager
+				// .getParent(), id);
+				GlobalAction action = new GlobalAction(manager.getParent(), id);
 				String parentPart = xpath.peek();
 				manager.addAction(parentPart, action);
 			} catch (Exception e) {

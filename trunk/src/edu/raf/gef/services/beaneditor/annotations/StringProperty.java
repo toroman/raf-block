@@ -1,4 +1,4 @@
-package edu.raf.gefcomponents.beaneditor.annotations;
+package edu.raf.gef.services.beaneditor.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

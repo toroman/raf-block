@@ -1,14 +1,16 @@
 package edu.raf.gefcomponents.beaneditor.impl;
 
 import edu.raf.gef.services.beaneditor.IBeanEditor;
+import edu.raf.gefcomponents.beaneditor.BeanEditorPlugin;
 import edu.raf.gefcomponents.beaneditor.gui.PropertiesPanel;
 
 public class BeanEditorImplementation implements IBeanEditor {
 
 	private PropertiesPanel _view;
+	private BeanEditorPlugin plugin;
 
-	public BeanEditorImplementation() {
-
+	public BeanEditorImplementation(BeanEditorPlugin beanEditorPlugin) {
+		this.plugin = beanEditorPlugin;
 	}
 
 	public synchronized PropertiesPanel getView() {
@@ -20,6 +22,7 @@ public class BeanEditorImplementation implements IBeanEditor {
 	@Override
 	public void addBean(Object bean) {
 		getView().setObject(bean);
+		plugin.getMainFrame().getTabbedTools().setSelectedComponent(getView());
 	}
 
 	@Override

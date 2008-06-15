@@ -24,8 +24,8 @@ import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import edu.raf.gefcomponents.beaneditor.annotations.Property;
-import edu.raf.gefcomponents.beaneditor.annotations.StringProperty;
+import edu.raf.gef.services.beaneditor.annotations.Property;
+import edu.raf.gef.services.beaneditor.annotations.StringProperty;
 
 /**
  * Kontejner za neki field/property. Sadrzi sve potrebne objekte za rad

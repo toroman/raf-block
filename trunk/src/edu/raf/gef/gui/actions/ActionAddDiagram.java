@@ -1,12 +1,13 @@
 package edu.raf.gef.gui.actions;
 
 import java.awt.event.ActionEvent;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.AbstractAction;
 
 import edu.raf.gef.app.errors.GraphicalErrorHandler;
+import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.gui.MainFrame;
-import edu.raf.gef.plugin.DiagramFactory;
 import edu.raf.gef.plugin.DiagramPlugin;
 import edu.raf.gef.workspace.project.DiagramProject;
 
@@ -20,40 +21,34 @@ public class ActionAddDiagram extends AbstractAction {
 
 	private GraphicalErrorHandler geh;
 
-	/**
-	 * Factory.
-	 */
-	private DiagramFactory creationController;
-
 	private final DiagramPlugin plugin;
 
 	public ActionAddDiagram(MainFrame mf, DiagramPlugin plugin) {
 		super(plugin.getResources().getString("plugin.name"));
 		this.plugin = plugin;
 		this.mainFrame = mf;
-		/*
-		 * Default factory
-		 */
-		this.creationController = new DiagramFactory(plugin);
-	}
-
-	/**
-	 * Reconfigure the factory.
-	 * 
-	 * @param controller
-	 */
-	public void setCreationController(DiagramFactory controller) {
-		this.creationController = controller;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		DiagramProject project = mainFrame.getWorkspaceComponent().getSelectedProject();
+		DiagramProject project = mainFrame.getWorkspaceComponent()
+				.getSelectedProject();
 		if (project == null) {
-			getGeh().handleUserError("Wrong usage", "You must select one project only!");
+			getGeh().handleUserError("Wrong usage",
+					"You must select one project only!");
 			return;
 		}
-		project.addDiagram(creationController.createDiagram());
+		GefDiagram diagram = null;
+		try {
+			diagram = plugin.getDiagramClass().getConstructor(
+					DiagramProject.class).newInstance(project);
+		} catch (Throwable t) {
+			getGeh().handleErrorBlocking("actionPerformed",
+					"Couldn't create new diagram!", t);
+			return;
+		}
+		mainFrame.getWorkspaceComponent().setSelected(
+				diagram.getTreeModel(mainFrame.getWorkspace()));
 	}
 
 	protected GraphicalErrorHandler getGeh() {

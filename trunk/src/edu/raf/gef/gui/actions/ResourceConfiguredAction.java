@@ -15,9 +15,11 @@ import edu.raf.gef.app.errors.GraphicalErrorHandler;
 public abstract class ResourceConfiguredAction extends AbstractAction {
 	private GraphicalErrorHandler geh;
 	private final Component onErrorComponent;
+	private final String id;
 
 	public ResourceConfiguredAction(Component onErrorComponent, String id) {
 		this.onErrorComponent = onErrorComponent;
+		this.id = id;
 		IResources res = getResources();
 		String name = res.getString(id + ".name");
 		if (name == null)
@@ -36,6 +38,15 @@ public abstract class ResourceConfiguredAction extends AbstractAction {
 		} catch (Exception ex) {
 			getLog().log(Level.FINE, "No accelerator for: " + id); // ,ex
 		}
+	}
+
+	/**
+	 * 
+	 * @return Unique (non translatable) identification of this action type,
+	 *         usable in ActionMaps.
+	 */
+	public String getId() {
+		return id;
 	}
 
 	protected IResources getResources() {

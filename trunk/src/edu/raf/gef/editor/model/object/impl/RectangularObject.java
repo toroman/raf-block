@@ -16,6 +16,7 @@ import edu.raf.gef.editor.model.DiagramModel;
 import edu.raf.gef.editor.model.object.AnchorPointContainer;
 import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
+import edu.raf.gef.services.beaneditor.annotations.Property;
 import edu.raf.gef.util.GeomHelper;
 import edu.raf.gef.util.MathHelper;
 
@@ -283,6 +284,7 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		return null;
 	}
 	
+	@Property
 	public double getX() {
 		return x;
 	}
@@ -297,6 +299,7 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		clearChanged();
 	}
 
+	@Property
 	public double getY() {
 		return y;
 	}
@@ -311,6 +314,7 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		clearChanged();
 	}
 
+	@Property
 	public double getWidth() {
 		return width;
 	}
@@ -324,6 +328,7 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		clearChanged();
 	}
 
+	@Property
 	public double getHeight() {
 		return height;
 	}

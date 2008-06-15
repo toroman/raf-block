@@ -6,10 +6,9 @@ import edu.raf.gef.app.IResources;
 import edu.raf.gef.editor.actions.AddDraggableAction;
 import edu.raf.gef.editor.model.object.Draggable;
 import edu.raf.gef.gui.SelectedDiagramProvider;
-import edu.raf.gef.gui.actions.ContextSensitiveAction;
 import edu.raf.gef.gui.swing.DiagramPluginFrame;
 
-public class AddFlowchartDraggableAction extends AddDraggableAction implements ContextSensitiveAction {
+public class AddFlowchartDraggableAction extends AddDraggableAction {
 	/**
 	 * 
 	 */
@@ -25,7 +24,7 @@ public class AddFlowchartDraggableAction extends AddDraggableAction implements C
 		return FlowChartPlugin.resources;
 	}
 
-	public boolean worksOn(Object focused) {
+	private boolean worksOn(Object focused) {
 		return focused != null && (focused instanceof DiagramPluginFrame)
 				&& (((DiagramPluginFrame) focused).getDiagram() instanceof FlowChartDiagram);
 	}

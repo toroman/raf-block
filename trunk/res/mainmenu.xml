@@ -9,8 +9,12 @@
 				<part id="p_new_project"></part>
 				<part id="p_new_diagram"></part>
 			</container>
+			<action id="open" />
 		</part>
-		<part id="p_file_persisting"></part>
+		<part id="p_file_persisting">
+			<action id="save" />
+			<action id="saveas" />
+		</part>
 		<part id="p_mru"></part>
 		<part id="p_file_exit"></part>
 	</container>
@@ -24,6 +28,7 @@
 			<action id="cut" />
 			<action id="copy" />
 			<action id="paste" />
+			<action id="properties" />
 		</part>
 	</container>
 

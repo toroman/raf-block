@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.raf.gef.gui.MainFrame;
 import edu.raf.gef.gui.actions.ResourceConfiguredAction;
+import edu.raf.gef.gui.swing.menus.StandardMenuActions;
 import edu.raf.gef.services.ServiceManager;
 import edu.raf.gef.services.ServiceManager.ServiceManagerListener;
 import edu.raf.gef.services.beaneditor.IBeanEditor;
@@ -22,12 +23,14 @@ public class ActionShowProperties extends ResourceConfiguredAction implements
 	private Object bean;
 
 	public ActionShowProperties(MainFrame mf, ServiceManager serviceManager) {
-		super(mf.getFrame(), "ShowProperties");
+		super(mf.getFrame(), StandardMenuActions.PROPERTIES);
 		this.mainFrame = mf;
 		this.serviceManager = serviceManager;
 		this.serviceManager.addServiceManagerListener(this);
-		List<? extends IBeanEditor> t = serviceManager.getServiceImplementations(IBeanEditor.class);
+		List<? extends IBeanEditor> t = serviceManager
+				.getServiceImplementations(IBeanEditor.class);
 		if (t.size() == 0) {
+			// no bean editing services
 			setEnabled(false);
 		} else {
 			// TODO: give option to user to select which bean editor to use!
@@ -40,7 +43,8 @@ public class ActionShowProperties extends ResourceConfiguredAction implements
 	public void actionPerformed(ActionEvent arg0) {
 		if (bean != null)
 			srvBeanEditor.removeBean(bean);
-		bean = mainFrame.getSelectedDiagram().getController().getFocusedObjects();
+		bean = mainFrame.getSelectedDiagram().getController()
+				.getFocusedObjects().iterator().next();
 		srvBeanEditor.addBean(bean);
 	}
 

@@ -28,6 +28,7 @@ import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.editor.model.object.Focusable;
 import edu.raf.gef.gui.actions.ActionExitApplication;
 import edu.raf.gef.gui.actions.ActionNewProject;
+import edu.raf.gef.gui.actions.ActionShowHelp;
 import edu.raf.gef.gui.actions.ActionShowPluginManager;
 import edu.raf.gef.gui.actions.OpenDocumentAction;
 import edu.raf.gef.gui.standard.ApplicationWindow;
@@ -123,6 +124,8 @@ public class MainFrame extends ApplicationWindow {
 		menu.getPart(StandardMenuParts.NEW_PROJECT_PART).add(new ActionNewProject(this));
 		menu.getPart(StandardMenuParts.PLUGIN_MANAGER).add(new ActionShowPluginManager(this));
 		menu.getPart(StandardMenuParts.FILE_EXIT_PART).add(new ActionExitApplication(this));
+		menu.getPart(StandardMenuParts.HELP).add(
+				new ActionShowHelp());
 		return menu;
 	}
 

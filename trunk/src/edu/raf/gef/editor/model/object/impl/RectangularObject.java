@@ -27,7 +27,7 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 	private Dimension2D minDimension, maxDimension;
 	private double x, y, width, height;
 	
-	private String title;
+	private String title = "";
 
 	private Point2D draggingOffset;
 
@@ -460,6 +460,8 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 	}
 
 	public void setTitle(String title) {
+		if (title == null)
+			title = "";
 		this.title = title;
 		setChanged();
 		notifyObservers();

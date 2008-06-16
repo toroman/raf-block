@@ -35,6 +35,7 @@ public class StartBlock extends RectangularObject {
 				return oldLocation;
 			}
 		};
+
 		for (int index = 0; index < 8; index++) {
 			if ((getRoleOfIndex(index) & SOUTH_MASK) != 0)
 				resizeControlPoints.get(index).addConstraint(constraint);

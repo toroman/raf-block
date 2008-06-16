@@ -22,8 +22,10 @@ import edu.raf.gef.editor.control.state.util.IDiagramAbstractState;
 import edu.raf.gef.editor.model.DiagramModel;
 import edu.raf.gef.editor.model.object.AnchorPointContainer;
 import edu.raf.gef.editor.model.object.Focusable;
+import edu.raf.gef.editor.model.object.impl.DiagramObject;
 import edu.raf.gef.editor.model.object.impl.Link;
 import edu.raf.gef.util.GeomHelper;
+import edu.raf.gef.util.TransientObservable;
 
 public class DiagramController implements MouseListener, MouseWheelListener, MouseMotionListener,
 		KeyListener {
@@ -226,10 +228,14 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 		Object obj = copy();
 		for (Focusable focusable : getFocusedObjects()) {
 			if (focusable instanceof AnchorPointContainer) {
-				for (Link link : ((AnchorPointContainer) focusable).getLinks())
+				for (Link link : ((AnchorPointContainer) focusable).getLinks()) {
 					getModel().removeElement(link);
+					link.deleteObserver(getModel());
+				}
 			}
 			getModel().removeElement(focusable);
+			if (focusable instanceof TransientObservable)
+				((TransientObservable)focusable).deleteObserver(getModel());
 		}
 		clearFocusedObjects();
 		return obj;
@@ -295,6 +301,8 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 		clearFocusedObjects();
 		for (Focusable focusable : objectsToCopy) {
 			getModel().addElement(focusable);
+			if (focusable instanceof TransientObservable)
+				((TransientObservable)focusable).deleteObserver(getModel());
 			addToFocusedObjects(focusable);
 		}
 	}

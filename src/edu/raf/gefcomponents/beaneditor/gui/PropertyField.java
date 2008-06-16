@@ -54,7 +54,7 @@ abstract class PropertyField extends JPanel implements MouseListener, FocusListe
         g.setFont(font);
         Color prethodnaBoja = g.getColor();
         Rectangle c = g.getClipBounds();
-        g.setColor(Color.LIGHT_GRAY);
+        g.setColor(Color.WHITE);
         g.fillRect(0, 0, c.width, c.height);
         g.setColor(Color.DARK_GRAY);
         g.draw3DRect(0, 0, c.width, c.height, true);

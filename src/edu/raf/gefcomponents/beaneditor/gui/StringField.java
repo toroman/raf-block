@@ -52,7 +52,7 @@ class StringField extends PropertyField {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.setColor(Color.black);
-		g.drawString(parent.getValue().toString(), 4, 14);
+		g.drawString(parent.getValue().toString(), 4, 17);
 	}
 
 	@Override

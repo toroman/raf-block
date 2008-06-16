@@ -58,6 +58,8 @@ class PropertyName extends JPanel implements FocusListener {
 			}
 		});
 	}
+	
+	private static final Color blagoSivo = new Color (230, 230, 230);
 
 	@Override
 	public void paint(Graphics g1) {
@@ -65,13 +67,13 @@ class PropertyName extends JPanel implements FocusListener {
 		if (focused)
 			g.setColor(Color.WHITE);
 		else
-			g.setColor(Color.LIGHT_GRAY);
+			g.setColor(blagoSivo);
 		Rectangle c = g.getClipBounds();
 		g.fill3DRect(0, 0, c.width, c.height, true);
 		g.setColor(Color.BLACK);
 		Font oldFont = g.getFont();
 		g.setFont(font);
-		g.drawString(parentPair.getTitle(), 2, 14);
+		g.drawString(parentPair.getTitle(), 4, 17);
 		g.setFont(oldFont);
 	}
 

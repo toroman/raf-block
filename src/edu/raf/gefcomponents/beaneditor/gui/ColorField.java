@@ -65,7 +65,7 @@ public class ColorField extends PropertyField {
 				true);
 		// tekst boje
 		g.setColor(Color.BLACK);
-		g.drawString(getHexRGBA(color), 2, 14);
+		g.drawString(getHexRGBA(color), 4, 17);
 	}
 
 	@Override

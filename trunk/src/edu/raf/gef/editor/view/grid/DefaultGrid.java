@@ -50,9 +50,9 @@ public class DefaultGrid implements DiagramGrid {
 		double scale = atm.getAffineTransform().getScaleX();
 
 		double smallestUnit = scale * getGridDensity();
-		while (smallestUnit < 5)
+		while (smallestUnit < 20)
 			smallestUnit *= 10;
-		while (smallestUnit > 30)
+		while (smallestUnit > 110)
 			smallestUnit /= 10;
 
 		Color[] colors = new Color[3];

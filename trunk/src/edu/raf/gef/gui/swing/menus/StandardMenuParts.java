@@ -59,7 +59,7 @@ public interface StandardMenuParts {
 
 	String ABOUT = "p_about";
 
-	String HELP_CONTENTS = "p_help_contents";
+	String HELP = "p_help";
 
 	String WINDOW_LOOK_AND_FEEL = "p_look_and_feel";
 

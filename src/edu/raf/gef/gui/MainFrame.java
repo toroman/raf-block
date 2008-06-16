@@ -1,6 +1,7 @@
 package edu.raf.gef.gui;
 
 import java.awt.Component;
+import java.awt.event.WindowEvent;
 import java.io.InputStream;
 import java.util.logging.Level;
 
@@ -74,8 +75,15 @@ public class MainFrame extends ApplicationWindow {
 	}
 
 	private void initWorkspace() {
-		Workspace restore = new Workspace(Workspace
-				.getWorkspaceFileFromResources(getResources()));
+		Workspace restore;
+		try {
+			restore = Workspace.createWorkspace(Workspace
+					.getWorkspaceFileFromResources(getResources()));
+		} catch (GefException e) {
+			getGeh().handleErrorBlocking("initWorkspace",
+					"Couldn't open workspace, please change it!", e);
+			return;
+		}
 		restore.setWorkspaceLocationToProperties(getResources());
 		workspace = new WorkspaceComponent(restore);
 		tabbedTools.addTab("Navigator", workspace);
@@ -258,4 +266,16 @@ public class MainFrame extends ApplicationWindow {
 		return Main.getComponentDiscoveryUtils().getPlugins();
 	}
 
+	@Override
+	protected void onFrameClosing(WindowEvent e) {
+		super.onFrameClosing(e);
+		if (this.workspace != null) {
+			try {
+				workspace.getWorkspace().save();
+			} catch (GefException ex) {
+				getGeh().handleErrorBlocking("Save",
+						"Couldn't save workspace!", ex);
+			}
+		}
+	}
 }

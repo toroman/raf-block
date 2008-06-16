@@ -196,18 +196,20 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		boolean east = (getRoleOfIndex(index) & EAST_MASK) != 0;
 		boolean south = (getRoleOfIndex(index) & SOUTH_MASK) != 0;
 		boolean west = (getRoleOfIndex(index) & WEST_MASK) != 0;
+		double newX = x, newY = y, newWidth = width, newHeight = height;
 		if (north) {
-			setHeight(getY() + getHeight() - controlPoint.getLocation().getY());
-			setY(controlPoint.getLocation().getY());
+			newHeight = (getY() + getHeight() - controlPoint.getLocation().getY());
+			newY = (controlPoint.getLocation().getY());
 		}
 		if (west) {
-			setWidth(getX() + getWidth() - controlPoint.getLocation().getX());
-			setX(controlPoint.getLocation().getX());
+			newWidth = (getX() + getWidth() - controlPoint.getLocation().getX());
+			newX = (controlPoint.getLocation().getX());
 		}
 		if (east)
-			setWidth(controlPoint.getLocation().getX() - getX());
+			newWidth = (controlPoint.getLocation().getX() - getX());
 		if (south)
-			setHeight(controlPoint.getLocation().getY() - getY());
+			newHeight = (controlPoint.getLocation().getY() - getY());
+		setBounds(newX, newY, newWidth, newHeight);
 	}
 
 	@Override
@@ -260,7 +262,7 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 	protected void updateControlPointLocations() {
 		for (int i = 0; i < 8; i++)
 			updateResizePoint(i);
-		for (AnchorPoint point : getAllAnchors())			
+		for (AnchorPoint point : getAllAnchors())
 			point.setLocation(point.afterAllConstraints(point.getLocation()));
 	}
 
@@ -280,23 +282,38 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		this.maxDimension = maxDimension;
 	}
 
-	public Dimension2D getPrefferedDimension () {
+	public Dimension2D getPrefferedDimension() {
 		return null;
 	}
-	
+
 	@Property
 	public double getX() {
 		return x;
 	}
 
-	public void setX(double newX) {
-		for (AnchorPoint anchor: getAllAnchors()) {
-			anchor.setX(anchor.getX() + newX - getX());
+	public void setBounds(double newX, double newY, double newWidth, double newHeight) {
+		for (ControlPoint cp : resizeControlPoints) {
+			double x = newX + (cp.getX() - this.x) * (newWidth / this.width);
+			double y = newY + (cp.getY() - this.y) * (newHeight / this.height);
+			cp.setLocation(x, y);
+		}
+		for (ControlPoint cp : getAllAnchors()) {
+			double x = newX + (cp.getX() - this.x) * (newWidth / this.width);
+			double y = newY + (cp.getY() - this.y) * (newHeight / this.height);
+			cp.setLocation(x, y);
 		}
 		this.x = newX;
+		this.y = newY;
+		this.width = newWidth;
+		this.height = newHeight;
+		updateControlPointLocations();
 		setChanged();
 		notifyObservers();
 		clearChanged();
+	}
+
+	public void setX(double newX) {
+		setBounds(newX, y, width, height);
 	}
 
 	@Property
@@ -305,13 +322,7 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 	}
 
 	public void setY(double newY) {
-		for (AnchorPoint anchor: getAllAnchors()) {
-			anchor.setY(anchor.getY() + newY - getY());
-		}
-		this.y = newY;
-		setChanged();
-		notifyObservers();
-		clearChanged();
+		setBounds(x, newY, width, height);
 	}
 
 	@Property
@@ -320,12 +331,7 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 	}
 
 	public void setWidth(double newWidth) {
-		for (AnchorPoint point: getAllAnchors())
-			point.setX(getX() + (point.getX()-getX())*(newWidth/width));
-		this.width = newWidth;
-		setChanged();
-		notifyObservers();
-		clearChanged();
+		setBounds(x, y, newWidth, height);
 	}
 
 	@Property
@@ -334,22 +340,12 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 	}
 
 	public void setHeight(double newHeight) {
-		for (AnchorPoint point: getAllAnchors())
-			point.setY(getY() + (point.getY()-getY())*(newHeight/height));
-		this.height = newHeight;
-		setChanged();
-		notifyObservers();
-		clearChanged();
+		setBounds(x, y, width, newHeight);
 	}
 
 	@Override
 	public void setLocation(Point2D point) {
-		setX(point.getX());
-		setY(point.getY());
-		updateControlPointLocations();
-		setChanged();
-		notifyObservers();
-		clearChanged();
+		setBounds(point.getX(), point.getY(), width, height);
 	}
 
 	@Override
@@ -384,15 +380,16 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 	protected LinkedList<SourceAnchorPoint> sourceAnchors;
 	protected LinkedList<DestinationAnchorPoint> destinationAnchors;
 
-	public Collection <AnchorPoint> getAllAnchors() {
-		Vector <AnchorPoint> vector = new Vector<AnchorPoint>(sourceAnchors.size() + destinationAnchors.size());
-		for (AnchorPoint point: sourceAnchors)
+	public Collection<AnchorPoint> getAllAnchors() {
+		Vector<AnchorPoint> vector = new Vector<AnchorPoint>(sourceAnchors.size()
+				+ destinationAnchors.size());
+		for (AnchorPoint point : sourceAnchors)
 			vector.add(point);
-		for (AnchorPoint point: destinationAnchors)
+		for (AnchorPoint point : destinationAnchors)
 			vector.add(point);
 		return vector;
 	}
-	
+
 	@Override
 	public AnchorPoint getDestinationPointAt(Point2D location, Link link) {
 		if (getDrawableUnderLocation(location) == null)

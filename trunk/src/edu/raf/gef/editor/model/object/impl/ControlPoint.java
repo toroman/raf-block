@@ -62,6 +62,10 @@ public abstract class ControlPoint implements Draggable {
 		else
 			location = new Point2D.Double (0, 0);
 	}
+	
+	public void setLocation (double x, double y) {
+		location = new Point2D.Double (x, y);
+	}
 
 	public Point2D getLocation() {
 		return location;

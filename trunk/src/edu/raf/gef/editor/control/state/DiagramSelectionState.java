@@ -120,7 +120,7 @@ public class DiagramSelectionState extends DiagramDefaultState {
 		if (!mousePressedIsDraggable && !mousePressedIsFocusable) {
 			if (lasso == null) {
 				lasso = new Lasso(diagram.getModel());
-				diagram.getModel().addElement(lasso);
+				diagram.getModel().addTemporaryDrawable(lasso);
 			}
 			lasso.setCoords(startLocation, userSpaceLocation);
 			return true;
@@ -177,7 +177,7 @@ public class DiagramSelectionState extends DiagramDefaultState {
 		if (hasDragOccured) {
 			if (!mousePressedIsDraggable && !mousePressedIsFocusable && lasso != null) {
 				Rectangle2D lassoBounds = lasso.getBounds();
-				diagram.getModel().removeElement(lasso);
+				diagram.getModel().removeTemporaryDrawable(lasso);
 				lasso = null;
 				if ((e.getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) == 0)
 					diagram.getController().clearFocusedObjects();

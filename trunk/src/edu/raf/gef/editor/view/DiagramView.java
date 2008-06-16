@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
@@ -76,6 +77,9 @@ public class DiagramView implements Observer {
 		}
 		for (Drawable de : focused)
 			de.paint(g);
+		Collection <Drawable> temporaryDrawables = model.getTemporaryDrawables();
+		for (Drawable temp: temporaryDrawables)
+			temp.paint(g);
 	}
 
 	/**

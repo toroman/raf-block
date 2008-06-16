@@ -58,6 +58,7 @@ public class ConditionBlock extends RectangularObject {
 				resizeControlPoints.get(index).addConstraint(constraint);
 		}
 		setMinDimension(new Dimension(60, 40));
+		setTitle("If <condition>");
 	}
 
 	@Override

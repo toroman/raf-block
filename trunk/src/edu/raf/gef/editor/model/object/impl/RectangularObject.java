@@ -1,5 +1,6 @@
 package edu.raf.gef.editor.model.object.impl;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
@@ -25,6 +26,8 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 
 	private Dimension2D minDimension, maxDimension;
 	private double x, y, width, height;
+	
+	private String title;
 
 	private Point2D draggingOffset;
 
@@ -355,6 +358,9 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 			resizeControlPoints.get(i).paint(g);
 		for (AnchorPoint point : getAllAnchors())
 			point.paint(g);
+		g.setColor(Color.BLACK);
+		String msg = title == null ? "" : title;
+		g.drawString(msg, (float)(getX() + getWidth() / 2 - msg.length() * 3), (float)(getY() + getHeight()/2 + 3));
 	}
 
 	protected abstract void paintRectangular(Graphics2D g);
@@ -447,5 +453,17 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		notifyObservers();
 		clearChanged();
 		return newAnchor;
+	}
+
+	@Property
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+		setChanged();
+		notifyObservers();
+		clearChanged();
 	}
 }

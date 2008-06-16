@@ -28,6 +28,7 @@ public class ExecutionBlock extends RectangularObject implements AnchorPointCont
 				return new Point2D.Double (getX() + getWidth()/2, getY() + getHeight());
 			}
 		}, null);
+		setTitle("Execution");
 	}
 	
 	@Override

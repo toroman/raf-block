@@ -61,6 +61,8 @@ public class OutputBlock extends RectangularObject {
 				resizeControlPoints.get(index).addConstraint(northConstraint);
 		}
 		setMinDimension(new Dimension(60, 40));
+
+		setTitle("Output");
 	}
 
 	@Override

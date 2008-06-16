@@ -55,6 +55,7 @@ public class InputBlock extends RectangularObject {
 				resizeControlPoints.get(index).addConstraint(northConstraint);
 		}
 		setMinDimension(new Dimension(60, 40));
+		setTitle("Input");
 	}
 
 	@Override

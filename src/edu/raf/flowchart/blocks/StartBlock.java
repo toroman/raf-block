@@ -40,6 +40,8 @@ public class StartBlock extends RectangularObject {
 			if ((getRoleOfIndex(index) & SOUTH_MASK) != 0)
 				resizeControlPoints.get(index).addConstraint(constraint);
 		}
+
+		setTitle("Start");
 	}
 
 	@Override

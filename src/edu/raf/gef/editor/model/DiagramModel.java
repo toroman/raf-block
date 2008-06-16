@@ -25,10 +25,12 @@ public class DiagramModel extends Observable implements Observer {
 	transient static private int STUPID_COUNTER = 0;
 
 	private ArrayList<Drawable> drawables;
+	private ArrayList<Drawable> temporaryDrawables;
 	/**
 	 * Return unmodifiable version, because the list writing is encapsulated.
 	 */
 	private final Collection<Drawable> readOnlyDrawables;
+	private final Collection<Drawable> readOnlyTemporaryDrawables;
 
 	private String title = "untitled" + ++STUPID_COUNTER;
 
@@ -42,7 +44,9 @@ public class DiagramModel extends Observable implements Observer {
 
 	public DiagramModel() {
 		drawables = new ArrayList<Drawable>();
+		temporaryDrawables = new ArrayList<Drawable>();
 		readOnlyDrawables = Collections.unmodifiableCollection(drawables);
+		readOnlyTemporaryDrawables = Collections.unmodifiableCollection(temporaryDrawables);
 	}
 
 	public static Converter getConverter() {
@@ -77,6 +81,28 @@ public class DiagramModel extends Observable implements Observer {
 			}
 
 		};
+	}
+	
+	public synchronized boolean addTemporaryDrawable (Drawable element) {
+		if (temporaryDrawables.add(element)) {
+			setChanged();
+			notifyObservers();
+			return true;
+		} else
+			return false;
+	}
+	
+	public synchronized boolean removeTemporaryDrawable (Drawable element) {
+		if (temporaryDrawables.remove(element)) {
+			setChanged();
+			notifyObservers();
+			return true;
+		} else
+			return false;
+	}
+	
+	public Collection <Drawable> getTemporaryDrawables () {
+		return readOnlyTemporaryDrawables;
 	}
 
 	public synchronized boolean addElement(Drawable element) {

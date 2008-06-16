@@ -5,30 +5,35 @@ import java.awt.geom.Point2D;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeSupport;
-import java.util.Observable;
 
 import edu.raf.gef.editor.model.DiagramModel;
 import edu.raf.gef.editor.model.object.ControlPointContainer;
 import edu.raf.gef.editor.model.object.Focusable;
 import edu.raf.gef.editor.model.object.VetoableJavaBean;
+import edu.raf.gef.util.TransientObservable;
 
 /**
  * 
  */
-public abstract class DiagramObject extends Observable implements Focusable, ControlPointContainer, VetoableJavaBean {
+public abstract class DiagramObject extends TransientObservable implements Focusable,
+		ControlPointContainer, VetoableJavaBean {
 	private boolean focused = false;
 	private final DiagramModel model;
-	
-	public final DiagramModel getModel () {
+	private transient VetoableChangeSupport vcs = new VetoableChangeSupport(this);
+
+	private Object readResolve() {
+		vcs = new VetoableChangeSupport(this);
+		return this;
+	}
+
+	public final DiagramModel getModel() {
 		return model;
 	}
-	
-	public DiagramObject (final DiagramModel model) {
+
+	public DiagramObject(final DiagramModel model) {
 		this.model = model;
 		this.addObserver(model);
 	}
-
-	private final VetoableChangeSupport vcs = new VetoableChangeSupport(this);
 
 	@Override
 	public boolean isFocused() {
@@ -61,9 +66,9 @@ public abstract class DiagramObject extends Observable implements Focusable, Con
 	public void removeListener(VetoableChangeListener listener) {
 		vcs.removeVetoableChangeListener(listener);
 	}
-	
+
 	@Override
 	public void onClick(MouseEvent e, Point2D userSpaceLocation) {
-		
+
 	}
 }

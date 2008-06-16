@@ -312,7 +312,6 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		updateControlPointLocations();
 		setChanged();
 		notifyObservers();
-		clearChanged();
 	}
 
 	public void setX(double newX) {

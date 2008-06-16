@@ -1,6 +1,7 @@
 package edu.raf.gef.gui.actions;
 
 import java.awt.Component;
+import java.beans.PropertyChangeListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,4 +63,5 @@ public abstract class ResourceConfiguredAction extends AbstractAction {
 	protected Logger getLog() {
 		return Logger.getLogger(getClass().getName());
 	}
+
 }

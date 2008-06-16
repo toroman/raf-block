@@ -58,8 +58,12 @@ public class ToolbarManager {
 		return actions.iterator();
 	}
 
-	@SuppressWarnings("serial")
 	private class BiggerBetterToolBar extends JToolBar {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 5901107526727356063L;
+		
 		private Integer enabledActionCount = 0;
 
 		@Override
@@ -85,4 +89,5 @@ public class ToolbarManager {
 			super(name);
 		}
 	}
+
 }

@@ -1,16 +1,21 @@
 package edu.raf.gef.editor;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.WeakHashMap;
 
-import com.thoughtworks.xstream.converters.Converter;
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 
+import edu.raf.gef.app.exceptions.GefException;
 import edu.raf.gef.app.util.GefUndoManager;
 import edu.raf.gef.editor.control.DiagramController;
 import edu.raf.gef.editor.model.DiagramModel;
+import edu.raf.gef.editor.structure.GefDiagramConverter;
 import edu.raf.gef.editor.view.DiagramView;
 import edu.raf.gef.gui.ActionContextController;
 import edu.raf.gef.gui.MainFrame;
@@ -40,7 +45,7 @@ public class GefDiagram implements ActionContextController {
 	 * @param project
 	 * @param model
 	 */
-	protected GefDiagram(DiagramProject project, DiagramModel model) {
+	public GefDiagram(DiagramProject project, DiagramModel model) {
 		// model is not created
 		this.model = model;
 
@@ -112,37 +117,6 @@ public class GefDiagram implements ActionContextController {
 		return undoManager;
 	}
 
-	public static Converter getConverter(final DiagramProject project) {
-		return new Converter() {
-			public void marshal(Object diagramObj, HierarchicalStreamWriter writer,
-					MarshallingContext context) {
-				GefDiagram diagram = (GefDiagram) diagramObj;
-				writer.startNode("model");
-				DiagramModel.getConverter().marshal(diagram.getModel(), writer, context);
-				writer.endNode();
-			}
-
-			public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-				GefDiagram diagram = null;
-				while (reader.hasMoreChildren()) {
-					reader.moveDown();
-					if ("model".equals(reader.getNodeName())) {
-						DiagramModel model = (DiagramModel) DiagramModel.getConverter().unmarshal(
-							reader, context);
-						diagram = new GefDiagram(project, model);
-					}
-					reader.moveUp();
-				}
-				return diagram;
-			}
-
-			@SuppressWarnings("unchecked")
-			public boolean canConvert(Class cl) {
-				return GefDiagram.class.equals(cl);
-			}
-		};
-	}
-
 	public DiagramProject getProject() {
 		return project;
 	}
@@ -175,9 +149,32 @@ public class GefDiagram implements ActionContextController {
 		return super.toString() + getModel().getTitle();
 	}
 
-	public void save() {
-		// TODO Auto-generated method stub
-		
+	/**
+	 * Be sure to overload this if you plan to change the extension of the
+	 * plugin!
+	 * 
+	 * @return
+	 * @throws GefException
+	 */
+	public File getDiagramFile() throws GefException {
+		return new File(this.project.getProjectFolder(), getModel().getTitle() + ".dgr");
 	}
 
+	public void save() throws GefException {
+		File file = getDiagramFile();
+		XStream xs = new XStream(new DomDriver());
+		OutputStream os = null;
+		try {
+			os = new BufferedOutputStream(new FileOutputStream(file));
+		} catch (FileNotFoundException ex) {
+			throw new GefException("Couldn't open file for writing!", ex);
+		}
+		xs.registerConverter(new GefDiagramConverter(this.project, getClass(), getModel()
+				.getConverter()));
+		xs.toXML(this, os);
+		try {
+			os.close();
+		} catch (IOException ex) {
+		}
+	}
 }

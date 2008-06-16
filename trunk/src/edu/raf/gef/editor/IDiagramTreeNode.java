@@ -1,15 +1,14 @@
 package edu.raf.gef.editor;
 
-import java.util.Observable;
-import java.util.Observer;
-
 import javax.swing.tree.MutableTreeNode;
 
 import edu.raf.gef.gui.swing.DiagramPluginFrame;
+import edu.raf.gef.util.TransientObservable;
+import edu.raf.gef.util.TransientObserver;
 
-public interface IDiagramTreeNode extends MutableTreeNode, Observer {
+public interface IDiagramTreeNode extends MutableTreeNode, TransientObserver {
 
-	public abstract void update(Observable o, Object arg);
+	public abstract void update(TransientObservable o, Object arg);
 
 	public abstract GefDiagram getDiagram();
 

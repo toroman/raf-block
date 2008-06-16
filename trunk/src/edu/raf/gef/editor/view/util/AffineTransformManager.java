@@ -5,11 +5,11 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.Observable;
 
 import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.editor.view.DiagramView;
 import edu.raf.gef.util.MathHelper;
+import edu.raf.gef.util.TransientObservable;
 
 /**
  * This class is used to manage the AffineTransform of the DiagramView. It might
@@ -17,7 +17,7 @@ import edu.raf.gef.util.MathHelper;
  * will be put here.
  * 
  */
-public class AffineTransformManager extends Observable {
+public class AffineTransformManager extends TransientObservable {
 	/**
 	 * The transform and it's inverse precalculated
 	 */

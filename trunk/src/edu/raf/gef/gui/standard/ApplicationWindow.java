@@ -36,8 +36,6 @@ import edu.raf.gef.gui.swing.menus.MenuManagerSAXImporter;
  */
 public abstract class ApplicationWindow {
 
-	public static final String SELECTED_FRAME_PROPERTY = "selectedFrame";
-
 	protected final String id;
 
 	private GraphicalErrorHandler gErrorHandler;

@@ -14,16 +14,17 @@ import edu.raf.flowchart.blocks.OutputBlock;
 import edu.raf.flowchart.blocks.StartBlock;
 import edu.raf.flowchart.diagram.FlowChartDiagram;
 import edu.raf.flowchart.link.FlowchartLink;
+import edu.raf.gef.Main;
 import edu.raf.gef.app.IResources;
 import edu.raf.gef.app.Resources;
 import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.editor.model.object.Draggable;
 import edu.raf.gef.editor.model.object.impl.Link;
 import edu.raf.gef.gui.MainFrame;
-import edu.raf.gef.gui.SelectedDiagramProvider;
 import edu.raf.gef.gui.actions.ActionAddDiagram;
 import edu.raf.gef.gui.swing.menus.StandardMenuParts;
 import edu.raf.gef.plugin.DiagramPlugin;
+import edu.raf.gef.services.mime.ProjectsFileHandler;
 
 public class FlowChartPlugin implements DiagramPlugin {
 	/**
@@ -36,13 +37,13 @@ public class FlowChartPlugin implements DiagramPlugin {
 	private final List<Class<? extends Draggable>> draggables;
 	private final List<Class<? extends Link>> links;
 
-//	private final List<AddFlowchartDraggableAction> addObjects = new ArrayList<AddFlowchartDraggableAction>();
-
 	/**
 	 * Instead of passing the whole frame, more "nice" would be to pass only
 	 * necessary parts, like MenuManager, but let it be like this ...
 	 */
 	protected MainFrame mainFrame;
+
+	private final FlowChartFileHandler handler = new FlowChartFileHandler();
 
 	public FlowChartPlugin() {
 		draggables = new ArrayList<Class<? extends Draggable>>();
@@ -53,9 +54,11 @@ public class FlowChartPlugin implements DiagramPlugin {
 		draggables.add(OutputBlock.class);
 		draggables.add(StartBlock.class);
 		draggables.add(EndBlock.class);
-		
+
 		links = new ArrayList<Class<? extends Link>>();
 		links.add(FlowchartLink.class);
+
+		Main.getServices().addServiceImplementation(handler, ProjectsFileHandler.class);
 	}
 
 	@Override
@@ -78,23 +81,23 @@ public class FlowChartPlugin implements DiagramPlugin {
 		this.mainFrame = mf;
 		mf.getMenuManager().addAction(StandardMenuParts.NEW_DIAGRAM_PART,
 			new ActionAddDiagram(mf, this));
-		SelectedDiagramProvider sdp = new SelectedDiagramProvider() {
-			public GefDiagram getSelectedDiagram() {
-				return FlowChartPlugin.this.mainFrame.getSelectedDiagram();
-			}
-		};
 		for (Class<? extends Draggable> d : draggables) {
 			if (Draggable.class.isAssignableFrom(d)) {
-				mf.getToolbarManager().addAction(getClass().getName(),
-					new AddFlowchartDraggableAction(d.asSubclass(Draggable.class), d.getName(), sdp));
+				mf.getToolbarManager()
+						.addAction(
+							getClass().getName(),
+							new AddFlowchartDraggableAction(mf, d.asSubclass(Draggable.class), d
+									.getName()));
 			}
 		}
+		String linkGroup = getClass().getName() + ".links";
 		for (Class<? extends Link> d : links) {
 			if (Link.class.isAssignableFrom(d)) {
-				mf.getToolbarManager().addAction(getClass().getName(),
-					new AddFlowchartLinkAction(d.asSubclass(Link.class), d.getName(), sdp));
+				mf.getToolbarManager().addAction(linkGroup,
+					new AddFlowchartLinkAction(mf, d.asSubclass(Link.class), d.getName()));
 			}
 		}
+
 	}
 
 	public MainFrame getMainFrame() {

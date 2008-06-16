@@ -175,7 +175,7 @@ public class ListField extends PropertyField {
 		super.paintComponent(g1);
 		Graphics2D g = (Graphics2D) g1;
 		List<?> list = (List<?>) parent.getValue();
-		g.drawString("Count: " + list.size(), 2, 14);
+		g.drawString("Count: " + list.size(), 4, 17);
 	}
 
 	private static final Logger log = Logger.getLogger(ListField.class.getName());

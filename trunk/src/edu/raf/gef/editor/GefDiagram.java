@@ -3,6 +3,11 @@ package edu.raf.gef.editor;
 import java.util.WeakHashMap;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.Converter;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 import edu.raf.gef.app.util.GefUndoManager;
 import edu.raf.gef.editor.control.DiagramController;
@@ -23,15 +28,15 @@ public class GefDiagram implements ActionContextController {
 	private static final long serialVersionUID = -4600587151373699739L;
 
 	protected final DiagramModel model;
-	protected final DiagramView view;
-	protected final DiagramController controller;
-	protected final GefUndoManager undoManager;
-	// lazy
-	protected WeakHashMap<Workspace, IDiagramTreeNode> tree;
+	protected transient final DiagramView view;
+	protected transient final DiagramController controller;
 
-	private final DiagramProject project;
+	protected transient final GefUndoManager undoManager;
+	protected transient final DiagramProject project;
+	protected transient WeakHashMap<Workspace, IDiagramTreeNode> tree;
 
 	public GefDiagram(DiagramProject project) {
+		System.out.println("Constructor project");
 		// models knows nothing
 		model = createModel();
 
@@ -43,7 +48,7 @@ public class GefDiagram implements ActionContextController {
 
 		// every diagram has its' own undo manager
 		undoManager = createUndoManager();
-		
+
 		// add to parent
 		this.project = project;
 		project.addDiagram(this);
@@ -85,10 +90,24 @@ public class GefDiagram implements ActionContextController {
 		return undoManager;
 	}
 
-	public XStream getSerializator() {
-		return new XStream();
+	public void configureXstream(XStream xstream) {
+		// return new Converter() {
+		// public void marshal(Object obj, HierarchicalStreamWriter writer,
+		// MarshallingContext context) {
+		// }
+		//
+		// public Object unmarshal(HierarchicalStreamReader reader,
+		// UnmarshallingContext context) {
+		// return null;
+		// }
+		//
+		// public boolean canConvert(Class cl) {
+		// return false;
+		// }
+		// };
+		xstream.registerConverter(getModel().getConverter());
 	}
-	
+
 	public DiagramProject getProject() {
 		return project;
 	}
@@ -116,6 +135,11 @@ public class GefDiagram implements ActionContextController {
 			tree.put(workspace, node = createTreeModel(workspace));
 		}
 		return node;
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + getModel().getTitle();
 	}
 
 }

@@ -5,6 +5,7 @@ import java.io.OutputStream;
 
 import com.thoughtworks.xstream.XStream;
 
+import edu.raf.gef.app.exceptions.GefException;
 import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.gui.MainFrame;
 import edu.raf.gef.gui.swing.menus.StandardMenuActions;
@@ -29,7 +30,11 @@ public class ActionSaveDiagram extends ResourceConfiguredAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		this.diagram.getProject().saveDiagram(diagram);
+		try {
+			this.diagram.getProject().saveDiagram(diagram);
+		} catch (GefException ex) {
+			getGeh().handleError("Save Diagram", "Error saving diagram!", ex);
+		}
 	}
 
 }

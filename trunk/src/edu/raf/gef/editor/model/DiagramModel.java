@@ -4,9 +4,14 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+
+import com.thoughtworks.xstream.converters.Converter;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 import edu.raf.gef.editor.model.events.DrawableAddedEvent;
 import edu.raf.gef.editor.model.events.DrawableZOrderEvent;
@@ -17,18 +22,15 @@ import edu.raf.gef.editor.model.object.impl.Link;
 import edu.raf.gef.editor.structure.CompositeUpdateEvent;
 
 public class DiagramModel extends Observable implements Observer {
-	private final ArrayList<Drawable> drawables;
+	transient static private int STUPID_COUNTER = 0;
+
+	private ArrayList<Drawable> drawables;
 	/**
 	 * Return unmodifiable version, because the list writing is encapsulated.
 	 */
 	private final Collection<Drawable> readOnlyDrawables;
 
-	/**
-	 * Other data to be persisted with the model!
-	 */
-	private final List<Object> nonDrawables;
-
-	private String title = "Untitled Diagram";
+	private String title = "untitled" + ++STUPID_COUNTER;
 
 	public String getTitle() {
 		return title;
@@ -41,7 +43,40 @@ public class DiagramModel extends Observable implements Observer {
 	public DiagramModel() {
 		drawables = new ArrayList<Drawable>();
 		readOnlyDrawables = Collections.unmodifiableCollection(drawables);
-		nonDrawables = new ArrayList<Object>();
+	}
+
+	public Converter getConverter() {
+		return new Converter() {
+			public void marshal(Object objModel,
+					HierarchicalStreamWriter writer, MarshallingContext context) {
+				DiagramModel model = (DiagramModel) objModel;
+				writer.addAttribute("title", model.getTitle());
+				writer.startNode("drawables");
+				context.convertAnother(model.drawables);
+				writer.endNode();
+			}
+
+			@SuppressWarnings("unchecked")
+			public Object unmarshal(HierarchicalStreamReader reader,
+					UnmarshallingContext context) {
+				DiagramModel model = new DiagramModel();
+				model.setTitle(reader.getAttribute("title"));
+				while (reader.hasMoreChildren()) {
+					reader.moveDown();
+					if ("drawables".equals(reader.getNodeName())) {
+						model.drawables = (ArrayList<Drawable>) context
+								.convertAnother(model, ArrayList.class);
+					}
+					reader.moveUp();
+				}
+				return model;
+			}
+
+			public boolean canConvert(Class cl) {
+				return DiagramModel.class.equals(cl);
+			}
+
+		};
 	}
 
 	public synchronized boolean addElement(Drawable element) {
@@ -65,10 +100,10 @@ public class DiagramModel extends Observable implements Observer {
 	}
 
 	public synchronized boolean moveForward(Drawable element) {
-		//XXX: Bocke, this is added by Srecko, we should investigate it
+		// XXX: Bocke, this is added by Srecko, we should investigate it
 		if (element instanceof Link)
 			return false;
-		
+
 		int index = drawables.indexOf(element);
 		if (index == drawables.size() - 1)
 			return false;

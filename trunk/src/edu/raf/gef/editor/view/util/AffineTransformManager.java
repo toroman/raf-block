@@ -1,10 +1,13 @@
 package edu.raf.gef.editor.view.util;
 
+import java.awt.Dimension;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.Observable;
 
+import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.editor.view.DiagramView;
 import edu.raf.gef.util.MathHelper;
 
@@ -29,8 +32,10 @@ public class AffineTransformManager extends Observable {
 	double scaleValue;
 	
 	private static final double SCALE_ROUNDING_FACTOR = 0.05;
+	private final DiagramView view;
 	
 	public AffineTransformManager(DiagramView view) {
+		this.view = view;
 		transform = new AffineTransform();
 		inverse = new AffineTransform();
 		scaleValue = 1;
@@ -42,6 +47,40 @@ public class AffineTransformManager extends Observable {
 	}
 	
 	private boolean autoMatchTransform = true;
+	
+	public synchronized void bestFit() {
+		if (view.getModel().getDrawables().isEmpty())
+			return;
+		
+		double minx = Double.MAX_VALUE;
+		double miny = minx;
+		double maxx = -1 * minx;
+		double maxy = -1 * minx;
+		
+		double border = 50;
+		
+		for (Drawable drawable: view.getModel().getDrawables()) {
+			Rectangle2D rect = drawable.getBoundingRectangle();
+			minx = Math.min(minx, rect.getMinX());
+			maxx = Math.max(maxx, rect.getMaxX());
+			miny = Math.min(miny, rect.getMinX());
+			maxy = Math.max(maxy, rect.getMaxY());
+		}
+		
+		Dimension canvasDimension = view.getCanvas().getSize();
+		
+		Point2D newUserSpace = new Point2D.Double ((minx + maxx)/2, (miny + maxy)/2);
+		Point2D newDeviceSpace = new Point2D.Double (canvasDimension.getWidth()/2, canvasDimension.getHeight()/2);
+		double newScale = Math.min(
+			(canvasDimension.getWidth() - border*2)/(maxx - minx), 
+			(canvasDimension.getHeight() - border*2)/(maxy - miny));
+		
+		setAutoMatchTransform(false);
+		setUserSpaceLocation(newUserSpace);
+		setDeviceSpaceLocation(newDeviceSpace);
+		setScale(newScale);
+		matchTransform();
+	}
 	
 	public synchronized void matchTransform () {
 		autoMatchTransform = true;

@@ -19,7 +19,7 @@
 		<part id="p_file_exit"></part>
 	</container>
 
-	<container id="c_edit" text="Edit">
+	<container id="c_edit" text="Edit" mnemonic="E">
 		<part id="p_unredo">
 			<action id="undo" />
 			<action id="redo" />
@@ -35,13 +35,19 @@
 		</part>
 	</container>
 
-	<container id="c_window" text="Window">
+	<container id="c_view" text="View" mnemonic="V">
+		<part id="p_zoom">
+			<action id="best_fit_zoom" />
+		</part>
+	</container>
+
+	<container id="c_window" text="Window" mnemonic="W">
 		<part id="p_window_arrangement"></part>
 		<part id="p_look_and_feel"></part>
 		<part id="p_plugin_manager"></part>
 	</container>
 
-	<container id="c_help" text="Help">
+	<container id="c_help" text="Help" mnemonic="H">
 		<part id="p_help"></part>
 		<part id="p_about"></part>
 	</container>

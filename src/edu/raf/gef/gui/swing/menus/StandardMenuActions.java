@@ -20,4 +20,6 @@ public interface StandardMenuActions {
 	public String OPEN = "open";
 
 	public String DELETE = "delete";
+
+	public String BEST_FIT_ZOOM = "best_fit_zoom";
 }

@@ -46,8 +46,13 @@ public interface StandardMenuContainers {
 	public String FILE_NEW = "c_file_new";
 
 	/**
+	 * View operations - like best fit
+	 */
+	public String VIEW = "c_view";
+	/**
 	 * Window standard menu. Contains Standard parts "WINDOW_ARRANGEMENT_PART"
 	 * and maybe more.
 	 */
 	public String WINDOW = "c_window";
+	
 }

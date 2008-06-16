@@ -19,7 +19,7 @@ import edu.raf.gef.util.TransientObservable;
 import edu.raf.gef.util.TransientObserver;
 
 public class DiagramModel extends TransientObservable implements TransientObserver {
-	transient static private int STUPID_COUNTER = 0;
+	transient static private int INSTANCE_COUNTER = 0;
 
 	private ArrayList<Drawable> drawables;
 	private transient ArrayList<Drawable> temporaryDrawables;
@@ -29,7 +29,7 @@ public class DiagramModel extends TransientObservable implements TransientObserv
 	private transient final Collection<Drawable> readOnlyDrawables;
 	private transient final Collection<Drawable> readOnlyTemporaryDrawables;
 
-	private String title = "untitled" + ++STUPID_COUNTER;
+	private String title = "untitled" + ++INSTANCE_COUNTER;
 
 	public Converter getConverter() {
 		return new ModelConverter(getClass());

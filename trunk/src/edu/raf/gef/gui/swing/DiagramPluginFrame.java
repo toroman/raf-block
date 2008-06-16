@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 
 import edu.raf.gef.Main;
 import edu.raf.gef.editor.GefDiagram;
+import edu.raf.gef.editor.actions.ActionBestFitZoom;
 import edu.raf.gef.editor.actions.ActionCopyDiagramObject;
 import edu.raf.gef.editor.actions.ActionCutDiagramObject;
 import edu.raf.gef.editor.actions.ActionDeleteSelectedObject;
@@ -43,6 +44,7 @@ public class DiagramPluginFrame extends JPanel implements ActionContextControlle
 		getActionMap().put(StandardMenuActions.PASTE, new ActionPasteDiagramObject(mainFrame));
 		getActionMap().put(StandardMenuActions.SAVE, new ActionSaveDiagram(mainFrame, diagram));
 		getActionMap().put(StandardMenuActions.DELETE, new ActionDeleteSelectedObject(mainFrame));
+		getActionMap().put(StandardMenuActions.BEST_FIT_ZOOM, new ActionBestFitZoom(mainFrame));
 	}
 
 	public GefDiagram getDiagram() {

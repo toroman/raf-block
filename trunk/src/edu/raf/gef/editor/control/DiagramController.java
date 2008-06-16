@@ -22,7 +22,6 @@ import edu.raf.gef.editor.control.state.util.IDiagramAbstractState;
 import edu.raf.gef.editor.model.DiagramModel;
 import edu.raf.gef.editor.model.object.AnchorPointContainer;
 import edu.raf.gef.editor.model.object.Focusable;
-import edu.raf.gef.editor.model.object.impl.DiagramObject;
 import edu.raf.gef.editor.model.object.impl.Link;
 import edu.raf.gef.util.GeomHelper;
 import edu.raf.gef.util.TransientObservable;

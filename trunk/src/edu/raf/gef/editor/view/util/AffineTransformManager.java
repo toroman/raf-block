@@ -63,7 +63,7 @@ public class AffineTransformManager extends TransientObservable {
 			Rectangle2D rect = drawable.getBoundingRectangle();
 			minx = Math.min(minx, rect.getMinX());
 			maxx = Math.max(maxx, rect.getMaxX());
-			miny = Math.min(miny, rect.getMinX());
+			miny = Math.min(miny, rect.getMinY());
 			maxy = Math.max(maxy, rect.getMaxY());
 		}
 		
@@ -74,7 +74,9 @@ public class AffineTransformManager extends TransientObservable {
 		double newScale = Math.min(
 			(canvasDimension.getWidth() - border*2)/(maxx - minx), 
 			(canvasDimension.getHeight() - border*2)/(maxy - miny));
-		
+		System.out.println("NewUserSpace " + newUserSpace);
+		System.out.println("NewDEviceSpace " + newDeviceSpace);
+		System.out.println("Newscale " + newScale);
 		setAutoMatchTransform(false);
 		setUserSpaceLocation(newUserSpace);
 		setDeviceSpaceLocation(newDeviceSpace);

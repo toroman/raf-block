@@ -30,7 +30,7 @@ public class OutputBlock extends RectangularObject {
 			}
 		}, null);
 
-		ControlPointConstraint constraint = new ControlPointConstraint() {
+		ControlPointConstraint southConstraint = new ControlPointConstraint() {
 			@Override
 			public Point2D updateLocation(Point2D oldLocation) {
 				double maxy = getY() + getWidth();
@@ -39,9 +39,26 @@ public class OutputBlock extends RectangularObject {
 				return oldLocation;
 			}
 		};
+		ControlPointConstraint northConstraint = new ControlPointConstraint () {
+			@Override
+			public Point2D updateLocation(Point2D oldLocation) {
+				double miny = getY() + getHeight() - getWidth();
+				if (oldLocation.getY() < miny)
+					return new Point2D.Double (oldLocation.getX(), miny);
+				return oldLocation;
+			}
+		};
 		for (int index = 0; index < 8; index++) {
 			if ((getRoleOfIndex(index) & SOUTH_MASK) != 0)
-				resizeControlPoints.get(index).addConstraint(constraint);
+				resizeControlPoints.get(index).addConstraint(southConstraint);
+			if ((getRoleOfIndex(index) & NORTH_MASK) != 0)
+				resizeControlPoints.get(index).addConstraint(northConstraint);
+		}
+		for (int index = 0; index < 8; index++) {
+			if ((getRoleOfIndex(index) & SOUTH_MASK) != 0)
+				resizeControlPoints.get(index).addConstraint(southConstraint);
+			if ((getRoleOfIndex(index) & NORTH_MASK) != 0)
+				resizeControlPoints.get(index).addConstraint(northConstraint);
 		}
 		setMinDimension(new Dimension(60, 40));
 	}

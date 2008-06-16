@@ -1,7 +1,6 @@
 package edu.raf.gef.gui.actions;
 
 import java.awt.event.ActionEvent;
-import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.AbstractAction;
 

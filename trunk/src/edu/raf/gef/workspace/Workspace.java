@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.logging.Logger;
 
@@ -41,8 +42,7 @@ public class Workspace extends DefaultTreeModel {
 
 	private final transient File location;
 
-	public static Workspace createWorkspace(final File location)
-			throws GefException {
+	public static Workspace createWorkspace(final File location) throws GefException {
 		log.info("Workspace opened at " + location.getAbsolutePath());
 		if (location == null) {
 			throw new NullPointerException();
@@ -50,8 +50,7 @@ public class Workspace extends DefaultTreeModel {
 		if (!location.exists()) {
 			location.mkdir();
 		} else if (!location.isDirectory()) {
-			throw new GefRuntimeException("Invalid location: "
-					+ location.getAbsolutePath());
+			throw new GefRuntimeException("Invalid location: " + location.getAbsolutePath());
 		}
 
 		File metadir = new File(location, ".meta");
@@ -64,8 +63,7 @@ public class Workspace extends DefaultTreeModel {
 			try {
 				workspaceXml.createNewFile();
 			} catch (IOException e) {
-				throw new GefException(
-						"Couldn't initialize workspace, check for correct rights!",
+				throw new GefException("Couldn't initialize workspace, check for correct rights!",
 						e);
 			}
 			// return empty workspace
@@ -97,20 +95,22 @@ public class Workspace extends DefaultTreeModel {
 		xs.registerConverter(new Converter() {
 			public void marshal(Object wsObj, HierarchicalStreamWriter writer,
 					MarshallingContext context) {
-				writer.addAttribute("serialVersionUID", String
-						.valueOf(Workspace.serialVersionUID));
+				writer.addAttribute("serialVersionUID", String.valueOf(Workspace.serialVersionUID));
 			}
 
 			@Override
-			public Object unmarshal(HierarchicalStreamReader reader,
-					UnmarshallingContext context) {
+			public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 				String v = reader.getAttribute("serialVersionUID");
 				long uid = Long.valueOf(v);
 				if (uid != serialVersionUID) {
 					throw new GefRuntimeException(
 							"Saved workspace is not compatible with this version of the software.");
 				}
-				return new Workspace(location);
+				try {
+					return new Workspace(location);
+				} catch (Exception ex) {
+					throw new GefRuntimeException(ex);
+				}
 			}
 
 			@Override
@@ -122,22 +122,38 @@ public class Workspace extends DefaultTreeModel {
 		return xs;
 	}
 
-	private Workspace(File location) {
+	/**
+	 * Create new workspace.
+	 * 
+	 * @param location
+	 *            Where is it located on the filesystem
+	 * @throws GefException
+	 *             If any project couldn't be loaded
+	 */
+	private Workspace(File location) throws GefException {
 		// title is not important
 		super(new DefaultMutableTreeNode("Workspace"));
 		this.location = location;
 		File[] projects = this.location.listFiles(new FileFilter() {
 			public boolean accept(File pathname) {
-				if (!pathname.isDirectory()
-						|| pathname.getName().startsWith(".")
+				if (!pathname.isDirectory() || pathname.getName().startsWith(".")
 						|| pathname.isHidden())
 					return false;
 				File meta = new File(pathname, ".project");
 				return meta.exists() && meta.isDirectory();
 			}
 		});
+		ArrayList<Exception> exceptions = new ArrayList<Exception>();
 		for (File project : projects) {
-			addProject(DiagramProject.createFrom(project);
+			try {
+				addProject(DiagramProject.createFrom(project));
+			} catch (GefException e) {
+				exceptions.add(e);
+			}
+		}
+		if (exceptions.size() > 0) {
+			throw new GefException("Some projects couldn't have been loaded. "
+					+ exceptions.toString());
 		}
 	}
 
@@ -157,8 +173,7 @@ public class Workspace extends DefaultTreeModel {
 		} catch (IOException e) {
 		}
 
-		Enumeration<? extends TreeNode> children = ((TreeNode) getRoot())
-				.children();
+		Enumeration<? extends TreeNode> children = ((TreeNode) getRoot()).children();
 		while (children.hasMoreElements()) {
 			DiagramProject project = (DiagramProject) children.nextElement();
 			project.save();
@@ -179,8 +194,7 @@ public class Workspace extends DefaultTreeModel {
 		if (!dir.exists()) {
 			dir.mkdirs();
 		} else if (!dir.isDirectory()) {
-			throw new GefRuntimeException("Invalid workspace location: "
-					+ dir.getAbsolutePath());
+			throw new GefRuntimeException("Invalid workspace location: " + dir.getAbsolutePath());
 		}
 		return dir;
 	}
@@ -195,6 +209,5 @@ public class Workspace extends DefaultTreeModel {
 		insertNodeInto(project, (MutableTreeNode) getRoot(), 0);
 	}
 
-	protected static transient final Logger log = Logger
-			.getLogger(Workspace.class.getName());
+	protected static transient final Logger log = Logger.getLogger(Workspace.class.getName());
 }

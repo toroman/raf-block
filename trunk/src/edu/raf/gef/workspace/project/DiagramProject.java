@@ -1,21 +1,32 @@
 package edu.raf.gef.workspace.project;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.Converter;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
+import edu.raf.gef.Main;
 import edu.raf.gef.app.exceptions.GefException;
 import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.editor.IDiagramTreeNode;
+import edu.raf.gef.services.mime.FileHandler;
 import edu.raf.gef.workspace.Workspace;
 
 public class DiagramProject extends DefaultMutableTreeNode {
@@ -25,7 +36,23 @@ public class DiagramProject extends DefaultMutableTreeNode {
 	 */
 	private static final long serialVersionUID = 1406273266034959927L;
 
-	protected Workspace workspace;
+	protected transient Workspace workspace;
+
+	private static Converter converter = new Converter() {
+		public void marshal(Object diagramObj, HierarchicalStreamWriter writer,
+				MarshallingContext context) {
+			writer.addAttribute("name", ((DiagramProject) diagramObj).getProjectName());
+		}
+
+		public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+			String name = reader.getAttribute("name");
+			return new DiagramProject(name);
+		}
+
+		public boolean canConvert(Class arg0) {
+			return DiagramProject.class.equals(arg0);
+		}
+	};
 
 	public DiagramProject(String projectName) {
 		super(projectName);
@@ -43,37 +70,10 @@ public class DiagramProject extends DefaultMutableTreeNode {
 		workspace.insertNodeInto(diagram.getTreeModel(workspace), this, 0);
 	}
 
-	public void saveDiagram(GefDiagram diagram) throws GefException {
-		saveDiagramHelper(diagram, ensureFileSystem());
-	}
-
-	private GefDiagram loadDiagramHelper(File file) {
-
-	}
-
-	private void saveDiagramHelper(GefDiagram diagram, File projectFolder)
-			throws GefException {
-		OutputStream os;
-		try {
-			os = new BufferedOutputStream(new FileOutputStream(new File(
-					projectFolder, diagram.getModel().getTitle() + ".dxml")));
-		} catch (FileNotFoundException e) {
-			throw new GefException("Error saving diagram " + diagram, e);
-		}
-		XStream xs = new XStream(new DomDriver());
-		diagram.configureXstream(xs);
-		xs.toXML(diagram, os);
-
-		try {
-			os.close();
-		} catch (IOException e) {
-		}
-	}
-
 	public void save() throws GefException {
 		File projectFolder = ensureFileSystem();
-		File metaFolder = new File(projectFolder, ".project");
-		File metaFile = new File(metaFolder, "project.xml");
+		File metaFolder = getMetaFolder();
+		File metaFile = getMetaFile();
 
 		OutputStream os;
 		try {
@@ -83,7 +83,8 @@ public class DiagramProject extends DefaultMutableTreeNode {
 					+ metaFile.getAbsolutePath(), e);
 		}
 
-		XStream xs = configuredXstream();
+		XStream xs = new XStream(new DomDriver());
+		xs.registerConverter(converter);
 		xs.toXML(this, os);
 
 		try {
@@ -94,18 +95,24 @@ public class DiagramProject extends DefaultMutableTreeNode {
 		int count = getChildCount();
 		for (int i = 0; i < count; ++i) {
 			IDiagramTreeNode diagramNode = (IDiagramTreeNode) getChildAt(i);
-			saveDiagramHelper(diagramNode.getDiagram(), projectFolder);
+			diagramNode.getDiagram().save();
 		}
 	}
 
-	private XStream configuredXstream() {
-		XStream xs = new XStream(new DomDriver())
-		return xs;
+	private File getMetaFile() {
+		return new File(getMetaFolder(), "project.xml");
+	}
+
+	private File getMetaFolder() {
+		return new File(getProjectFolder(), ".project");
+	}
+
+	public File getProjectFolder() {
+		return new File(this.workspace.getLocation(), getProjectName());
 	}
 
 	private File ensureFileSystem() throws GefException {
-		File projectFolder = new File(this.workspace.getLocation(),
-				getProjectName());
+		File projectFolder = getProjectFolder();
 		if (!projectFolder.exists()) {
 			projectFolder.mkdirs();
 		}
@@ -117,19 +124,47 @@ public class DiagramProject extends DefaultMutableTreeNode {
 	}
 
 	/**
-	 * TODO: So we are working like this now because only one type of project is
-	 * available, but this should be top priority for changing in future.
-	 * <p> -- srecko
+	 * Iterate through all files and invoke registered file handlers.
 	 * 
-	 * @param project
+	 * @param projectFolder
 	 * @return
+	 * @throws GefException
 	 */
-	public static DiagramProject createFrom(File project) {
-		File[] diagrams = project.listFiles(new FileFilter() {
+	public static DiagramProject createFrom(File projectFolder) throws GefException {
+		// read meta
+		File metaFile = new File(new File(projectFolder, ".project"), "project.xml");
+		InputStream is;
+		try {
+			is = new BufferedInputStream(new FileInputStream(metaFile));
+		} catch (FileNotFoundException e) {
+			throw new GefException("Couldn't read project configuration!", e);
+		}
+		XStream xs = new XStream(new DomDriver());
+		xs.registerConverter(converter);
+		DiagramProject dproject = (DiagramProject) xs.fromXML(is);
+		try {
+			is.close();
+		} catch (IOException ioe) {
+		}
+
+		// read files
+
+		File[] files = projectFolder.listFiles(new FileFilter() {
 			public boolean accept(File pathname) {
-				return pathname.isFile() && pathname.getName().endsWith(".dxml");
+				return pathname.isFile();
 			}
 		});
-		return new DiagramProject(
+		List<FileHandler> handlers = Main.getServices()
+				.getServiceImplementations(FileHandler.class);
+
+		for (File file : files) {
+			for (FileHandler handler : handlers) {
+				if (handler.canHandleFile(file)) {
+					handler.handleFile(file, dproject);
+					break;
+				}
+			}
+		}
+		return dproject;
 	}
 }

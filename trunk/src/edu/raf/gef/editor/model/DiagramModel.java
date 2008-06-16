@@ -45,7 +45,7 @@ public class DiagramModel extends Observable implements Observer {
 		readOnlyDrawables = Collections.unmodifiableCollection(drawables);
 	}
 
-	public Converter getConverter() {
+	public static Converter getConverter() {
 		return new Converter() {
 			public void marshal(Object objModel,
 					HierarchicalStreamWriter writer, MarshallingContext context) {

@@ -2,7 +2,6 @@ package edu.raf.gef.editor;
 
 import java.util.WeakHashMap;
 
-import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
@@ -35,8 +34,31 @@ public class GefDiagram implements ActionContextController {
 	protected transient final DiagramProject project;
 	protected transient WeakHashMap<Workspace, IDiagramTreeNode> tree;
 
+	/**
+	 * Internal constructor, from restored model.
+	 * 
+	 * @param project
+	 * @param model
+	 */
+	protected GefDiagram(DiagramProject project, DiagramModel model) {
+		// model is not created
+		this.model = model;
+
+		// view knows about (observes) the model
+		view = createView();
+
+		// controller knows both
+		controller = createController();
+
+		// every diagram has its' own undo manager
+		undoManager = createUndoManager();
+
+		// add to parent
+		this.project = project;
+		project.addDiagram(this);
+	}
+
 	public GefDiagram(DiagramProject project) {
-		System.out.println("Constructor project");
 		// models knows nothing
 		model = createModel();
 
@@ -90,22 +112,35 @@ public class GefDiagram implements ActionContextController {
 		return undoManager;
 	}
 
-	public void configureXstream(XStream xstream) {
-		// return new Converter() {
-		// public void marshal(Object obj, HierarchicalStreamWriter writer,
-		// MarshallingContext context) {
-		// }
-		//
-		// public Object unmarshal(HierarchicalStreamReader reader,
-		// UnmarshallingContext context) {
-		// return null;
-		// }
-		//
-		// public boolean canConvert(Class cl) {
-		// return false;
-		// }
-		// };
-		xstream.registerConverter(getModel().getConverter());
+	public static Converter getConverter(final DiagramProject project) {
+		return new Converter() {
+			public void marshal(Object diagramObj, HierarchicalStreamWriter writer,
+					MarshallingContext context) {
+				GefDiagram diagram = (GefDiagram) diagramObj;
+				writer.startNode("model");
+				DiagramModel.getConverter().marshal(diagram.getModel(), writer, context);
+				writer.endNode();
+			}
+
+			public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+				GefDiagram diagram = null;
+				while (reader.hasMoreChildren()) {
+					reader.moveDown();
+					if ("model".equals(reader.getNodeName())) {
+						DiagramModel model = (DiagramModel) DiagramModel.getConverter().unmarshal(
+							reader, context);
+						diagram = new GefDiagram(project, model);
+					}
+					reader.moveUp();
+				}
+				return diagram;
+			}
+
+			@SuppressWarnings("unchecked")
+			public boolean canConvert(Class cl) {
+				return GefDiagram.class.equals(cl);
+			}
+		};
 	}
 
 	public DiagramProject getProject() {
@@ -113,14 +148,12 @@ public class GefDiagram implements ActionContextController {
 	}
 
 	@Override
-	public void onActivated(MainFrame main,
-			ActionContextController previousContext) {
+	public void onActivated(MainFrame main, ActionContextController previousContext) {
 		// restore clicked state
 	}
 
 	@Override
-	public void onDeactivated(MainFrame main,
-			ActionContextController nextContext) {
+	public void onDeactivated(MainFrame main, ActionContextController nextContext) {
 		// TODO Auto-generated method stub
 	}
 
@@ -140,6 +173,11 @@ public class GefDiagram implements ActionContextController {
 	@Override
 	public String toString() {
 		return super.toString() + getModel().getTitle();
+	}
+
+	public void save() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

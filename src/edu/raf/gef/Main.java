@@ -12,6 +12,11 @@ public final class Main {
 	private static MainFrame mainFrame;
 	private static final ComponentDiscoveryUtils components = new ComponentDiscoveryUtils();
 
+	/**
+	 * Well, we should change this :)
+	 */
+	public static Object simpleClipboard = null;
+	
 	private static final ServiceManager services = new ServiceManager();
 
 	/**

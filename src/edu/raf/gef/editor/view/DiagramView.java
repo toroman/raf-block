@@ -8,8 +8,6 @@ import java.awt.RenderingHints;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -20,8 +18,10 @@ import edu.raf.gef.editor.model.object.Focusable;
 import edu.raf.gef.editor.view.grid.DiagramGrid;
 import edu.raf.gef.editor.view.util.AffineTransformManager;
 import edu.raf.gef.editor.view.util.RepaintAndInertionThread;
+import edu.raf.gef.util.TransientObservable;
+import edu.raf.gef.util.TransientObserver;
 
-public class DiagramView implements Observer {
+public class DiagramView implements TransientObserver {
 	private final DiagramModel model;
 	private final JComponent canvas;
 	private AffineTransformManager affineTransformManager;
@@ -88,7 +88,7 @@ public class DiagramView implements Observer {
 	 */
 
 	@Override
-	public void update(Observable o, Object arg) {
+	public void update(TransientObservable o, Object arg) {
 		getCanvas().repaint();
 		return;
 	}

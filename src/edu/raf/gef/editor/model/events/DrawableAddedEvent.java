@@ -17,7 +17,7 @@ public class DrawableAddedEvent extends EventObject {
 
 	public DrawableAddedEvent(Drawable source, boolean added) {
 		super(source);
-		this.added = true;
+		this.added = added;
 	}
 
 	public boolean isAdded() {

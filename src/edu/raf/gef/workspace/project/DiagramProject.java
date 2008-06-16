@@ -26,7 +26,7 @@ import edu.raf.gef.Main;
 import edu.raf.gef.app.exceptions.GefException;
 import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.editor.IDiagramTreeNode;
-import edu.raf.gef.services.mime.FileHandler;
+import edu.raf.gef.services.mime.ProjectsFileHandler;
 import edu.raf.gef.workspace.Workspace;
 
 public class DiagramProject extends DefaultMutableTreeNode {
@@ -38,22 +38,6 @@ public class DiagramProject extends DefaultMutableTreeNode {
 
 	protected transient Workspace workspace;
 
-	private static Converter converter = new Converter() {
-		public void marshal(Object diagramObj, HierarchicalStreamWriter writer,
-				MarshallingContext context) {
-			writer.addAttribute("name", ((DiagramProject) diagramObj).getProjectName());
-		}
-
-		public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-			String name = reader.getAttribute("name");
-			return new DiagramProject(name);
-		}
-
-		public boolean canConvert(Class arg0) {
-			return DiagramProject.class.equals(arg0);
-		}
-	};
-
 	public DiagramProject(String projectName) {
 		super(projectName);
 	}
@@ -64,6 +48,7 @@ public class DiagramProject extends DefaultMutableTreeNode {
 
 	public void setWorkspace(Workspace workspace) {
 		this.workspace = workspace;
+		ensureFileSystem();
 	}
 
 	public void addDiagram(GefDiagram diagram) {
@@ -71,8 +56,8 @@ public class DiagramProject extends DefaultMutableTreeNode {
 	}
 
 	public void save() throws GefException {
-		File projectFolder = ensureFileSystem();
-		File metaFolder = getMetaFolder();
+		ensureFileSystem();
+		// save meta data
 		File metaFile = getMetaFile();
 
 		OutputStream os;
@@ -84,7 +69,7 @@ public class DiagramProject extends DefaultMutableTreeNode {
 		}
 
 		XStream xs = new XStream(new DomDriver());
-		xs.registerConverter(converter);
+		xs.registerConverter(createConvertor(null));
 		xs.toXML(this, os);
 
 		try {
@@ -92,6 +77,7 @@ public class DiagramProject extends DefaultMutableTreeNode {
 		} catch (IOException e) {
 		}
 
+		// save diagrams
 		int count = getChildCount();
 		for (int i = 0; i < count; ++i) {
 			IDiagramTreeNode diagramNode = (IDiagramTreeNode) getChildAt(i);
@@ -111,7 +97,7 @@ public class DiagramProject extends DefaultMutableTreeNode {
 		return new File(this.workspace.getLocation(), getProjectName());
 	}
 
-	private File ensureFileSystem() throws GefException {
+	private void ensureFileSystem() {
 		File projectFolder = getProjectFolder();
 		if (!projectFolder.exists()) {
 			projectFolder.mkdirs();
@@ -120,7 +106,6 @@ public class DiagramProject extends DefaultMutableTreeNode {
 		if (!metaFolder.exists()) {
 			metaFolder.mkdir();
 		}
-		return projectFolder;
 	}
 
 	/**
@@ -130,7 +115,8 @@ public class DiagramProject extends DefaultMutableTreeNode {
 	 * @return
 	 * @throws GefException
 	 */
-	public static DiagramProject createFrom(File projectFolder) throws GefException {
+	public static DiagramProject createFrom(Workspace workspace, File projectFolder)
+			throws GefException {
 		// read meta
 		File metaFile = new File(new File(projectFolder, ".project"), "project.xml");
 		InputStream is;
@@ -140,7 +126,7 @@ public class DiagramProject extends DefaultMutableTreeNode {
 			throw new GefException("Couldn't read project configuration!", e);
 		}
 		XStream xs = new XStream(new DomDriver());
-		xs.registerConverter(converter);
+		xs.registerConverter(createConvertor(workspace));
 		DiagramProject dproject = (DiagramProject) xs.fromXML(is);
 		try {
 			is.close();
@@ -154,17 +140,37 @@ public class DiagramProject extends DefaultMutableTreeNode {
 				return pathname.isFile();
 			}
 		});
-		List<FileHandler> handlers = Main.getServices()
-				.getServiceImplementations(FileHandler.class);
+		List<ProjectsFileHandler> handlers = Main.getServices().getServiceImplementations(
+			ProjectsFileHandler.class);
 
 		for (File file : files) {
-			for (FileHandler handler : handlers) {
+			for (ProjectsFileHandler handler : handlers) {
 				if (handler.canHandleFile(file)) {
-					handler.handleFile(file, dproject);
+					handler.openFile(file, dproject);
 					break;
 				}
 			}
 		}
 		return dproject;
+	}
+
+	private static Converter createConvertor(final Workspace workspace2) {
+		return new Converter() {
+			public void marshal(Object diagramObj, HierarchicalStreamWriter writer,
+					MarshallingContext context) {
+				writer.addAttribute("name", ((DiagramProject) diagramObj).getProjectName());
+			}
+
+			public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+				String name = reader.getAttribute("name");
+				DiagramProject project = new DiagramProject(name);
+				project.setWorkspace(workspace2);
+				return project;
+			}
+
+			public boolean canConvert(Class arg0) {
+				return DiagramProject.class.equals(arg0);
+			}
+		};
 	}
 }

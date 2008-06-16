@@ -2,6 +2,8 @@ package edu.raf.gef.gui;
 
 import java.awt.Component;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.InputStream;
 import java.util.logging.Level;
 
@@ -46,6 +48,8 @@ import edu.raf.gef.workspace.panel.WorkspaceComponent;
 public class MainFrame extends ApplicationWindow {
 	protected static final long serialVersionUID = 4040204356233038729L;
 
+	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
 	private WorkspaceComponent workspace;
 
 	private JSplitPane mainSplitPane;
@@ -58,6 +62,12 @@ public class MainFrame extends ApplicationWindow {
 
 	private MenuManager diagramContextMenu;
 
+	public static final String SELECTED_EDITOR_PROPERTY = "selDiagram";
+
+	public void addPropertyChangeListener(String property, PropertyChangeListener listener) {
+		pcs.addPropertyChangeListener(property, listener);
+	}
+
 	public MainFrame() {
 		super("mainFrame");
 		setResources(Resources.getGlobal());
@@ -68,8 +78,7 @@ public class MainFrame extends ApplicationWindow {
 
 	@Override
 	protected void init() {
-		for (AbstractPlugin plugin : Main.getComponentDiscoveryUtils()
-				.getPlugins()) {
+		for (AbstractPlugin plugin : Main.getComponentDiscoveryUtils().getPlugins()) {
 			plugin.setMainFrame(this);
 		}
 	}
@@ -81,7 +90,7 @@ public class MainFrame extends ApplicationWindow {
 					.getWorkspaceFileFromResources(getResources()));
 		} catch (GefException e) {
 			getGeh().handleErrorBlocking("initWorkspace",
-					"Couldn't open workspace, please change it!", e);
+				"Couldn't open workspace, please change it!", e);
 			return;
 		}
 		restore.setWorkspaceLocationToProperties(getResources());
@@ -104,20 +113,16 @@ public class MainFrame extends ApplicationWindow {
 	@Override
 	protected ToolbarManager createToolbarManager() {
 		ToolbarManager tbm = super.createToolbarManager();
-		tbm.addAction(StandardToolbars.STANDARD.name(), new OpenDocumentAction(
-				this));
+		tbm.addAction(StandardToolbars.STANDARD.name(), new OpenDocumentAction(this));
 		return tbm;
 	}
 
 	@Override
 	protected MenuManager createMenuManager() {
 		MenuManager menu = super.createMenuManager();
-		menu.getPart(StandardMenuParts.NEW_PROJECT_PART).add(
-				new ActionNewProject(this));
-		menu.getPart(StandardMenuParts.PLUGIN_MANAGER).add(
-				new ActionShowPluginManager(this));
-		menu.getPart(StandardMenuParts.FILE_EXIT_PART).add(
-				new ActionExitApplication(this));
+		menu.getPart(StandardMenuParts.NEW_PROJECT_PART).add(new ActionNewProject(this));
+		menu.getPart(StandardMenuParts.PLUGIN_MANAGER).add(new ActionShowPluginManager(this));
+		menu.getPart(StandardMenuParts.FILE_EXIT_PART).add(new ActionExitApplication(this));
 		return menu;
 	}
 
@@ -126,8 +131,7 @@ public class MainFrame extends ApplicationWindow {
 		if (frame == null) {
 			frame = new DiagramPluginFrame(selectedDiagram.getDiagram(), this);
 			selectedDiagram.setDiagramEditorComponent(frame);
-			tabbedDiagrams.addTab(selectedDiagram.getDiagram().getModel()
-					.getTitle(), frame);
+			tabbedDiagrams.addTab(selectedDiagram.getDiagram().getModel().getTitle(), frame);
 		}
 		tabbedDiagrams.setSelectedComponent(frame);
 	}
@@ -138,14 +142,13 @@ public class MainFrame extends ApplicationWindow {
 		InputStream is = null;
 		try {
 			is = getResources().getResource("DiagramContextMenuConfiguration");
-			MenuManagerSAXImporter.fillMenu(diagramContextMenu, is,
-					getResources());
+			MenuManagerSAXImporter.fillMenu(diagramContextMenu, is, getResources());
 		} catch (GefException e) {
 			// no configuration
 			getLog().log(Level.FINEST, "Menu not configured");
 		} catch (Throwable t) {
-			getGeh().handleErrorBlocking("createMenuManager",
-					"Couldn't read menu configuration!", t);
+			getGeh().handleErrorBlocking("createMenuManager", "Couldn't read menu configuration!",
+				t);
 			System.exit(-1);
 		}
 	}
@@ -171,8 +174,7 @@ public class MainFrame extends ApplicationWindow {
 			}
 		});
 
-		mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				tabbedTools, tabbedDiagrams);
+		mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, tabbedTools, tabbedDiagrams);
 		mainSplitPane.setOneTouchExpandable(true);
 		return mainSplitPane;
 	}
@@ -193,8 +195,7 @@ public class MainFrame extends ApplicationWindow {
 		}
 	}
 
-	private void setObjectSelected(TreePath path, boolean select,
-			boolean deselectOthers) {
+	private void setObjectSelected(TreePath path, boolean select, boolean deselectOthers) {
 		GefDiagram diagram = null;
 		for (Object o : path.getPath()) {
 			if (o instanceof IDiagramTreeNode) {
@@ -209,8 +210,7 @@ public class MainFrame extends ApplicationWindow {
 			diagram.getController().clearFocusedObjects();
 		}
 
-		Drawable d = ((IDrawableNode) path.getLastPathComponent())
-				.getDrawable();
+		Drawable d = ((IDrawableNode) path.getLastPathComponent()).getDrawable();
 		if (d instanceof Focusable) {
 			if (select) {
 				diagram.getController().addToFocusedObjects((Focusable) d);
@@ -229,11 +229,12 @@ public class MainFrame extends ApplicationWindow {
 			}
 
 		});
-		tabbedDiagrams.addTab("Welcome", new JLabel(
-				"Welcome to RAF Graphical Editing Framework!"));
+		tabbedDiagrams.addTab("Welcome", new JLabel("Welcome to RAF Graphical Editing Framework!"));
 	}
 
 	protected void handleDiagramSelectionChanged(ChangeEvent e) {
+		pcs.firePropertyChange(SELECTED_EDITOR_PROPERTY, null, tabbedDiagrams
+				.getSelectedComponent());
 		tabbedDiagrams.grabFocus();
 		Component cmp = tabbedDiagrams.getSelectedComponent();
 		if (cmp instanceof JComponent) {
@@ -251,7 +252,6 @@ public class MainFrame extends ApplicationWindow {
 			context.onActivated(MainFrame.this, currentActionContext);
 		}
 		currentActionContext = context;
-		// getFrame().repaint();
 	}
 
 	public JTabbedPane getTabbedTools() {
@@ -273,8 +273,7 @@ public class MainFrame extends ApplicationWindow {
 			try {
 				workspace.getWorkspace().save();
 			} catch (GefException ex) {
-				getGeh().handleErrorBlocking("Save",
-						"Couldn't save workspace!", ex);
+				getGeh().handleErrorBlocking("Save", "Couldn't save workspace!", ex);
 			}
 		}
 	}

@@ -146,7 +146,7 @@ public class Workspace extends DefaultTreeModel {
 		ArrayList<Exception> exceptions = new ArrayList<Exception>();
 		for (File project : projects) {
 			try {
-				addProject(DiagramProject.createFrom(project));
+				addProject(DiagramProject.createFrom(this, project));
 			} catch (GefException e) {
 				exceptions.add(e);
 			}

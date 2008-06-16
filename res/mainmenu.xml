@@ -28,6 +28,9 @@
 			<action id="cut" />
 			<action id="copy" />
 			<action id="paste" />
+			<action id="delete" />
+		</part>
+		<part id="p_properties">
 			<action id="properties" />
 		</part>
 	</container>

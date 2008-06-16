@@ -7,12 +7,12 @@ import java.awt.Stroke;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.Observable;
 
 import edu.raf.gef.editor.model.DiagramModel;
 import edu.raf.gef.editor.model.object.Drawable;
+import edu.raf.gef.util.TransientObservable;
 
-public class Lasso extends Observable implements Drawable {
+public class Lasso extends TransientObservable implements Drawable {
 
 	private double x, y, width, height;
 	

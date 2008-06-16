@@ -3,7 +3,6 @@ package edu.raf.gef.editor;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.Observable;
 
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
@@ -11,6 +10,7 @@ import javax.swing.tree.TreeNode;
 import edu.raf.gef.editor.model.events.DrawableAddedEvent;
 import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.gui.swing.DiagramPluginFrame;
+import edu.raf.gef.util.TransientObservable;
 import edu.raf.gef.workspace.Workspace;
 
 public class DefaultDiagramTreeModel implements IDiagramTreeNode {
@@ -45,7 +45,7 @@ public class DefaultDiagramTreeModel implements IDiagramTreeNode {
 	 *      java.lang.Object)
 	 */
 	@Override
-	public void update(Observable o, Object arg) {
+	public void update(TransientObservable o, Object arg) {
 		if (arg instanceof DrawableAddedEvent) {
 			DrawableAddedEvent dae = ((DrawableAddedEvent) arg);
 			Drawable d = dae.getSource();

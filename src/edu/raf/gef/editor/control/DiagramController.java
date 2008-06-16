@@ -9,6 +9,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -19,7 +20,9 @@ import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.editor.control.state.DiagramSelectionState;
 import edu.raf.gef.editor.control.state.util.IDiagramAbstractState;
 import edu.raf.gef.editor.model.DiagramModel;
+import edu.raf.gef.editor.model.object.AnchorPointContainer;
 import edu.raf.gef.editor.model.object.Focusable;
+import edu.raf.gef.editor.model.object.impl.Link;
 import edu.raf.gef.util.GeomHelper;
 
 public class DiagramController implements MouseListener, MouseWheelListener, MouseMotionListener,
@@ -53,6 +56,7 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 	 * In short, do not invoke setFocus() yourself!
 	 */
 	private Set<Focusable> focusedObjects;
+	private Set<Focusable> unmodifiableFocusedObjects;
 
 	/**
 	 * Inserts the focusable object into the list of focused Focusables. Invokes
@@ -126,6 +130,7 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 		setState(new DiagramSelectionState(diagram));
 		this.diagram = diagram;
 		focusedObjects = new HashSet<Focusable>();
+		unmodifiableFocusedObjects = Collections.unmodifiableSet(focusedObjects);
 		Component c = diagram.getView().getCanvas();
 		c.addMouseListener(this);
 		c.addMouseMotionListener(this);
@@ -207,6 +212,90 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 	}
 
 	public final Set<Focusable> getFocusedObjects() {
-		return Collections.unmodifiableSet(focusedObjects);
+		return unmodifiableFocusedObjects;
+	}
+
+	// Cut/Copy/Paste section
+
+	/**
+	 * Cuts the currently focused objects.
+	 * 
+	 * @return Set<Focusable>
+	 */
+	public Object cut() {
+		Object obj = copy();
+		for (Focusable focusable : getFocusedObjects()) {
+			if (focusable instanceof AnchorPointContainer) {
+				for (Link link : ((AnchorPointContainer) focusable).getLinks())
+					getModel().removeElement(link);
+			}
+			getModel().removeElement(focusable);
+		}
+		clearFocusedObjects();
+		return obj;
+	}
+
+	/**
+	 * Copies the currently focused objects.
+	 * 
+	 * @return Set<Focusable>
+	 */
+	public Object copy() {
+		Set<Focusable> objectsToCopy = new HashSet<Focusable>();
+		for (Focusable focusable : getFocusedObjects())
+			if (focusable instanceof Link) {
+				// A focused link
+				Link link = (Link) focusable;
+				boolean sourceok = false;
+				if (link.getSourceAnchor() != null) {
+					AnchorPointContainer source = link.getSourceAnchor().getParent();
+					if (source instanceof Focusable && ((Focusable) source).isFocused())
+						sourceok = true;
+				}
+				boolean destinationok = false;
+				if (link.getDestinationAnchor() != null) {
+					AnchorPointContainer dest = link.getDestinationAnchor().getParent();
+					if (dest instanceof Focusable && ((Focusable) dest).isFocused())
+						destinationok = true;
+				}
+				if (destinationok && sourceok) {
+					// This link should be copied
+					objectsToCopy.add(link);
+				}
+			} else {
+				objectsToCopy.add(focusable);
+			}
+		return objectsToCopy;
+	}
+
+	/**
+	 * Inserts the given object into the diagram. Object needs to be a
+	 * Focusable, or a collection of Focusables.
+	 */
+	@SuppressWarnings("unchecked")
+	public void paste(Object object) {
+		Set<Focusable> objectsToCopy;
+
+		if (object instanceof Focusable) {
+			objectsToCopy = new HashSet<Focusable>();
+			objectsToCopy.add((Focusable)object);
+		} else if (object instanceof Collection) {
+			objectsToCopy = new HashSet<Focusable>();
+			boolean isFocusableSet = true;
+			for (Object o : objectsToCopy)
+				if (!(o instanceof Focusable))
+					isFocusableSet = false;
+				else
+					objectsToCopy.add((Focusable)o);
+			if (!isFocusableSet)
+				return;
+		} else
+			return;
+
+		clearFocusedObjects();
+		for (Focusable focusable : objectsToCopy) {
+			getModel().addElement(focusable);
+			addToFocusedObjects(focusable);
+		}
 	}
 }

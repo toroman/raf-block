@@ -28,9 +28,11 @@ public class DiagramReLinkState extends DiagramDefaultState {
 		if (asSource) {
 			this.oldAnchorPoint = link.getSourceAnchor();
 			this.link.setSourcePoint(null);
+			this.link.getResizePoins().getFirst().setDraggingOffset(0, 0);
 		} else {
 			this.oldAnchorPoint = link.getDestinationAnchor();
 			this.link.setDestinationPoint(null);
+			this.link.getResizePoins().getLast().setDraggingOffset(0, 0);
 		}
 		diagram.getController().clearFocusedObjects();
 		diagram.getController().addToFocusedObjects(link);

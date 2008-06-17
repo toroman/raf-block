@@ -9,7 +9,6 @@ import edu.raf.gef.app.exceptions.GefCreationalException;
 import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.editor.control.state.util.DiagramDefaultState;
 import edu.raf.gef.editor.control.state.util.IDiagramAbstractState;
-import edu.raf.gef.editor.model.DiagramModel;
 import edu.raf.gef.editor.model.object.impl.AnchorPoint;
 import edu.raf.gef.editor.model.object.impl.Link;
 
@@ -31,8 +30,9 @@ public class DiagramAddLinkState extends DiagramDefaultState {
 			return true;
 		try {
 			Constructor<Link> constructor = (Constructor<Link>) objectType
-					.getConstructor(DiagramModel.class);
-			Link newLink = constructor.newInstance(diagram.getModel());
+					.getConstructor();
+			Link newLink = constructor.newInstance();
+			newLink.setParent(diagram.getModel());
 
 			AnchorPoint sourceAnchor = diagram.getModel().getAcceptingAnchorAt(
 				userSpaceLocation, newLink, true);

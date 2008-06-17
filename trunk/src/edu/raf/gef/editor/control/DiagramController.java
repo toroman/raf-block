@@ -280,6 +280,8 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 	@SuppressWarnings("unchecked")
 	public void paste(Object object) {
 		Set<Focusable> objectsToCopy;
+		
+//		System.out.println("Object: " + object);
 
 		if (object instanceof Focusable) {
 			objectsToCopy = new HashSet<Focusable>();
@@ -288,8 +290,9 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 			objectsToCopy = new HashSet<Focusable>();
 			boolean isFocusableSet = true;
 			for (Object o : objectsToCopy)
-				if (!(o instanceof Focusable))
+				if (!(o instanceof Focusable)) {
 					isFocusableSet = false;
+				}
 				else
 					objectsToCopy.add((Focusable)o);
 			if (!isFocusableSet)
@@ -297,6 +300,8 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 		} else
 			return;
 
+//		System.out.println(objectsToCopy);
+		
 		clearFocusedObjects();
 		for (Focusable focusable : objectsToCopy) {
 			getModel().addElement(focusable);

@@ -5,9 +5,9 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 
 import edu.raf.gef.editor.model.object.Drawable;
+import edu.raf.gef.editor.model.object.impl.RectangularObject;
 
-public class DefaultDrawableTreeNode extends DefaultMutableTreeNode implements
-		IDrawableNode {
+public class DefaultDrawableTreeNode extends DefaultMutableTreeNode implements IDrawableNode {
 
 	/**
 	 * 
@@ -16,8 +16,7 @@ public class DefaultDrawableTreeNode extends DefaultMutableTreeNode implements
 	private Drawable drawable;
 	private IDiagramTreeNode diagramTree;
 
-	public DefaultDrawableTreeNode(Drawable drawable,
-			IDiagramTreeNode diagramTree) {
+	public DefaultDrawableTreeNode(Drawable drawable, IDiagramTreeNode diagramTree) {
 		super(getNameFromDrawable(drawable));
 		this.drawable = drawable;
 		this.diagramTree = diagramTree;
@@ -48,7 +47,11 @@ public class DefaultDrawableTreeNode extends DefaultMutableTreeNode implements
 
 	@Override
 	public String toString() {
-		return userObject.toString();
+		if (userObject instanceof RectangularObject)
+			return ((RectangularObject) userObject).getTitle();
+		else
+
+			return userObject.toString();
 	}
 
 }

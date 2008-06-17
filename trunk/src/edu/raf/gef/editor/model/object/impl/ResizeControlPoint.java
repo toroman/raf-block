@@ -12,6 +12,10 @@ import edu.raf.gef.util.MathHelper;
 
 public class ResizeControlPoint extends ControlPoint {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4680510060635677713L;
 	public final static int SIZE_FACTOR = 7; // not an even number
 
 	public ResizeControlPoint(ControlPointContainer parent, Point2D initLocation) {

@@ -12,6 +12,10 @@ import edu.raf.gef.editor.model.object.impl.RectangularObject;
 
 public class ExecutionBlock extends RectangularObject implements AnchorPointContainer {
 
+	/**
+	 */
+	private static final long serialVersionUID = -5497560976688614627L;
+
 	public ExecutionBlock() {
 		super();
 		setMinDimension(new Dimension(60, 40));

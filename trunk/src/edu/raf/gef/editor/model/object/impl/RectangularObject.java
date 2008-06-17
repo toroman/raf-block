@@ -28,7 +28,7 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 
 	private String title = "";
 
-	private Point2D draggingOffset;
+	private transient Point2D draggingOffset;
 
 	private Color backgroundColor;
 

@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package edu.raf.gef.gui.swing.menus;
 
 import java.awt.Component;
-import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -86,16 +85,6 @@ public class MenuManager {
 			throw new GefRuntimeException("Invalid menu part id!");
 		MenuPart part = parts.get(partId);
 		part.add(action);
-	}
-
-	// public void addAction(String partId, Action action, String actionId) {
-	// if (!parts.containsKey(partId))
-	// throw new GefRuntimeException("Invalid menu part id!");
-	// addAction(partId, action);
-	//	}
-
-	public void overrideAction(String actionId, ActionListener listener) {
-
 	}
 
 	public void removeAction(String partId, Action action) {

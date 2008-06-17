@@ -12,6 +12,11 @@ import edu.raf.gef.editor.model.object.impl.RectangularObject;
 
 public class OutputBlock extends RectangularObject {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4029973414439459416L;
+
 	public OutputBlock() {
 		super();
 		addAnchor(false, new ControlPointConstraint() {

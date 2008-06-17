@@ -13,6 +13,11 @@ import edu.raf.gef.util.MathHelper;
 
 public class StartBlock extends RectangularObject {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2677571524459054126L;
+
 	public StartBlock() {
 		super();
 		addAnchor(true, new ControlPointConstraint() {

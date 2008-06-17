@@ -47,13 +47,11 @@ public class DiagramAddDraggableState extends DiagramDefaultState {
 		if (super.mousePressed(e, userSpaceLocation))
 			return true;
 		try {
-			Constructor<Draggable> constructor = (Constructor<Draggable>) objectType
-					.getConstructor(DiagramModel.class);
-			Draggable draggable = constructor.newInstance(diagram.getModel());
+			Draggable draggable = objectType.newInstance();
 			draggable.setLocation(userSpaceLocation);
 			diagram.getModel().addElement(draggable);
 			if (nextState == null) {
-				diagram.getController().setState(new DiagramSelectionState (diagram, draggable));
+				diagram.getController().setState(new DiagramSelectionState(diagram, draggable));
 			} else
 				diagram.getController().setState(nextState);
 

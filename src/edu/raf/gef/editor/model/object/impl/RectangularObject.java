@@ -13,7 +13,6 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.Vector;
 
-import edu.raf.gef.editor.model.DiagramModel;
 import edu.raf.gef.editor.model.object.AnchorPointContainer;
 import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
@@ -26,7 +25,7 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 
 	private Dimension2D minDimension, maxDimension;
 	private double x, y, width, height;
-	
+
 	private String title = "";
 
 	private Point2D draggingOffset;
@@ -54,8 +53,8 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		return res;
 	}
 
-	public RectangularObject(DiagramModel model) {
-		super(model);
+	public RectangularObject() {
+		super();
 
 		sourceAnchors = new LinkedList<SourceAnchorPoint>();
 		destinationAnchors = new LinkedList<DestinationAnchorPoint>();
@@ -149,7 +148,6 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		draggingOffset = null;
 		setChanged();
 		notifyObservers();
-		clearChanged();
 	}
 
 	@Override
@@ -159,7 +157,6 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		updateControlPointLocations();
 		setChanged();
 		notifyObservers();
-		clearChanged();
 	}
 
 	@Override
@@ -359,7 +356,8 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 			point.paint(g);
 		g.setColor(Color.BLACK);
 		String msg = title == null ? "" : title;
-		g.drawString(msg, (float)(getX() + getWidth() / 2 - msg.length() * 3), (float)(getY() + getHeight()/2 + 3));
+		g.drawString(msg, (float) (getX() + getWidth() / 2 - msg.length() * 3), (float) (getY()
+				+ getHeight() / 2 + 3));
 	}
 
 	protected abstract void paintRectangular(Graphics2D g);

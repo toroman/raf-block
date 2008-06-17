@@ -2,13 +2,13 @@ package edu.raf.gef.util;
 
 import java.util.Vector;
 
-public class TransientObservable {
+public abstract class TransientObservable {
 	private transient boolean changed = false;
 	private transient Vector<TransientObserver> obs = new Vector<TransientObserver>();
 
 	/** Construct an Observable with zero Observers. */
 
-	private synchronized Object readResolve() {
+	protected synchronized Object readResolve() {
 		obs = new Vector<TransientObserver>();
 		return this;
 	}

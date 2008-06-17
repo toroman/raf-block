@@ -35,6 +35,7 @@ public class AffineTransformManager extends TransientObservable {
 	private final DiagramView view;
 	
 	public AffineTransformManager(DiagramView view) {
+		super();
 		this.view = view;
 		transform = new AffineTransform();
 		inverse = new AffineTransform();
@@ -167,4 +168,5 @@ public class AffineTransformManager extends TransientObservable {
 	public double getScaleValue() {
 		return scaleValue;
 	}
+
 }

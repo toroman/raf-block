@@ -14,7 +14,7 @@ import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.editor.model.object.impl.AnchorPoint;
 import edu.raf.gef.editor.model.object.impl.Link;
 import edu.raf.gef.editor.structure.CompositeUpdateEvent;
-import edu.raf.gef.editor.structure.ModelConverter;
+import edu.raf.gef.editor.structure.DiagramModelConverter;
 import edu.raf.gef.util.TransientObservable;
 import edu.raf.gef.util.TransientObserver;
 
@@ -26,13 +26,13 @@ public class DiagramModel extends TransientObservable implements TransientObserv
 	/**
 	 * Return unmodifiable version, because the list writing is encapsulated.
 	 */
-	private transient final Collection<Drawable> readOnlyDrawables;
-	private transient final Collection<Drawable> readOnlyTemporaryDrawables;
+	private transient Collection<Drawable> readOnlyDrawables;
+	private transient Collection<Drawable> readOnlyTemporaryDrawables;
 
 	private String title = "untitled" + ++INSTANCE_COUNTER;
 
 	public Converter getConverter() {
-		return new ModelConverter(getClass());
+		return new DiagramModelConverter(getClass());
 	}
 
 	public String getTitle() {
@@ -44,6 +44,7 @@ public class DiagramModel extends TransientObservable implements TransientObserv
 	}
 
 	public DiagramModel() {
+		super();
 		drawables = new ArrayList<Drawable>();
 		temporaryDrawables = new ArrayList<Drawable>();
 		readOnlyDrawables = Collections.unmodifiableCollection(drawables);
@@ -73,6 +74,7 @@ public class DiagramModel extends TransientObservable implements TransientObserv
 	}
 
 	public synchronized boolean addElement(Drawable element) {
+		element.setParent(this);
 		if (drawables.add(element)) {
 			setChanged();
 			notifyObservers(new DrawableAddedEvent(element, true));
@@ -169,6 +171,7 @@ public class DiagramModel extends TransientObservable implements TransientObserv
 	public void update(TransientObservable o, Object arg) {
 		setChanged();
 		notifyObservers(new CompositeUpdateEvent(o, arg));
+		//Logger.getAnonymousLogger().info("Broj observera za " + this + " je " + super.countObservers());
 	}
 
 }

@@ -19,10 +19,10 @@ import edu.raf.gef.editor.model.object.Drawable;
  * @author Srecko Toroman
  * 
  */
-public class ModelConverter implements Converter {
+public class DiagramModelConverter implements Converter {
 	private Class<? extends DiagramModel> modelType;
 
-	public ModelConverter(Class<? extends DiagramModel> modelType) {
+	public DiagramModelConverter(Class<? extends DiagramModel> modelType) {
 		this.modelType = modelType;
 	}
 

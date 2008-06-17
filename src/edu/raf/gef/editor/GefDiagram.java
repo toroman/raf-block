@@ -31,12 +31,12 @@ public class GefDiagram implements ActionContextController {
 	 */
 	private static final long serialVersionUID = -4600587151373699739L;
 
-	protected final DiagramModel model;
-	protected transient final DiagramView view;
-	protected transient final DiagramController controller;
+	protected DiagramModel model;
+	protected transient DiagramView view;
+	protected transient DiagramController controller;
 
-	protected transient final GefUndoManager undoManager;
-	protected transient final DiagramProject project;
+	protected transient GefUndoManager undoManager;
+	protected transient DiagramProject project;
 	protected transient WeakHashMap<Workspace, IDiagramTreeNode> tree;
 
 	/**
@@ -46,26 +46,16 @@ public class GefDiagram implements ActionContextController {
 	 * @param model
 	 */
 	public GefDiagram(DiagramProject project, DiagramModel model) {
-		// model is not created
-		this.model = model;
-
-		// view knows about (observes) the model
-		view = createView();
-
-		// controller knows both
-		controller = createController();
-
-		// every diagram has its' own undo manager
-		undoManager = createUndoManager();
-
-		// add to parent
-		this.project = project;
-		project.addDiagram(this);
+		init(project, model);
 	}
 
 	public GefDiagram(DiagramProject project) {
-		// models knows nothing
-		model = createModel();
+		init(project, createModel());
+	}
+
+	protected void init(DiagramProject project, DiagramModel model) {
+		// model is not created
+		this.model = model;
 
 		// view knows about (observes) the model
 		view = createView();

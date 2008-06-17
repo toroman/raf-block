@@ -3,6 +3,7 @@ package edu.raf.gef.editor.model.object.impl;
 import java.awt.Color;
 import java.awt.geom.Point2D;
 
+import edu.raf.gef.editor.model.DiagramModel;
 import edu.raf.gef.editor.model.object.AnchorPointContainer;
 
 public class DestinationAnchorPoint extends AnchorPoint {
@@ -18,4 +19,5 @@ public class DestinationAnchorPoint extends AnchorPoint {
 	public boolean willAcceptLinkAsSource(Link link) {
 		return false;
 	}
+
 }

@@ -20,6 +20,11 @@ public class ConditionBlock extends RectangularObject {
 	// \ /
 	// 4--------3
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3766628340203826777L;
+
 	public ConditionBlock() {
 		super();
 		addAnchor(false, new ControlPointConstraint() {

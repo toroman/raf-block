@@ -2,6 +2,7 @@ package edu.raf.gef.editor.model.object.impl;
 
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.io.Serializable;
 
 import edu.raf.gef.editor.model.DiagramModel;
 import edu.raf.gef.editor.model.object.ControlPointContainer;
@@ -12,9 +13,9 @@ import edu.raf.gef.util.TransientObservable;
  * Basic Diagram object capable of being selected, dragged, painted etc.
  */
 public abstract class DiagramObject extends TransientObservable implements Focusable,
-		ControlPointContainer {
+		ControlPointContainer, Serializable {
 	private transient boolean focused = false;
-	private DiagramModel model;
+	private transient DiagramModel model;
 
 	@Override
 	public void setParent(DiagramModel diagramModel) {

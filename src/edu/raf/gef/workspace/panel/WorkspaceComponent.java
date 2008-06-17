@@ -3,13 +3,22 @@ package edu.raf.gef.workspace.panel;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.io.InputStream;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import edu.raf.gef.app.Resources;
+import edu.raf.gef.app.exceptions.GefException;
+import edu.raf.gef.gui.swing.menus.MenuManager;
+import edu.raf.gef.gui.swing.menus.MenuManagerSAXImporter;
+import edu.raf.gef.gui.swing.menus.PopupListener;
 import edu.raf.gef.workspace.Workspace;
 import edu.raf.gef.workspace.project.DiagramProject;
 
@@ -22,6 +31,9 @@ public class WorkspaceComponent extends JPanel {
 	private Workspace workspace;
 
 	private JTree trWorkspace;
+	private MenuManager menuManager;
+
+	private static final String ID = "WorkspaceComponent";
 
 	public WorkspaceComponent(Workspace workspace) {
 		initComponents();
@@ -32,6 +44,21 @@ public class WorkspaceComponent extends JPanel {
 	private void initComponents() {
 		trWorkspace = new JTree();
 		trWorkspace.setRootVisible(true);
+		menuManager = new MenuManager(trWorkspace, true);
+		// try restore configuration from XML
+		InputStream is = null;
+		try {
+			is = Resources.getGlobal().getResource(ID + ".menu");
+			MenuManagerSAXImporter.fillMenu(menuManager, is, Resources.getGlobal());
+		} catch (GefException e) {
+			// no configuration
+			Logger.getAnonymousLogger().log(Level.FINEST, "Menu not configured");
+		} catch (Throwable t) {
+			Logger.getAnonymousLogger().log(Level.SEVERE, "Couldn't read menu.", t);
+			System.exit(-1);
+		}
+		trWorkspace.add(menuManager.getMenubar());
+		trWorkspace.addMouseListener(new PopupListener((JPopupMenu) menuManager.getMenubar()));
 		Container con = this;
 		con.setLayout(new BorderLayout());
 		con.add(trWorkspace, BorderLayout.CENTER);

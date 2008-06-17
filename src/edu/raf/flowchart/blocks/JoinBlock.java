@@ -16,6 +16,10 @@ import edu.raf.gef.util.GeomHelper;
 
 public class JoinBlock extends RectangularObject {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4121118197825742163L;
 	private ControlPointConstraint anchorConstraint = new ControlPointConstraint() {
 		@Override
 		public Point2D updateLocation(Point2D oldLocation) {

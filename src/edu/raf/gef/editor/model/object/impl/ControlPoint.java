@@ -2,6 +2,7 @@ package edu.raf.gef.editor.model.object.impl;
 
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import edu.raf.gef.editor.model.object.Draggable;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
 import edu.raf.gef.util.GeomHelper;
 
-public abstract class ControlPoint implements Draggable {
+public abstract class ControlPoint implements Draggable, Serializable {
 
 	private ControlPointContainer parent;
 	private Point2D location = new Point2D.Double(0, 0);

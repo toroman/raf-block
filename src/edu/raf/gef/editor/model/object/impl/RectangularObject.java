@@ -30,6 +30,24 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 
 	private Point2D draggingOffset;
 
+	private Color backgroundColor;
+
+	@Property
+	public Color getBackgroundColor() {
+		return backgroundColor;
+	}
+	
+	private static final Color defaultColor = new Color (0xBBFFFFBB, true);
+
+	public void setBackgroundColor(Color backgroundColor) {
+		if (backgroundColor == null)
+			backgroundColor = defaultColor;
+		this.backgroundColor = backgroundColor;
+		setChanged();
+		notifyObservers();
+		clearChanged();
+	}
+
 	/*
 	 * 0-1-2 | | 7 3 | | 6-5-4
 	 */
@@ -73,6 +91,8 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		initControlPoints();
 		updateControlPointLocations();
 		setControlPointConstraints();
+		
+		setBackgroundColor(defaultColor);
 	}
 
 	@Override

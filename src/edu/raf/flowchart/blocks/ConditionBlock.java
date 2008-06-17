@@ -14,8 +14,6 @@ import edu.raf.gef.editor.model.object.impl.RectangularObject;
 
 public class ConditionBlock extends RectangularObject {
 
-	private static final Color COLOR = Color.white;
-
 	// 0--------1
 	// / \
 	// 5 2
@@ -70,7 +68,7 @@ public class ConditionBlock extends RectangularObject {
 				(int) (getY() + getHeight() / 2), (int) (getY() + getHeight()),
 				(int) (getY() + getHeight()), (int) (getY() + getHeight() / 2) }, 6);
 
-		g.setColor(COLOR);
+		g.setColor(getBackgroundColor());
 		g.fillPolygon(p);
 		g.setColor(Color.DARK_GRAY);
 		g.drawPolygon(p);

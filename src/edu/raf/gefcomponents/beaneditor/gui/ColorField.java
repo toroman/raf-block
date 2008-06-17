@@ -60,12 +60,21 @@ public class ColorField extends PropertyField {
 		}
 		// iscrtaj boju
 		Color color = (Color) parent.getValue();
-		g.setColor(color);
-		g.fill3DRect(c.width - c.height + 1, 1, c.height - 1, c.height - 1,
+		if (color != null) {
+			g.setColor(color);
+			g.fill3DRect(c.width - c.height + 1, 1, c.height - 1, c.height - 1,
+					true);
+			// tekst boje
+			g.setColor(Color.BLACK);
+			g.drawString(getHexRGBA(color), 4, 17);
+		} else {
+			g.setColor(Color.WHITE);
+			g.fill3DRect(c.width - c.height + 1, 1, c.height - 1, c.height - 1,
 				true);
-		// tekst boje
-		g.setColor(Color.BLACK);
-		g.drawString(getHexRGBA(color), 4, 17);
+			g.setColor(Color.BLACK);
+			g.drawString("null", 4, 17);
+		}
+	
 	}
 
 	@Override
@@ -124,8 +133,10 @@ public class ColorField extends PropertyField {
 	}
 
 	private String getHexRGBA(Color color) {
-		return hex(color.getRed()) + hex(color.getGreen())
+		if (color != null)
+			return hex(color.getRed()) + hex(color.getGreen())
 				+ hex(color.getBlue()) + hex(color.getAlpha());
+		else return "FFFFFFFF";
 	}
 
 	private String hex(int v) {

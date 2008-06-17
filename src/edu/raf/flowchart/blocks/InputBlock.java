@@ -12,8 +12,6 @@ import edu.raf.gef.editor.model.object.impl.RectangularObject;
 
 public class InputBlock extends RectangularObject {
 
-	private static final Color COLOR = Color.white;
-
 	public InputBlock() {
 		super();
 		addAnchor(false, new ControlPointConstraint() {
@@ -64,7 +62,7 @@ public class InputBlock extends RectangularObject {
 				new int[] { (int) (getY()), (int) (getY()), (int) (getY() + getHeight()),
 						(int) (getY() + getHeight()) }, 4);
 
-		g.setColor(COLOR);
+		g.setColor(getBackgroundColor());
 		g.fillPolygon(p);
 		g.setColor(Color.DARK_GRAY);
 		g.drawPolygon(p);

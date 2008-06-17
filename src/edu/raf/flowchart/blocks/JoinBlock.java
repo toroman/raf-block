@@ -124,7 +124,7 @@ public class JoinBlock extends RectangularObject {
 
 	@Override
 	protected void paintRectangular(Graphics2D g) {
-		g.setColor(Color.WHITE);
+		g.setColor(getBackgroundColor());
 		g.fillOval((int) getX(), (int) getY(), (int) getWidth(), (int) getHeight());
 		g.setColor(Color.DARK_GRAY);
 		g.drawOval((int) getX(), (int) getY(), (int) getWidth(), (int) getHeight());

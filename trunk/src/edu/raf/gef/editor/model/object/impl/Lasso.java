@@ -81,4 +81,10 @@ public class Lasso extends TransientObservable implements Drawable {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void setParent(DiagramModel diagramModel) {
+		
+	}
+
 }

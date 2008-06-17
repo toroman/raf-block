@@ -30,6 +30,7 @@ public class DiagramView implements TransientObserver {
 	private boolean antialiasing;
 
 	public DiagramView(DiagramModel model) {
+		super();
 		this.model = model;
 		model.addObserver(this);
 		canvas = createCanvas();
@@ -61,8 +62,7 @@ public class DiagramView implements TransientObserver {
 
 	protected void drawDiagram(Graphics2D g) {
 		if (antialiasing)
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_ON);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		Rectangle r = g.getClipBounds();
 		g.clearRect(0, 0, (int) r.getWidth() + 1, (int) r.getHeight() + 1);
 		if (getGrid() != null)
@@ -77,8 +77,8 @@ public class DiagramView implements TransientObserver {
 		}
 		for (Drawable de : focused)
 			de.paint(g);
-		Collection <Drawable> temporaryDrawables = model.getTemporaryDrawables();
-		for (Drawable temp: temporaryDrawables)
+		Collection<Drawable> temporaryDrawables = model.getTemporaryDrawables();
+		for (Drawable temp : temporaryDrawables)
 			temp.paint(g);
 	}
 
@@ -90,7 +90,6 @@ public class DiagramView implements TransientObserver {
 	@Override
 	public void update(TransientObservable o, Object arg) {
 		getCanvas().repaint();
-		return;
 	}
 
 	public JComponent getCanvas() {

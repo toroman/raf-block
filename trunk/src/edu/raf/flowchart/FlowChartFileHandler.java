@@ -15,8 +15,8 @@ import edu.raf.flowchart.diagram.FlowChartDiagram;
 import edu.raf.gef.app.exceptions.GefRuntimeException;
 import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.editor.model.DiagramModel;
+import edu.raf.gef.editor.structure.DiagramModelConverter;
 import edu.raf.gef.editor.structure.GefDiagramConverter;
-import edu.raf.gef.editor.structure.ModelConverter;
 import edu.raf.gef.services.mime.ProjectsFileHandler;
 import edu.raf.gef.workspace.project.DiagramProject;
 
@@ -30,8 +30,8 @@ public class FlowChartFileHandler implements ProjectsFileHandler {
 	@Override
 	public void openFile(File file, DiagramProject owner) {
 		XStream xs = new XStream(new DomDriver());
-		Converter c = new GefDiagramConverter(owner, FlowChartDiagram.class, new ModelConverter(
-				DiagramModel.class));
+		Converter c = new GefDiagramConverter(owner, FlowChartDiagram.class,
+				new DiagramModelConverter(DiagramModel.class));
 		xs.registerConverter(c);
 
 		InputStream is = null;

@@ -7,7 +7,6 @@ import java.awt.Polygon;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
-import edu.raf.gef.editor.model.DiagramModel;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
 import edu.raf.gef.editor.model.object.impl.AnchorPoint;
 import edu.raf.gef.editor.model.object.impl.Link;
@@ -23,8 +22,8 @@ public class ConditionBlock extends RectangularObject {
 	// \ /
 	// 4--------3
 
-	public ConditionBlock(DiagramModel model) {
-		super(model);
+	public ConditionBlock() {
+		super();
 		addAnchor(false, new ControlPointConstraint() {
 			@Override
 			public Point2D updateLocation(Point2D oldLocation) {
@@ -105,4 +104,5 @@ public class ConditionBlock extends RectangularObject {
 			index = 1;
 		return sourceAnchors.get(index);
 	}
+
 }

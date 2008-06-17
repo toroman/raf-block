@@ -7,7 +7,6 @@ import java.awt.Polygon;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
-import edu.raf.gef.editor.model.DiagramModel;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
 import edu.raf.gef.editor.model.object.impl.RectangularObject;
 
@@ -15,8 +14,8 @@ public class OutputBlock extends RectangularObject {
 
 	private static final Color COLOR = Color.white;
 
-	public OutputBlock(DiagramModel model) {
-		super(model);
+	public OutputBlock() {
+		super();
 		addAnchor(false, new ControlPointConstraint() {
 			@Override
 			public Point2D updateLocation(Point2D oldLocation) {
@@ -39,12 +38,12 @@ public class OutputBlock extends RectangularObject {
 				return oldLocation;
 			}
 		};
-		ControlPointConstraint northConstraint = new ControlPointConstraint () {
+		ControlPointConstraint northConstraint = new ControlPointConstraint() {
 			@Override
 			public Point2D updateLocation(Point2D oldLocation) {
 				double miny = getY() + getHeight() - getWidth();
 				if (oldLocation.getY() < miny)
-					return new Point2D.Double (oldLocation.getX(), miny);
+					return new Point2D.Double(oldLocation.getX(), miny);
 				return oldLocation;
 			}
 		};
@@ -67,10 +66,10 @@ public class OutputBlock extends RectangularObject {
 
 	@Override
 	protected void paintRectangular(Graphics2D g) {
-		Polygon p = new Polygon(new int[] { (int) (getX() + getHeight()/2), (int) (getX() + getWidth() - getHeight()/2),
-				(int) (getX() + getWidth()), (int) (getX()) },
-				new int[] { (int) (getY()), (int) (getY()), (int) (getY() + getHeight()),
-						(int) (getY() + getHeight()) }, 4);
+		Polygon p = new Polygon(new int[] { (int) (getX() + getHeight() / 2),
+				(int) (getX() + getWidth() - getHeight() / 2), (int) (getX() + getWidth()),
+				(int) (getX()) }, new int[] { (int) (getY()), (int) (getY()),
+				(int) (getY() + getHeight()), (int) (getY() + getHeight()) }, 4);
 
 		g.setColor(COLOR);
 		g.fillPolygon(p);
@@ -85,10 +84,10 @@ public class OutputBlock extends RectangularObject {
 
 	@Override
 	public boolean isPointOverObject(Point2D point) {
-		Polygon p = new Polygon(new int[] { (int) (getX() + getHeight()/2), (int) (getX() + getWidth() - getHeight()/2),
-				(int) (getX() + getWidth()), (int) (getX()) },
-				new int[] { (int) (getY()), (int) (getY()), (int) (getY() + getHeight()),
-						(int) (getY() + getHeight()) }, 4);
+		Polygon p = new Polygon(new int[] { (int) (getX() + getHeight() / 2),
+				(int) (getX() + getWidth() - getHeight() / 2), (int) (getX() + getWidth()),
+				(int) (getX()) }, new int[] { (int) (getY()), (int) (getY()),
+				(int) (getY() + getHeight()), (int) (getY() + getHeight()) }, 4);
 		return p.contains(point);
 	}
 }

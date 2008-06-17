@@ -18,6 +18,7 @@ public class FlowChartDiagram extends GefDiagram {
 
 	public FlowChartDiagram(DiagramProject project, DiagramModel model) {
 		super(project, model);
+		getView().setGrid(new DefaultGrid(getView()));
 	}
 
 	@Override

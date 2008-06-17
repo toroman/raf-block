@@ -8,7 +8,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import edu.raf.gef.editor.model.DiagramModel;
 import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.util.GeomHelper;
 
@@ -16,7 +15,8 @@ public abstract class Link extends DiagramObject {
 
 	private static final double selectionDistance = 5;
 	private static final double snapDistance = 6; // will skip snap if 0 or
-													// less
+
+	// less
 
 	public boolean willAcceptAnchorAsSource(AnchorPoint point) {
 		return true;
@@ -61,8 +61,8 @@ public abstract class Link extends DiagramObject {
 	 */
 	private AnchorPoint sourceAnchor, destinationAnchor;
 
-	public Link(DiagramModel model) {
-		super(model);
+	public Link() {
+		super();
 		resizePoints = new LinkedList<ResizeControlPoint>();
 		resizePoints.add(new ResizeControlPoint(this, null));
 		resizePoints.add(new ResizeControlPoint(this, null));
@@ -94,13 +94,14 @@ public abstract class Link extends DiagramObject {
 				draggingResizePoint = resizePoint;
 		}
 		if (draggingResizePoint == null) {
-			Drawable drawable = resizePoints.getFirst().getDrawableUnderLocationIgnoringFocus(location);
+			Drawable drawable = resizePoints.getFirst().getDrawableUnderLocationIgnoringFocus(
+				location);
 			if (drawable != null)
 				return drawable;
 			drawable = resizePoints.getLast().getDrawableUnderLocationIgnoringFocus(location);
 			if (drawable != null)
 				return drawable;
-		}			
+		}
 		if (draggingResizePoint != null) {
 			if (draggingResizePoint == resizePoints.getFirst())
 				if (getSourceAnchor() != null)

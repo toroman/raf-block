@@ -7,7 +7,6 @@ import java.awt.Polygon;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
-import edu.raf.gef.editor.model.DiagramModel;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
 import edu.raf.gef.editor.model.object.impl.RectangularObject;
 
@@ -15,8 +14,8 @@ public class InputBlock extends RectangularObject {
 
 	private static final Color COLOR = Color.white;
 
-	public InputBlock(DiagramModel model) {
-		super(model);
+	public InputBlock() {
+		super();
 		addAnchor(false, new ControlPointConstraint() {
 			@Override
 			public Point2D updateLocation(Point2D oldLocation) {
@@ -39,12 +38,12 @@ public class InputBlock extends RectangularObject {
 				return oldLocation;
 			}
 		};
-		ControlPointConstraint northConstraint = new ControlPointConstraint () {
+		ControlPointConstraint northConstraint = new ControlPointConstraint() {
 			@Override
 			public Point2D updateLocation(Point2D oldLocation) {
 				double miny = getY() + getHeight() - getWidth();
 				if (oldLocation.getY() < miny)
-					return new Point2D.Double (oldLocation.getX(), miny);
+					return new Point2D.Double(oldLocation.getX(), miny);
 				return oldLocation;
 			}
 		};

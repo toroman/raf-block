@@ -38,6 +38,11 @@ public class DefaultDiagramTreeModel implements IDiagramTreeNode {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return this.diagram.getModel().getTitle();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

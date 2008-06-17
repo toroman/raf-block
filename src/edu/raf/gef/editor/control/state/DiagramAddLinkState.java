@@ -32,7 +32,6 @@ public class DiagramAddLinkState extends DiagramDefaultState {
 			Constructor<Link> constructor = (Constructor<Link>) objectType
 					.getConstructor();
 			Link newLink = constructor.newInstance();
-			newLink.setParent(diagram.getModel());
 
 			AnchorPoint sourceAnchor = diagram.getModel().getAcceptingAnchorAt(
 				userSpaceLocation, newLink, true);
@@ -40,7 +39,6 @@ public class DiagramAddLinkState extends DiagramDefaultState {
 			if (sourceAnchor != null) {
 				newLink.setSourcePoint(sourceAnchor);
 				newLink.getResizePoins().getLast().setLocation(userSpaceLocation);
-				newLink.addObserver(diagram.getModel());
 				sourceAnchor.setLink(newLink);
 				diagram.getModel().addElement(newLink);	
 				diagram.getController().setState(new DiagramReLinkState (diagram, newLink, false, new DiagramSelectionState (diagram)));

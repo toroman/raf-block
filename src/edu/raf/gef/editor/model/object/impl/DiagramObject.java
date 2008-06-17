@@ -19,7 +19,6 @@ public abstract class DiagramObject extends TransientObservable implements Focus
 	@Override
 	public void setParent(DiagramModel diagramModel) {
 		this.model = diagramModel;
-		this.addObserver(model);
 	}
 
 	public final DiagramModel getModel() {

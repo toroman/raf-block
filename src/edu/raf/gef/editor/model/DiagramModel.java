@@ -75,7 +75,16 @@ public class DiagramModel extends TransientObservable implements TransientObserv
 
 	public synchronized boolean addElement(Drawable element) {
 		element.setParent(this);
+		if (element instanceof TransientObservable)
+			((TransientObservable)element).addObserver(this);
 		if (drawables.add(element)) {
+			if (element instanceof Link) {
+				Link link = (Link)element;
+				if (link.getSourceAnchor() != null)
+					link.getSourceAnchor().setLink(link);
+				if (link.getDestinationAnchor() != null)
+					link.getDestinationAnchor().setLink(link);
+			}
 			setChanged();
 			notifyObservers(new DrawableAddedEvent(element, true));
 			return true;
@@ -86,6 +95,20 @@ public class DiagramModel extends TransientObservable implements TransientObserv
 
 	public synchronized boolean removeElement(Drawable element) {
 		if (drawables.remove(element)) {
+			if (element instanceof Link) {
+				Link link = (Link)element;
+				if (link.getSourceAnchor() != null)
+					link.getSourceAnchor().setLink(null);
+				if (link.getDestinationAnchor() != null)
+					link.getDestinationAnchor().setLink(null);
+			}
+			if (element instanceof AnchorPointContainer) {
+				for (Link link: ((AnchorPointContainer)element).getLinks()) {
+					removeElement(link);
+				}
+			}
+			if (element instanceof TransientObservable)				
+				((TransientObservable)element).deleteObservers();
 			setChanged();
 			notifyObservers(new DrawableAddedEvent(element, false));
 			return true;
@@ -136,6 +159,7 @@ public class DiagramModel extends TransientObservable implements TransientObserv
 			for (Drawable d : getDrawables()) {
 				if (d instanceof AnchorPointContainer) {
 					AnchorPoint point = ((AnchorPointContainer) d).getSourcePointAt(location, link);
+					System.out.println(point);
 					if ((point != null) && link.willAcceptAnchorAsSource(point)
 							&& point.willAcceptLinkAsSource(link)) {
 						acceptingAnchor = point;

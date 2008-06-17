@@ -18,6 +18,7 @@ public abstract class AnchorPoint extends ControlPoint {
 	private Color color;
 
 	public boolean willAcceptLinkAsSource(Link link) {
+		System.out.println("Link: " + this.link);
 		return this.link == null;
 	}
 
@@ -88,5 +89,10 @@ public abstract class AnchorPoint extends ControlPoint {
 
 	public void setColor(Color color) {
 		this.color = color;
+	}
+	
+	@Override
+	public String toString() {
+		return getLocation().toString();
 	}
 }

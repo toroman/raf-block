@@ -429,15 +429,18 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 
 	@Override
 	public AnchorPoint getSourcePointAt(Point2D location, Link link) {
+		System.out.println("Pozvao");
 		if (getDrawableUnderLocation(location) == null)
 			return null;
 		SourceAnchorPoint result = null;
+		System.out.println("Source anchors: " + sourceAnchors);
 		for (SourceAnchorPoint sap : sourceAnchors) {
 			if (sap.getBoundingRectangle().contains(location))
 				return sap;
 			if (sap.willAcceptLinkAsSource(link) && link.willAcceptAnchorAsSource(sap))
 				result = sap;
 		}
+		System.out.println("Result: " + result);
 		return result;
 	}
 

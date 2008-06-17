@@ -159,7 +159,6 @@ public class DiagramModel extends TransientObservable implements TransientObserv
 			for (Drawable d : getDrawables()) {
 				if (d instanceof AnchorPointContainer) {
 					AnchorPoint point = ((AnchorPointContainer) d).getSourcePointAt(location, link);
-					System.out.println(point);
 					if ((point != null) && link.willAcceptAnchorAsSource(point)
 							&& point.willAcceptLinkAsSource(link)) {
 						acceptingAnchor = point;

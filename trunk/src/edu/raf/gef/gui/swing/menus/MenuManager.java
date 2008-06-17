@@ -25,6 +25,7 @@ import java.util.NoSuchElementException;
 
 import javax.swing.Action;
 import javax.swing.JComponent;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPopupMenu;
 
@@ -71,6 +72,10 @@ public class MenuManager {
 		this(parent, false);
 	}
 
+	public JPopupMenu getPopupMenu() {
+		return ((JMenu)((JPopupMenu)root).getComponent(0)).getPopupMenu();
+	}
+	
 	public Component getParent() {
 		return parent;
 	}

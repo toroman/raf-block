@@ -57,8 +57,8 @@ public class WorkspaceComponent extends JPanel {
 			Logger.getAnonymousLogger().log(Level.SEVERE, "Couldn't read menu.", t);
 			System.exit(-1);
 		}
-		trWorkspace.add(menuManager.getMenubar());
-		trWorkspace.addMouseListener(new PopupListener((JPopupMenu) menuManager.getMenubar()));
+		trWorkspace.add(menuManager.getPopupMenu());
+		trWorkspace.addMouseListener(new PopupListener(menuManager.getPopupMenu()));
 		Container con = this;
 		con.setLayout(new BorderLayout());
 		con.add(trWorkspace, BorderLayout.CENTER);

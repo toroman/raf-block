@@ -102,4 +102,8 @@ public abstract class ControlPoint implements Draggable, Serializable {
 	public void onClick(MouseEvent e, Point2D userSpaceLocation) {
 		parent.onControlPointClicked(this, e, userSpaceLocation);
 	}
+	
+	public void setDraggingOffset(int i, int j) {
+		this.dragOffset = new Point2D.Double(i, j);
+	}
 }

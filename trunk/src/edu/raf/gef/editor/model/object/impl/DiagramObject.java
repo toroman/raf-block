@@ -13,7 +13,7 @@ import edu.raf.gef.util.TransientObservable;
  */
 public abstract class DiagramObject extends TransientObservable implements Focusable,
 		ControlPointContainer {
-	private boolean focused = false;
+	private transient boolean focused = false;
 	private DiagramModel model;
 
 	@Override

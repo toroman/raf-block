@@ -13,8 +13,6 @@ import edu.raf.gef.util.MathHelper;
 
 public class EndBlock extends RectangularObject {
 
-	private static final Color COLOR = Color.white;
-
 	public EndBlock() {
 		super();
 		addAnchor(false, new ControlPointConstraint() {
@@ -44,7 +42,7 @@ public class EndBlock extends RectangularObject {
 	@Override
 	protected void paintRectangular(Graphics2D g) {
 		double arcDimension = (int) (Math.min(getWidth(), getHeight()));
-		g.setColor(COLOR);
+		g.setColor(getBackgroundColor());
 		g.fillOval((int) getX(), (int) getY(), (int) arcDimension, (int) arcDimension);
 		g.fillOval((int) (getX() + getWidth() - (int) arcDimension), (int) getY(),
 			(int) arcDimension, (int) arcDimension);
@@ -52,7 +50,7 @@ public class EndBlock extends RectangularObject {
 		g.drawArc((int) getX(), (int) getY(), (int) arcDimension, (int) arcDimension, 90, 180);
 		g.drawArc((int) (getX() + getWidth() - (int) arcDimension), (int) getY(),
 			(int) arcDimension, (int) arcDimension, -90, 180);
-		g.setColor(COLOR);
+		g.setColor(getBackgroundColor());
 		g.fillRect((int) (getX() + arcDimension / 2), (int) getY(),
 			(int) (getWidth() - arcDimension), (int) getHeight());
 		g.setColor(Color.DARK_GRAY);

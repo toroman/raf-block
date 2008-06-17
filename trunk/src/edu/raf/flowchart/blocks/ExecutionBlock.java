@@ -37,7 +37,7 @@ public class ExecutionBlock extends RectangularObject implements AnchorPointCont
 
 	@Override
 	protected void paintRectangular(Graphics2D g) {
-		g.setColor(Color.WHITE);
+		g.setColor(getBackgroundColor());
 		g.fillRect((int) getX(), (int) getY(), (int) getWidth(), (int) getHeight());
 		g.setColor(Color.DARK_GRAY);
 		g.drawRect((int) getX(), (int) getY(), (int) getWidth(), (int) getHeight());

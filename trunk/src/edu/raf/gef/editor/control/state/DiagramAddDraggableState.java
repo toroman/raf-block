@@ -3,13 +3,11 @@ package edu.raf.gef.editor.control.state;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
-import java.lang.reflect.Constructor;
 
 import edu.raf.gef.app.exceptions.GefCreationalException;
 import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.editor.control.state.util.DiagramDefaultState;
 import edu.raf.gef.editor.control.state.util.IDiagramAbstractState;
-import edu.raf.gef.editor.model.DiagramModel;
 import edu.raf.gef.editor.model.object.Draggable;
 
 /**

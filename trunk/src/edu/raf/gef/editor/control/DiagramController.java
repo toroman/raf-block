@@ -24,7 +24,6 @@ import edu.raf.gef.editor.model.object.AnchorPointContainer;
 import edu.raf.gef.editor.model.object.Focusable;
 import edu.raf.gef.editor.model.object.impl.Link;
 import edu.raf.gef.util.GeomHelper;
-import edu.raf.gef.util.TransientObservable;
 
 public class DiagramController implements MouseListener, MouseWheelListener, MouseMotionListener,
 		KeyListener {
@@ -226,15 +225,7 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 	public Object cut() {
 		Object obj = copy();
 		for (Focusable focusable : getFocusedObjects()) {
-			if (focusable instanceof AnchorPointContainer) {
-				for (Link link : ((AnchorPointContainer) focusable).getLinks()) {
-					getModel().removeElement(link);
-					link.deleteObserver(getModel());
-				}
-			}
 			getModel().removeElement(focusable);
-			if (focusable instanceof TransientObservable)
-				((TransientObservable)focusable).deleteObserver(getModel());
 		}
 		clearFocusedObjects();
 		return obj;
@@ -281,32 +272,26 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 	public void paste(Object object) {
 		Set<Focusable> objectsToCopy;
 		
-//		System.out.println("Object: " + object);
-
 		if (object instanceof Focusable) {
 			objectsToCopy = new HashSet<Focusable>();
 			objectsToCopy.add((Focusable)object);
 		} else if (object instanceof Collection) {
 			objectsToCopy = new HashSet<Focusable>();
 			boolean isFocusableSet = true;
-			for (Object o : objectsToCopy)
+			for (Object o : (Collection)object)
 				if (!(o instanceof Focusable)) {
 					isFocusableSet = false;
-				}
-				else
+				} else {
 					objectsToCopy.add((Focusable)o);
+				}
 			if (!isFocusableSet)
 				return;
 		} else
 			return;
 
-//		System.out.println(objectsToCopy);
-		
 		clearFocusedObjects();
 		for (Focusable focusable : objectsToCopy) {
 			getModel().addElement(focusable);
-			if (focusable instanceof TransientObservable)
-				((TransientObservable)focusable).deleteObserver(getModel());
 			addToFocusedObjects(focusable);
 		}
 	}

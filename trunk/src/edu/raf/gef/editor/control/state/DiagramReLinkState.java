@@ -104,7 +104,6 @@ public class DiagramReLinkState extends DiagramDefaultState {
 			diagram.getModel().removeElement(link);
 			link.getSourceAnchor().setLink(null);
 			link.setSourcePoint(null);
-			link.deleteObservers();
 			link = null;
 		}
 		diagram.getController().setState(fallbackState);

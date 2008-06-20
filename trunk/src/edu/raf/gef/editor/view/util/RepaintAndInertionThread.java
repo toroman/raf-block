@@ -78,6 +78,10 @@ public class RepaintAndInertionThread implements Runnable {
 		return radi;
 	}
 
+	/**
+	 * repaints and does the indertion, if set.
+	 */
+	
 	@Override
 	public void run() {
 		AffineTransformManager afm = view.getAffineTransformManager();
@@ -153,22 +157,9 @@ public class RepaintAndInertionThread implements Runnable {
 
 				if (repaintNeeded)
 					view.getCanvas().repaint();
-				
-//				synchronized (repaintNeeded) {
-//					doRepaint = doRepaint || isRepaintNeeded();
-//					setRepaintNeeded(false);
-//				}
-//
-//				if (doRepaint) {
-//					synchronized (view.getModel()) {
-//						view.getCanvas().repaint();
-//					}
-//				}
-				
 				Thread.sleep(10);
 			}
 		} catch (InterruptedException e) {
-			// Thread stopped
 			return;
 		}
 	}

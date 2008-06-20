@@ -21,6 +21,12 @@ import edu.raf.gef.editor.view.util.RepaintAndInertionThread;
 import edu.raf.gef.util.TransientObservable;
 import edu.raf.gef.util.TransientObserver;
 
+/**
+ * Abstract diagram view. Takes care of repainting, transformations, drawing the grid etc.
+ * 
+ * It is, att all times, observing the model and is automatically updated.
+ */
+
 public class DiagramView implements TransientObserver {
 	private final DiagramModel model;
 	private final JComponent canvas;

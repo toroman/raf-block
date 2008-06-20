@@ -11,6 +11,10 @@ import edu.raf.gef.editor.view.DiagramView;
 import edu.raf.gef.editor.view.util.AffineTransformManager;
 import edu.raf.gef.util.MathHelper;
 
+/**
+ * The default grid implementation. The grid fades in and out, depending on the scale value.
+ */
+
 public class DefaultGrid implements DiagramGrid {
 
 	private final DiagramView view;

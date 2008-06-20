@@ -15,7 +15,6 @@ import edu.raf.gef.util.TransientObservable;
  * This class is used to manage the AffineTransform of the DiagramView. It might
  * seem obsolete, but it does have it's usages. All the transformation calculae
  * will be put here.
- * 
  */
 public class AffineTransformManager extends TransientObservable {
 	/**
@@ -50,6 +49,10 @@ public class AffineTransformManager extends TransientObservable {
 
 	private boolean autoMatchTransform = true;
 
+	/**
+	 * Changes the transformation so that all objects are visible.
+	 */
+
 	public synchronized void bestFit() {
 		if (view.getModel().getDrawables().isEmpty())
 			return;
@@ -83,6 +86,24 @@ public class AffineTransformManager extends TransientObservable {
 		matchTransform();
 	}
 
+	/**
+	 * <p>
+	 * Updates the transform according to the userSpaceLocation,
+	 * deviceSpaceLocation and scaleValue. It is automatically invoked unless
+	 * the autoMatchTransform(false) method is invoked first, in which case the
+	 * autoMatchTransform (true) is invoked inside this method.
+	 * 
+	 * <p>
+	 * So, when making atomic changes, the code should look like this:
+	 * <p>
+	 * <code>autoMatchTransform(false);
+	 * <p>
+	 * <p>// changes to the structure...
+	 * <p>
+	 * <p>matchTransform(); // after this, autoMatchTransform is true once again
+	 * </code>
+	 */
+
 	public synchronized void matchTransform() {
 		autoMatchTransform = true;
 		transform.setToIdentity();
@@ -101,6 +122,13 @@ public class AffineTransformManager extends TransientObservable {
 		notifyObservers();
 		clearChanged();
 	}
+
+	/**
+	 * Set weather should the matchTransform() method be invoked at ant changes.
+	 * 
+	 * @param bool
+	 *            should be invoked
+	 */
 
 	public synchronized void setAutoMatchTransform(boolean bool) {
 		autoMatchTransform = bool;
@@ -145,6 +173,12 @@ public class AffineTransformManager extends TransientObservable {
 		if (autoMatchTransform)
 			matchTransform();
 	}
+
+	/**
+	 * Modifies the scale exponentially
+	 * 
+	 * @param scrollAmount
+	 */
 
 	public void modifyScale(double scrollAmount) {
 		setScale(scaleValue * (1 + scrollAmount * 0.07));

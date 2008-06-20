@@ -18,6 +18,12 @@ import edu.raf.gef.editor.structure.DiagramModelConverter;
 import edu.raf.gef.util.TransientObservable;
 import edu.raf.gef.util.TransientObserver;
 
+/**
+ * The default model.
+ * @author ibocic06
+ *
+ */
+
 public class DiagramModel extends TransientObservable implements TransientObserver {
 	transient static private int INSTANCE_COUNTER = 0;
 

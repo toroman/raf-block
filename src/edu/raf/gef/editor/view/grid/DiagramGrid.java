@@ -4,6 +4,10 @@ import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
+/**
+ * Abstract grid.
+ */
+
 public interface DiagramGrid {
 	/**
 	 * Paints the grid onto the specified graphics. That is before any

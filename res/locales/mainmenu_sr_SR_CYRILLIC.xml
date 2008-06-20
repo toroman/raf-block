@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<menubar>
+	<!-- Those starting with "c_" are Standard Containers, and those starting with "p_" are standard parts -->
+
+	<container id="c_file" text="Фајл" mnemonic="Ф">
+		<part id="p_file_creation">
+			<container id="c_file_new" text="Нови">
+				<part id="p_new_project"></part>
+				<part id="p_new_diagram"></part>
+			</container>
+			<action id="open" />
+		</part>
+		<part id="p_file_persisting">
+			<action id="save" />
+			<action id="saveas" />
+		</part>
+		<part id="p_mru"></part>
+		<part id="p_file_exit"></part>
+	</container>
+
+	<container id="c_edit" text="Едитовање" mnemonic="E">
+		<part id="p_unredo">
+			<action id="undo" />
+			<action id="redo" />
+		</part>
+		<part id="p_copypaste">
+			<action id="cut" />
+			<action id="copy" />
+			<action id="paste" />
+			<action id="delete" />
+		</part>
+		<part id="p_properties">
+			<action id="properties" />
+		</part>
+	</container>
+
+	<container id="c_view" text="Поглед" mnemonic="П">
+		<part id="p_zoom">
+			<action id="best_fit_zoom" />
+		</part>
+	</container>
+
+	<container id="c_window" text="Прозор" mnemonic="П">
+		<part id="p_window_arrangement"></part>
+		<part id="p_look_and_feel"></part>
+		<part id="p_plugin_manager"></part>
+	</container>
+
+	<container id="c_help" text="Помоћ" mnemonic="М">
+		<part id="p_help"></part>
+		<part id="p_about"></part>
+	</container>
+</menubar>

@@ -3,8 +3,8 @@ package edu.raf.gef.editor.model.object.impl;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 
 import edu.raf.gef.editor.model.DiagramModel;
 import edu.raf.gef.editor.model.object.ControlPointContainer;
@@ -16,7 +16,7 @@ public abstract class ControlPoint implements Draggable, Serializable {
 
 	private ControlPointContainer parent;
 	private Point2D location = new Point2D.Double(0, 0);
-	protected List<ControlPointConstraint> constraints;
+	protected LinkedList<ControlPointConstraint> constraints;
 	private Point2D dragOffset = null;
 
 	public ControlPoint(ControlPointContainer parent, Point2D initLocation) {
@@ -34,8 +34,9 @@ public abstract class ControlPoint implements Draggable, Serializable {
 
 	public Point2D afterAllConstraints(Point2D oldLocation) {
 		Point2D newLocation = (Point2D) oldLocation.clone();
-		for (ControlPointConstraint con : constraints)
-			newLocation = con.updateLocation(newLocation);
+		Iterator <ControlPointConstraint> iterator = constraints.descendingIterator();
+		while (iterator.hasNext())
+			newLocation = iterator.next().updateLocation(newLocation);
 		return newLocation;
 	}
 

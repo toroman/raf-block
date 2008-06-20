@@ -92,28 +92,40 @@ public class JoinBlock extends RectangularObject {
 				return new Point2D.Double(getX() + getWidth() + offset, getY() - offset);
 			}
 		};
-		ControlPointConstraint horiz = new ControlPointConstraint() {
+		ControlPointConstraint west = new ControlPointConstraint() {
 			@Override
 			public Point2D updateLocation(Point2D oldLocation) {
-				return new Point2D.Double(oldLocation.getX(), getY() + getHeight() / 2);
+				return new Point2D.Double(getX(), getY() + getWidth() / 2);
 			}
 		};
-		ControlPointConstraint vert = new ControlPointConstraint() {
+		ControlPointConstraint north = new ControlPointConstraint() {
 			@Override
 			public Point2D updateLocation(Point2D oldLocation) {
-				return new Point2D.Double(getX() + getWidth() / 2, oldLocation.getY());
+				return new Point2D.Double(getX() + getHeight() / 2, getY());
 			}
 		};
-		for (int i = 0; i < 8; i++) {
+		ControlPointConstraint east = new ControlPointConstraint() {
+			@Override
+			public Point2D updateLocation(Point2D oldLocation) {
+				return new Point2D.Double(getX() + getWidth(), getY() + getWidth() / 2);
+			}
+		};
+		ControlPointConstraint south = new ControlPointConstraint() {
+			@Override
+			public Point2D updateLocation(Point2D oldLocation) {
+				return new Point2D.Double(getX() + getHeight() / 2, getY() + getHeight());
+			}
+		};
+		for (int i = 0; i < 8; i += 2) {
 			if (i % 4 == 0)
 				resizeControlPoints.get(i).addConstraint(mainDiagonal);
-			if (i % 4 == 1)
-				resizeControlPoints.get(i).addConstraint(vert);
 			if (i % 4 == 2)
 				resizeControlPoints.get(i).addConstraint(secondDiagonal);
-			if (i % 4 == 3)
-				resizeControlPoints.get(i).addConstraint(horiz);
 		}
+		resizeControlPoints.get(1).addConstraint(north);
+		resizeControlPoints.get(3).addConstraint(east);
+		resizeControlPoints.get(5).addConstraint(south);
+		resizeControlPoints.get(7).addConstraint(west);
 	}
 
 	@Override
@@ -135,6 +147,8 @@ public class JoinBlock extends RectangularObject {
 	}
 
 	private class RemovingDestinationAnchorPoint extends DestinationAnchorPoint {
+
+		private static final long serialVersionUID = -1917150570420067292L;
 
 		public RemovingDestinationAnchorPoint(AnchorPointContainer parent, Point2D initLocation) {
 			super(parent, initLocation);

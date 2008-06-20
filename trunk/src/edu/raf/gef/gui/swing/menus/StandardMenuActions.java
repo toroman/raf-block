@@ -7,7 +7,7 @@ public interface StandardMenuActions {
 
 	public String PASTE = "paste";
 
-	public String UNDO_ACTION = "undo";
+	public String UNDO = "undo";
 
 	public String REDO = "redo";
 

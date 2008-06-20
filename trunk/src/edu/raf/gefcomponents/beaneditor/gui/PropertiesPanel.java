@@ -31,6 +31,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.undo.UndoManager;
 
 import edu.raf.gef.services.beaneditor.annotations.Property;
 
@@ -54,6 +55,7 @@ public class PropertiesPanel extends JPanel {
 	private JSplitPane splitPane;
 	protected Dimension nameDimension = new Dimension(60, 22);
 	protected Dimension fieldDimension = new Dimension(60, 22);
+	private UndoManager undoManager;
 
 	public PropertiesPanel() {
 		super();
@@ -74,8 +76,7 @@ public class PropertiesPanel extends JPanel {
 
 		tooltipLabel = new JLabel("Tooltip");
 		propertiesLabel = new JLabel("Properties:");
-		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, tableNames,
-				tableValues);
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, tableNames, tableValues);
 		splitPane.setVisible(false);
 		splitPane.setDividerSize(1);
 		// layout
@@ -138,11 +139,18 @@ public class PropertiesPanel extends JPanel {
 			Annotation ann = mth.getAnnotation(Property.class);
 			if (ann == null)
 				continue;
-			PropertyPair prop = new PropertyPair((Property) ann, mth, object,
-					this);
+			PropertyPair prop = new PropertyPair((Property) ann, mth, object, this);
 			properties.add(prop);
 		}
 		Collections.sort(properties);
+	}
+
+	public void setUndoManager(UndoManager mgr) {
+		this.undoManager = mgr;
+	}
+
+	public UndoManager getUndoManager() {
+		return undoManager;
 	}
 
 }

@@ -3,6 +3,7 @@ package edu.raf.gef.editor.actions;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
+import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.gui.MainFrame;
 import edu.raf.gef.gui.actions.ResourceConfiguredAction;
 import edu.raf.gef.gui.swing.menus.StandardMenuActions;
@@ -27,8 +28,7 @@ public class ActionShowProperties extends ResourceConfiguredAction implements
 		this.mainFrame = mf;
 		this.serviceManager = serviceManager;
 		this.serviceManager.addServiceManagerListener(this);
-		List<? extends IBeanEditor> t = serviceManager
-				.getServiceImplementations(IBeanEditor.class);
+		List<? extends IBeanEditor> t = serviceManager.getServiceImplementations(IBeanEditor.class);
 		if (t.size() == 0) {
 			// no bean editing services
 			setEnabled(false);
@@ -43,9 +43,9 @@ public class ActionShowProperties extends ResourceConfiguredAction implements
 	public void actionPerformed(ActionEvent arg0) {
 		if (bean != null)
 			srvBeanEditor.removeBean(bean);
-		bean = mainFrame.getSelectedDiagram().getController()
-				.getFocusedObjects().iterator().next();
-		srvBeanEditor.addBean(bean);
+		GefDiagram dgr = mainFrame.getSelectedDiagram();
+		bean = dgr.getController().getFocusedObjects().iterator().next();
+		srvBeanEditor.addBean(bean, dgr.getUndoManager());
 	}
 
 	@Override

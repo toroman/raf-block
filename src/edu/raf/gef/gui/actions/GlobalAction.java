@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.logging.Logger;
 
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -35,7 +36,7 @@ public class GlobalAction extends ResourceConfiguredAction {
 					}
 				}
 				// focus changed
-				
+
 			}
 		}
 	};
@@ -50,7 +51,11 @@ public class GlobalAction extends ResourceConfiguredAction {
 
 	private PropertyChangeListener delegateListener = new PropertyChangeListener() {
 		public void propertyChange(PropertyChangeEvent evt) {
-			support.firePropertyChange(evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
+			// if ("enabled".equals(evt.getPropertyName())) {
+			// boolean enabled = isEnabled();
+			// support.firePropertyChange("enabled", !enabled, enabled);
+			//			}
+			 support.firePropertyChange(evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
 		}
 	};
 

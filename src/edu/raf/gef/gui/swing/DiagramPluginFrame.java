@@ -12,7 +12,9 @@ import edu.raf.gef.editor.actions.ActionCopyDiagramObject;
 import edu.raf.gef.editor.actions.ActionCutDiagramObject;
 import edu.raf.gef.editor.actions.ActionDeleteSelectedObject;
 import edu.raf.gef.editor.actions.ActionPasteDiagramObject;
+import edu.raf.gef.editor.actions.ActionRedoDiagramOperation;
 import edu.raf.gef.editor.actions.ActionShowProperties;
+import edu.raf.gef.editor.actions.ActionUndoDiagramOperation;
 import edu.raf.gef.gui.ActionContextController;
 import edu.raf.gef.gui.MainFrame;
 import edu.raf.gef.gui.actions.ActionSaveDiagram;
@@ -45,6 +47,9 @@ public class DiagramPluginFrame extends JPanel implements ActionContextControlle
 		getActionMap().put(StandardMenuActions.SAVE, new ActionSaveDiagram(mainFrame, diagram));
 		getActionMap().put(StandardMenuActions.DELETE, new ActionDeleteSelectedObject(mainFrame));
 		getActionMap().put(StandardMenuActions.BEST_FIT_ZOOM, new ActionBestFitZoom(mainFrame));
+		getActionMap().put(StandardMenuActions.UNDO,
+			new ActionUndoDiagramOperation(mainFrame));
+		getActionMap().put(StandardMenuActions.REDO, new ActionRedoDiagramOperation(mainFrame));
 	}
 
 	public GefDiagram getDiagram() {

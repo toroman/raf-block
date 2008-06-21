@@ -4,6 +4,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 
 import com.thoughtworks.xstream.converters.Converter;
 
@@ -20,8 +21,9 @@ import edu.raf.gef.util.TransientObserver;
 
 /**
  * The default model.
+ * 
  * @author ibocic06
- *
+ * 
  */
 
 public class DiagramModel extends TransientObservable implements TransientObserver {
@@ -82,10 +84,10 @@ public class DiagramModel extends TransientObservable implements TransientObserv
 	public synchronized boolean addElement(Drawable element) {
 		element.setParent(this);
 		if (element instanceof TransientObservable)
-			((TransientObservable)element).addObserver(this);
+			((TransientObservable) element).addObserver(this);
 		if (drawables.add(element)) {
 			if (element instanceof Link) {
-				Link link = (Link)element;
+				Link link = (Link) element;
 				if (link.getSourceAnchor() != null)
 					link.getSourceAnchor().setLink(link);
 				if (link.getDestinationAnchor() != null)
@@ -99,28 +101,38 @@ public class DiagramModel extends TransientObservable implements TransientObserv
 		}
 	}
 
-	public synchronized boolean removeElement(Drawable element) {
+	/**
+	 * Removes the drawable from the model.
+	 * 
+	 * @param element
+	 *            the model to remove
+	 * @return the elements removed. Note that a link is also removed when it's
+	 *         container is removed, etc.
+	 */
+
+	public synchronized Collection<Drawable> removeElement(Drawable element) {
+		Collection<Drawable> set = new HashSet<Drawable>();
 		if (drawables.remove(element)) {
 			if (element instanceof Link) {
-				Link link = (Link)element;
+				Link link = (Link) element;
 				if (link.getSourceAnchor() != null)
 					link.getSourceAnchor().setLink(null);
 				if (link.getDestinationAnchor() != null)
 					link.getDestinationAnchor().setLink(null);
 			}
 			if (element instanceof AnchorPointContainer) {
-				for (Link link: ((AnchorPointContainer)element).getLinks()) {
+				for (Link link : ((AnchorPointContainer) element).getLinks()) {
+					set.add(link);
 					removeElement(link);
 				}
 			}
-			if (element instanceof TransientObservable)				
-				((TransientObservable)element).deleteObservers();
+			if (element instanceof TransientObservable)
+				((TransientObservable) element).deleteObservers();
 			setChanged();
 			notifyObservers(new DrawableAddedEvent(element, false));
-			return true;
-		} else {
-			return false;
+			set.add(element);
 		}
+		return set;
 	}
 
 	public synchronized boolean moveForward(Drawable element) {
@@ -159,16 +171,13 @@ public class DiagramModel extends TransientObservable implements TransientObserv
 	public synchronized AnchorPoint getAcceptingAnchorAt(Point2D location, Link link,
 			boolean asSource) {
 
-		AnchorPoint acceptingAnchor = null;
-
 		if (asSource)
 			for (Drawable d : getDrawables()) {
 				if (d instanceof AnchorPointContainer) {
 					AnchorPoint point = ((AnchorPointContainer) d).getSourcePointAt(location, link);
 					if ((point != null) && link.willAcceptAnchorAsSource(point)
 							&& point.willAcceptLinkAsSource(link)) {
-						acceptingAnchor = point;
-						break;
+						return point;
 					}
 				}
 			}
@@ -179,13 +188,12 @@ public class DiagramModel extends TransientObservable implements TransientObserv
 						link);
 					if ((point != null) && link.willAcceptAnchorAsDestination(point)
 							&& point.willAcceptLinkAsDestination(link)) {
-						acceptingAnchor = point;
-						break;
+						return point;
 					}
 				}
 			}
 
-		return acceptingAnchor;
+		return null;
 	}
 
 	/**
@@ -200,7 +208,8 @@ public class DiagramModel extends TransientObservable implements TransientObserv
 	public void update(TransientObservable o, Object arg) {
 		setChanged();
 		notifyObservers(new CompositeUpdateEvent(o, arg));
-		//Logger.getAnonymousLogger().info("Broj observera za " + this + " je " + super.countObservers());
+		// Logger.getAnonymousLogger().info("Broj observera za " + this + " je "
+		// + super.countObservers());
 	}
 
 }

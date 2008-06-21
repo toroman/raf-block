@@ -36,8 +36,8 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 	public Color getBackgroundColor() {
 		return backgroundColor;
 	}
-	
-	private static final Color defaultColor = new Color (0xBBFFFFBB, true);
+
+	private static final Color defaultColor = new Color(0xBBFFFFBB, true);
 
 	public void setBackgroundColor(Color backgroundColor) {
 		if (backgroundColor == null)
@@ -91,7 +91,7 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		initControlPoints();
 		updateControlPointLocations();
 		setControlPointConstraints();
-		
+
 		setBackgroundColor(defaultColor);
 	}
 
@@ -195,7 +195,7 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 	@Override
 	public Drawable getDrawableUnderLocation(Point2D point) {
 		Drawable drawable = null;
-		for (AnchorPoint a : getAllAnchors()) {
+		for (AnchorPoint a : getAnchorPoints()) {
 			drawable = a.getDrawableUnderLocation(point);
 			if (drawable != null)
 				return drawable;
@@ -282,7 +282,7 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 	protected void updateControlPointLocations() {
 		for (int i = 0; i < 8; i++)
 			updateResizePoint(i);
-		for (AnchorPoint point : getAllAnchors())
+		for (AnchorPoint point : getAnchorPoints())
 			point.setLocation(point.afterAllConstraints(point.getLocation()));
 	}
 
@@ -317,7 +317,7 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 			double y = newY + (cp.getY() - this.y) * (newHeight / this.height);
 			cp.setLocation(x, y);
 		}
-		for (ControlPoint cp : getAllAnchors()) {
+		for (ControlPoint cp : getAnchorPoints()) {
 			double x = newX + (cp.getX() - this.x) * (newWidth / this.width);
 			double y = newY + (cp.getY() - this.y) * (newHeight / this.height);
 			cp.setLocation(x, y);
@@ -372,7 +372,7 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		paintRectangular(g);
 		for (int i = 0; i < 8; i++)
 			resizeControlPoints.get(i).paint(g);
-		for (AnchorPoint point : getAllAnchors())
+		for (AnchorPoint point : getAnchorPoints())
 			point.paint(g);
 		g.setColor(Color.BLACK);
 		String msg = title == null ? "" : title;
@@ -402,8 +402,9 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 
 	protected LinkedList<SourceAnchorPoint> sourceAnchors;
 	protected LinkedList<DestinationAnchorPoint> destinationAnchors;
-	
-	public Collection<AnchorPoint> getAllAnchors() {
+
+	@Override
+	public Collection<AnchorPoint> getAnchorPoints() {
 		Vector<AnchorPoint> vector = new Vector<AnchorPoint>(sourceAnchors.size()
 				+ destinationAnchors.size());
 		for (AnchorPoint point : sourceAnchors)
@@ -419,10 +420,11 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 			return null;
 		DestinationAnchorPoint result = null;
 		for (DestinationAnchorPoint dap : destinationAnchors) {
+			if (!dap.willAcceptLinkAsDestination(link) || !link.willAcceptAnchorAsDestination(dap))
+				continue;
 			if (dap.getBoundingRectangle().contains(location))
 				return dap;
-			if (dap.willAcceptLinkAsDestination(link) && link.willAcceptAnchorAsDestination(dap))
-				result = dap;
+			result = dap;
 		}
 		return result;
 	}
@@ -433,10 +435,11 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 			return null;
 		SourceAnchorPoint result = null;
 		for (SourceAnchorPoint sap : sourceAnchors) {
+			if (!sap.willAcceptLinkAsSource(link) || !link.willAcceptAnchorAsSource(sap))
+				continue;
 			if (sap.getBoundingRectangle().contains(location))
 				return sap;
-			if (sap.willAcceptLinkAsSource(link) && link.willAcceptAnchorAsSource(sap))
-				result = sap;
+			result = sap;
 		}
 		return result;
 	}
@@ -444,14 +447,10 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 	@Override
 	public Collection<Link> getLinks() {
 		Set<Link> links = new HashSet<Link>();
-		for (AnchorPoint point : getAllAnchors())
+		for (AnchorPoint point : getAnchorPoints())
 			if (point.getLink() != null)
 				links.add(point.getLink());
-		Link[] array = links.toArray(new Link[] {});
-		Vector<Link> vector = new Vector<Link>(array.length);
-		for (Link l : array)
-			vector.add(l);
-		return vector;
+		return links;
 	}
 
 	public AnchorPoint addAnchor(boolean asSource, ControlPointConstraint constraint,

@@ -121,4 +121,14 @@ public class StartBlock extends RectangularObject implements FlowchartBlock {
 	public void setName(String s) {
 		this.name = s;
 	}
+	
+	@Override
+	public void setWidth(double newWidth) {
+		super.setWidth(Math.max(newWidth, getHeight()));
+	}
+	
+	@Override
+	public void setHeight(double newHeight) {
+		super.setHeight(Math.min(newHeight, getWidth()));
+	}
 }

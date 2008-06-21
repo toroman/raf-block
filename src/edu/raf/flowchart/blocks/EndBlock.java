@@ -105,4 +105,13 @@ public class EndBlock extends RectangularObject implements FlowchartBlock {
 		this.name = s;
 	}
 
+	@Override
+	public void setWidth(double newWidth) {
+		super.setWidth(Math.max(newWidth, getHeight()));
+	}
+	
+	@Override
+	public void setHeight(double newHeight) {
+		super.setHeight(Math.min(newHeight, getWidth()));
+	}
 }

@@ -4,8 +4,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 
+import javax.swing.undo.UndoManager;
+
 import edu.raf.gef.app.exceptions.GefCreationalException;
 import edu.raf.gef.editor.GefDiagram;
+import edu.raf.gef.editor.control.edit.EditAddDrawables;
 import edu.raf.gef.editor.control.state.util.DiagramDefaultState;
 import edu.raf.gef.editor.control.state.util.IDiagramAbstractState;
 import edu.raf.gef.editor.model.object.Draggable;
@@ -41,17 +44,21 @@ public class DiagramAddDraggableState extends DiagramDefaultState {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean mousePressed(MouseEvent e, Point2D userSpaceLocation) {
+	public boolean mousePressed(MouseEvent e, final Point2D userSpaceLocation) {
 		if (super.mousePressed(e, userSpaceLocation))
 			return true;
 		try {
-			Draggable draggable = objectType.newInstance();
+			final Draggable draggable = objectType.newInstance();
 			draggable.setLocation(userSpaceLocation);
 			diagram.getModel().addElement(draggable);
 			if (nextState == null) {
 				diagram.getController().setState(new DiagramSelectionState(diagram, draggable));
 			} else
 				diagram.getController().setState(nextState);
+			UndoManager undoManager = diagram.getUndoManager();
+			if (undoManager != null) {
+				undoManager.addEdit(new EditAddDrawables(diagram, draggable));
+			}
 
 			// .getUndoManager().undoableEditHappened(
 			// new UndoableEditEvent(dg.getModel(), new

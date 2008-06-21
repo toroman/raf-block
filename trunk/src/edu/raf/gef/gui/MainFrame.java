@@ -187,7 +187,6 @@ public class MainFrame extends ApplicationWindow {
 	private void initTabbedTools() {
 		tabbedTools = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		tabbedTools.setContinuousLayout(true);
-		lastTool = tabbedTools;
 	}
 
 	protected void onWorkspaceSelectionChanged(TreeSelectionEvent e) {
@@ -281,8 +280,13 @@ public class MainFrame extends ApplicationWindow {
 	}
 
 	public void addTool(String title, JComponent view) {
-		JSplitPane oldLastTool = lastTool;
-		lastTool = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, view, null);
-		oldLastTool.add(lastTool);
+		if (lastTool == null) {
+			tabbedTools.add(view);
+			lastTool = tabbedTools;
+		} else {
+			JSplitPane oldLastTool = lastTool;
+			lastTool = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, view, null);
+			oldLastTool.add(lastTool);
+		}
 	}
 }

@@ -9,7 +9,6 @@ import java.awt.geom.Point2D;
 import edu.raf.flowchart.syntax.ExecutionManager;
 import edu.raf.gef.editor.model.object.AnchorPointContainer;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
-import edu.raf.gef.editor.model.object.impl.AnchorPoint;
 import edu.raf.gef.editor.model.object.impl.RectangularObject;
 
 public class ExecutionBlock extends RectangularObject implements AnchorPointContainer,
@@ -23,8 +22,6 @@ public class ExecutionBlock extends RectangularObject implements AnchorPointCont
 
 	private String name = "Expression" + ++INSTANCE_COUNTER;
 
-	private AnchorPoint nextBlockAnchor;
-
 	public ExecutionBlock() {
 		super();
 		setMinDimension(new Dimension(60, 40));
@@ -34,7 +31,7 @@ public class ExecutionBlock extends RectangularObject implements AnchorPointCont
 				return new Point2D.Double(getX() + getWidth() / 2, getY());
 			}
 		}, null);
-		nextBlockAnchor = super.addAnchor(true, new ControlPointConstraint() {
+		super.addAnchor(true, new ControlPointConstraint() {
 			@Override
 			public Point2D updateLocation(Point2D oldLocation) {
 				return new Point2D.Double(getX() + getWidth() / 2, getY() + getHeight());
@@ -57,16 +54,16 @@ public class ExecutionBlock extends RectangularObject implements AnchorPointCont
 	}
 	@Override
 	public FlowchartBlock executeAndReturnNext(ExecutionManager context) {
-		if (nextBlockAnchor.getLink() == null) {
+		if (sourceAnchors.get(0).getLink() == null) {
 			context.raiseError(this, "Not connected.");
 			return null;
 		}
-		if (!(nextBlockAnchor.getLink().getDestinationAnchor().getParent() instanceof FlowchartBlock)) {
+		if (!(sourceAnchors.get(0).getLink().getDestinationAnchor().getParent() instanceof FlowchartBlock)) {
 			context.raiseError(this, "Not connected with flowchart object!");
 			return null;
 		}
 		context.evaluate(getTitle());
-		return (FlowchartBlock) nextBlockAnchor.getLink().getDestinationAnchor().getParent();
+		return (FlowchartBlock) sourceAnchors.get(0).getLink().getDestinationAnchor().getParent();
 	}
 
 	@Override

@@ -30,7 +30,7 @@ public class OutputBlock extends RectangularObject implements FlowchartBlock {
 				return new Point2D.Double(getX() + getWidth() / 2, getY());
 			}
 		}, null);
-		addAnchor(true, new ControlPointConstraint() {
+		nextBlockAnchor = addAnchor(true, new ControlPointConstraint() {
 			@Override
 			public Point2D updateLocation(Point2D oldLocation) {
 				return new Point2D.Double(getX() + getWidth() / 2, getY() + getHeight());

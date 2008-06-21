@@ -1,10 +1,15 @@
 package edu.raf.gef.editor.actions;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.util.Collection;
 import java.util.List;
 
+import edu.raf.gef.Main;
 import edu.raf.gef.editor.GefDiagram;
-import edu.raf.gef.gui.MainFrame;
+import edu.raf.gef.editor.control.GefFocusEvent;
+import edu.raf.gef.editor.control.GefFocusListener;
+import edu.raf.gef.editor.model.object.Focusable;
 import edu.raf.gef.gui.actions.ResourceConfiguredAction;
 import edu.raf.gef.gui.swing.menus.StandardMenuActions;
 import edu.raf.gef.services.ServiceManager;
@@ -20,13 +25,20 @@ public class ActionShowProperties extends ResourceConfiguredAction implements
 	private static final long serialVersionUID = 9147144256085234172L;
 	private ServiceManager serviceManager;
 	private IBeanEditor srvBeanEditor;
-	private MainFrame mainFrame;
 	private Object bean;
+	private GefDiagram diagram;
 
-	public ActionShowProperties(MainFrame mf, ServiceManager serviceManager) {
-		super(mf.getFrame(), StandardMenuActions.PROPERTIES);
-		this.mainFrame = mf;
-		this.serviceManager = serviceManager;
+	private GefFocusListener selectionListener = new GefFocusListener() {
+		public void focusChanged(GefFocusEvent event) {
+			actionPerformed(null);
+		}
+	};
+
+	public ActionShowProperties(Component component, GefDiagram diagram) {
+		super(component, StandardMenuActions.PROPERTIES);
+		this.serviceManager = Main.getServices();
+		this.diagram = diagram;
+		this.diagram.getController().addFocusListener(selectionListener);
 		this.serviceManager.addServiceManagerListener(this);
 		List<? extends IBeanEditor> t = serviceManager.getServiceImplementations(IBeanEditor.class);
 		if (t.size() == 0) {
@@ -41,18 +53,18 @@ public class ActionShowProperties extends ResourceConfiguredAction implements
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		if (bean != null)
+		if (bean != null) {
 			srvBeanEditor.removeBean(bean);
-		GefDiagram dgr = mainFrame.getSelectedDiagram();
-		bean = dgr.getController().getFocusedObjects().iterator().next();
-		srvBeanEditor.addBean(bean, dgr.getUndoManager());
+		}
+		Collection<Focusable> focused = diagram.getController().getFocusedObjects();
+		if (focused != null && focused.size() >= 1) {
+			srvBeanEditor.addBean(bean = focused.iterator().next(), diagram.getUndoManager());
+		}
 	}
 
 	@Override
 	public <I, T extends I> void serviceAdded(T implementation, Class<I> service) {
-		if (service != IBeanEditor.class)
-			return;
-		if (srvBeanEditor == null) {
+		if (IBeanEditor.class.isAssignableFrom(service) && srvBeanEditor == null) {
 			srvBeanEditor = (IBeanEditor) implementation;
 			setEnabled(true);
 		}

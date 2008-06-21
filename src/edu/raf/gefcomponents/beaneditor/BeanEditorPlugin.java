@@ -18,7 +18,7 @@ public class BeanEditorPlugin implements AbstractPlugin {
 	}
 
 	public BeanEditorPlugin() {
-		editor = new BeanEditorImplementation(this);
+		editor = new BeanEditorImplementation();
 		Main.getServices().addServiceImplementation(editor, IBeanEditor.class);
 	}
 
@@ -30,7 +30,7 @@ public class BeanEditorPlugin implements AbstractPlugin {
 	@Override
 	public void setMainFrame(MainFrame mf) {
 		this.mainFrame = mf;
-		mf.getTabbedTools().addTab(getResources().getString("tab.name"), editor.getView());
+		mf.addTool(getResources().getString("tab.name"), editor.getView());
 	}
 
 	public MainFrame getMainFrame() {

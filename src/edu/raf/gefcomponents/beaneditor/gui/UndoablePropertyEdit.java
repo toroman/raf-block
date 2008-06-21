@@ -9,6 +9,16 @@ import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
+/**
+ * Makes property editing an undoable edit.
+ * <p>
+ * We use reflection to read the current value. Then we store both new and old
+ * value and set them on undo / redo accordingly with the supplied setter
+ * method.
+ * 
+ * @author toroman
+ * 
+ */
 public class UndoablePropertyEdit extends AbstractUndoableEdit {
 
 	private Object oldValue;
@@ -17,25 +27,26 @@ public class UndoablePropertyEdit extends AbstractUndoableEdit {
 
 	private Method setter;
 
-	private Object object;
+	private Object source;
 
 	@Override
 	public String getPresentationName() {
 		return this.setter.getName();
 	}
-	
-	public UndoablePropertyEdit(Object object, Method getter, Method setter, Object value) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-		this.oldValue = getter.invoke(object);
-		this.newValue = value;
+
+	public UndoablePropertyEdit(Object source, Object oldValue, Object newValue, Method setter)
+			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+		this.oldValue = oldValue;
+		this.newValue = newValue;
 		this.setter = setter;
-		this.object = object;
+		this.source = source;
 	}
 
 	@Override
 	public void undo() throws CannotUndoException {
 		super.undo();
 		try {
-			this.setter.invoke(this.object, oldValue);
+			this.setter.invoke(this.source, oldValue);
 		} catch (Exception e) {
 			Logger.getAnonymousLogger().log(Level.SEVERE, "Error setting value!", e);
 			throw new CannotUndoException();
@@ -46,7 +57,7 @@ public class UndoablePropertyEdit extends AbstractUndoableEdit {
 	public void redo() throws CannotRedoException {
 		super.redo();
 		try {
-			this.setter.invoke(this.object, newValue);
+			this.setter.invoke(this.source, newValue);
 		} catch (Exception e) {
 			Logger.getAnonymousLogger().log(Level.SEVERE, "Error setting value!", e);
 			throw new CannotRedoException();

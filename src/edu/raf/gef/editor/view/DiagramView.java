@@ -66,7 +66,7 @@ public class DiagramView implements TransientObserver {
 		return c;
 	}
 
-	protected void drawDiagram(Graphics2D g) {
+	public void drawDiagram(Graphics2D g) {
 		if (antialiasing)
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		Rectangle r = g.getClipBounds();

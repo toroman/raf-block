@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import edu.raf.gef.app.errors.GraphicalErrorHandler;
 import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.editor.control.state.DiagramSelectionState;
 import edu.raf.gef.editor.control.state.util.IDiagramAbstractState;
@@ -28,9 +27,16 @@ import edu.raf.gef.util.GeomHelper;
 public class DiagramController implements MouseListener, MouseWheelListener, MouseMotionListener,
 		KeyListener {
 	private IDiagramAbstractState state;
-	private GraphicalErrorHandler geh;
 	private final GefDiagram diagram;
 	private List<GefFocusListener> focusListeners = new ArrayList<GefFocusListener>();
+
+	public synchronized void addFocusListener(GefFocusListener listener) {
+		this.focusListeners.add(listener);
+	}
+
+	public void removeFocusListener(GefFocusListener listener) {
+		this.focusListeners.remove(listener);
+	}
 
 	protected synchronized void fireFocusEvent(Focusable f, boolean given) {
 		GefFocusEvent event = new GefFocusEvent(this, f, given == true ? GefFocusEvent.FOCUS_GIVEN
@@ -142,8 +148,6 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 		if (this.state != null)
 			this.state.onStateLeft();
 		this.state = state;
-		// plz don't use System.out for logging!
-		// System.out.println(state.getClass().getName());
 	}
 
 	public DiagramModel getModel() {
@@ -271,18 +275,18 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 	@SuppressWarnings("unchecked")
 	public void paste(Object object) {
 		Set<Focusable> objectsToCopy;
-		
+
 		if (object instanceof Focusable) {
 			objectsToCopy = new HashSet<Focusable>();
-			objectsToCopy.add((Focusable)object);
+			objectsToCopy.add((Focusable) object);
 		} else if (object instanceof Collection) {
 			objectsToCopy = new HashSet<Focusable>();
 			boolean isFocusableSet = true;
-			for (Object o : (Collection)object)
+			for (Object o : (Collection) object)
 				if (!(o instanceof Focusable)) {
 					isFocusableSet = false;
 				} else {
-					objectsToCopy.add((Focusable)o);
+					objectsToCopy.add((Focusable) o);
 				}
 			if (!isFocusableSet)
 				return;

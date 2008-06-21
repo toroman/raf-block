@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 
 import edu.raf.gef.editor.GefDiagram;
+import edu.raf.gef.editor.control.edit.EditReLink;
 import edu.raf.gef.editor.control.state.util.DiagramDefaultState;
 import edu.raf.gef.editor.control.state.util.IDiagramAbstractState;
 import edu.raf.gef.editor.model.object.impl.AnchorPoint;
@@ -82,6 +83,10 @@ public class DiagramReLinkState extends DiagramDefaultState {
 				link.setDestinationPoint(newAnchor);
 			newAnchor.setLink(link);
 
+			if (diagram.getUndoManager() != null) {
+				diagram.getUndoManager().addEdit(new EditReLink(diagram, link, asSource, oldAnchorPoint, newAnchor));
+			}
+			
 			if (link != null)
 				diagram.getController().setState(new DiagramSelectionState(diagram, link));
 			else

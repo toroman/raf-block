@@ -40,8 +40,8 @@ public class EditDeleteDrawables extends AbstractUndoableEdit {
 			if (entry.getKey() instanceof Link) {
 				Link link = (Link)entry.getKey();
 				diagram.getModel().addElement(link);
-				AnchorPoint source = link.getSourceAnchor().getParent().getSourcePointAt(link.getSourceAnchor().getLocation(), link);
-				AnchorPoint dest = link.getDestinationAnchor().getParent().getDestinationPointAt(link.getDestinationAnchor().getLocation(), link);
+				AnchorPoint source = link.getSourceAnchor();
+				AnchorPoint dest = link.getDestinationAnchor();
 				source.setLink(link);
 				dest.setLink(link);
 				if (entry.getValue() == true)

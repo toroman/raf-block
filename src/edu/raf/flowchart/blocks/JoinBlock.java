@@ -142,6 +142,11 @@ public class JoinBlock extends RectangularObject implements FlowchartBlock {
 	public void removeAnchor(RemovingDestinationAnchorPoint removingDestinationAnchorPoint) {
 		destinationAnchors.remove(removingDestinationAnchorPoint);
 	}
+	
+	public void restoreAnchor(RemovingDestinationAnchorPoint anchor) {
+		if (!destinationAnchors.contains(anchor))
+			destinationAnchors.add(anchor);
+	}
 
 	@Override
 	protected void paintRectangular(Graphics2D g) {
@@ -150,22 +155,22 @@ public class JoinBlock extends RectangularObject implements FlowchartBlock {
 		g.setColor(Color.DARK_GRAY);
 		g.drawOval((int) getX(), (int) getY(), (int) getWidth(), (int) getHeight());
 	}
-
+	
 	private class RemovingDestinationAnchorPoint extends DestinationAnchorPoint {
 
 		private static final long serialVersionUID = -1917150570420067292L;
-
+		
 		public RemovingDestinationAnchorPoint(AnchorPointContainer parent, Point2D initLocation) {
 			super(parent, initLocation);
 		}
 
 		@Override
 		public void setLink(Link link) {
-			super.setLink(link);
 			if (link == null) {
-				constraints.clear();
-				JoinBlock parent = (JoinBlock) getParent();
-				parent.removeAnchor(this);
+				removeAnchor(this);
+			} else {
+				restoreAnchor(this);
+				super.setLink(link);
 			}
 		}
 	}

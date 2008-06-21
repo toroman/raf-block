@@ -53,6 +53,9 @@ public class ActionShowProperties extends ResourceConfiguredAction implements
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		if (srvBeanEditor == null) {
+			return;
+		}
 		if (bean != null) {
 			srvBeanEditor.removeBean(bean);
 		}

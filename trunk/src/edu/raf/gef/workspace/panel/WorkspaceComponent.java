@@ -9,7 +9,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -43,7 +42,9 @@ public class WorkspaceComponent extends JPanel {
 
 	private void initComponents() {
 		trWorkspace = new JTree();
-		trWorkspace.setRootVisible(true);
+		trWorkspace.setExpandsSelectedPaths(true);
+		trWorkspace.setFocusable(false);
+		trWorkspace.setRootVisible(false);
 		menuManager = new MenuManager(trWorkspace, true);
 		// try restore configuration from XML
 		InputStream is = null;

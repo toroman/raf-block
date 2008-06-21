@@ -14,7 +14,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package edu.raf.gefcomponents.beaneditor.gui;
 
 import java.awt.BorderLayout;
@@ -27,9 +27,13 @@ import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JColorChooser;
 import javax.swing.JTextField;
+
+import edu.raf.gef.app.exceptions.GefRuntimeException;
 
 public class ColorField extends PropertyField {
 	/**
@@ -46,15 +50,15 @@ public class ColorField extends PropertyField {
 
 	@Override
 	public void paintComponent(Graphics g1) {
-	    super.paintComponent(g1);
-	    Graphics2D g = (Graphics2D) g1;
+		super.paintComponent(g1);
+		Graphics2D g = (Graphics2D) g1;
 		// da se primeti transparency - moze malo bolje
 		Rectangle c = g.getClipBounds();
 		int step = 3;
 		Color[] colors = { Color.BLACK, Color.WHITE };
 		for (int x = c.width - c.height + 1; x < c.width; x += step) {
 			for (int y = 1; y < c.height; y += step) {
-				g.setColor(colors[Math.abs((x/step + y/step) % 2)]);
+				g.setColor(colors[Math.abs((x / step + y / step) % 2)]);
 				g.fillRect(x, y, step, step);
 			}
 		}
@@ -62,19 +66,17 @@ public class ColorField extends PropertyField {
 		Color color = (Color) parent.getValue();
 		if (color != null) {
 			g.setColor(color);
-			g.fill3DRect(c.width - c.height + 1, 1, c.height - 1, c.height - 1,
-					true);
+			g.fill3DRect(c.width - c.height + 1, 1, c.height - 1, c.height - 1, true);
 			// tekst boje
 			g.setColor(Color.BLACK);
 			g.drawString(getHexRGBA(color), 4, 17);
 		} else {
 			g.setColor(Color.WHITE);
-			g.fill3DRect(c.width - c.height + 1, 1, c.height - 1, c.height - 1,
-				true);
+			g.fill3DRect(c.width - c.height + 1, 1, c.height - 1, c.height - 1, true);
 			g.setColor(Color.BLACK);
 			g.drawString("null", 4, 17);
 		}
-	
+
 	}
 
 	@Override
@@ -84,8 +86,9 @@ public class ColorField extends PropertyField {
 
 		// open chooser ?
 		if (e.getX() >= this.getWidth() - this.getHeight()) {
-			Color c = JColorChooser.showDialog(this, "Color", (Color) parent
-					.getValue());
+			logger.info("showDialog");
+			Color c = JColorChooser.showDialog(this, "Color", (Color) parent.getValue());
+			logger.info("" + c);
 			if (c != null) {
 				try {
 					parent.setValue(c);
@@ -113,8 +116,7 @@ public class ColorField extends PropertyField {
 						parent.setValue(hexRgbaToColor(text.getText()));
 						textLostFocus();
 					} catch (Exception ex) {
-						// prikazi poruku o gresci
-						ex.printStackTrace();
+						logger.log(Level.SEVERE, ex.getMessage(), ex);
 					}
 				}
 			}
@@ -134,9 +136,10 @@ public class ColorField extends PropertyField {
 
 	private String getHexRGBA(Color color) {
 		if (color != null)
-			return hex(color.getRed()) + hex(color.getGreen())
-				+ hex(color.getBlue()) + hex(color.getAlpha());
-		else return "FFFFFFFF";
+			return hex(color.getRed()) + hex(color.getGreen()) + hex(color.getBlue())
+					+ hex(color.getAlpha());
+		else
+			return "FFFFFFFF";
 	}
 
 	private String hex(int v) {
@@ -151,8 +154,7 @@ public class ColorField extends PropertyField {
 			try {
 				parent.setValue(hexRgbaToColor(text.getText()));
 			} catch (Exception ex) {
-				// TODO Prikazhi greshku
-				ex.printStackTrace();
+				logger.log(Level.SEVERE, ex.getMessage(), ex);
 			}
 			this.remove(text);
 			text = null;
@@ -160,4 +162,6 @@ public class ColorField extends PropertyField {
 		validate();
 		repaint();
 	}
+
+	private static final Logger logger = Logger.getLogger(ColorField.class.getName());
 }

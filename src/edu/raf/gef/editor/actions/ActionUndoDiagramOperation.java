@@ -19,22 +19,29 @@ public class ActionUndoDiagramOperation extends ResourceConfiguredAction {
 	public ActionUndoDiagramOperation(MainFrame mainFrame, GefDiagram diagram) {
 		super(mainFrame.getFrame(), StandardMenuActions.UNDO);
 		this.diagram = diagram;
+		setEnabled(isEnabled());
+		this.diagram.getUndoManager().addListener(this);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		// invoked from UndoManager.notifyListeners
+		if (e == null) {
+			setEnabled(isEnabled());
+			return;
+		}
 		if (!isEnabled()) {
 			getGeh().handleUserError(getResources().getString("exception.wrongcontext.title"),
 				getResources().getString("exception.wrongcontext.message"));
 			return;
 		}
-		diagram.getUndoManager().redo();
+		diagram.getUndoManager().undo();
 	}
 
 	@Override
 	public Object getValue(String key) {
 		if (isEnabled() && NAME.equals(key)) {
-			return diagram.getUndoManager().getRedoPresentationName();
+			return diagram.getUndoManager().getUndoPresentationName();
 		} else {
 			return super.getValue(key);
 		}
@@ -42,7 +49,7 @@ public class ActionUndoDiagramOperation extends ResourceConfiguredAction {
 
 	@Override
 	public boolean isEnabled() {
-		return diagram.getUndoManager().canRedo();
+		return diagram.getUndoManager().canUndo();
 	}
 
 }

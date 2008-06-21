@@ -19,10 +19,16 @@ public class ActionRedoDiagramOperation extends ResourceConfiguredAction {
 	public ActionRedoDiagramOperation(MainFrame mainFrame, GefDiagram diagram) {
 		super(mainFrame.getFrame(), StandardMenuActions.REDO);
 		this.diagram = diagram;
+		setEnabled(isEnabled());
+		this.diagram.getUndoManager().addListener(this);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if (e == null) {
+			this.setEnabled(isEnabled());
+			return;
+		}
 		if (!isEnabled()) {
 			getGeh().handleUserError(getResources().getString("exception.wrongcontext.title"),
 				getResources().getString("exception.wrongcontext.message"));

@@ -11,11 +11,11 @@ public class SourceAnchorPoint extends AnchorPoint {
 	 * 
 	 */
 	private static final long serialVersionUID = 3758853163847711397L;
-	private static final Color sourceColor = new Color(153, 217, 234);
+	private static final Color SOURCE_COLOR = new Color(153, 217, 234);
 
 	public SourceAnchorPoint(AnchorPointContainer parent, Point2D initLocation) {
 		super(parent, initLocation);
-		setColor(sourceColor);
+		setColor(SOURCE_COLOR);
 	}
 
 	@Override

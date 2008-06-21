@@ -47,11 +47,14 @@ public class DefaultDrawableTreeNode extends DefaultMutableTreeNode implements I
 
 	@Override
 	public String toString() {
-		if (userObject instanceof RectangularObject)
+		if (userObject instanceof RectangularObject) {
 			return ((RectangularObject) userObject).getTitle();
-		else
+		} else if (userObject instanceof INamedObject) {
+			return ((INamedObject) userObject).getName();
+		} else {
 
 			return userObject.toString();
+		}
 	}
 
 }

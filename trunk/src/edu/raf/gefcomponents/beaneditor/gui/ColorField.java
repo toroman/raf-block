@@ -33,8 +33,6 @@ import java.util.logging.Logger;
 import javax.swing.JColorChooser;
 import javax.swing.JTextField;
 
-import edu.raf.gef.app.exceptions.GefRuntimeException;
-
 public class ColorField extends PropertyField {
 	/**
 	 * 

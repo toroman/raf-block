@@ -402,7 +402,7 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 
 	protected LinkedList<SourceAnchorPoint> sourceAnchors;
 	protected LinkedList<DestinationAnchorPoint> destinationAnchors;
-
+	
 	public Collection<AnchorPoint> getAllAnchors() {
 		Vector<AnchorPoint> vector = new Vector<AnchorPoint>(sourceAnchors.size()
 				+ destinationAnchors.size());
@@ -467,8 +467,6 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		newAnchor.addConstraint(constraint);
 		newAnchor.setLocation(newAnchor.afterAllConstraints(newAnchor.getLocation()));
 		setChanged();
-		notifyObservers();
-		clearChanged();
 		return newAnchor;
 	}
 
@@ -483,6 +481,5 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		this.title = title;
 		setChanged();
 		notifyObservers();
-		clearChanged();
 	}
 }

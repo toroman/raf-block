@@ -7,12 +7,13 @@ import java.awt.Polygon;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
+import edu.raf.flowchart.syntax.ExecutionManager;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
 import edu.raf.gef.editor.model.object.impl.AnchorPoint;
 import edu.raf.gef.editor.model.object.impl.Link;
 import edu.raf.gef.editor.model.object.impl.RectangularObject;
 
-public class ConditionBlock extends RectangularObject {
+public class ConditionBlock extends RectangularObject implements FlowchartBlock {
 
 	// 0--------1
 	// / \
@@ -25,6 +26,14 @@ public class ConditionBlock extends RectangularObject {
 	 */
 	private static final long serialVersionUID = -3766628340203826777L;
 
+	private static int INSTANCE_COUNTER = 0;
+
+	private String name = "Condition" + ++INSTANCE_COUNTER;
+
+	private AnchorPoint anchorOnTrue;
+
+	private AnchorPoint anchorOnFalse;
+
 	public ConditionBlock() {
 		super();
 		addAnchor(false, new ControlPointConstraint() {
@@ -33,13 +42,13 @@ public class ConditionBlock extends RectangularObject {
 				return new Point2D.Double(getX() + getWidth() / 2, getY());
 			}
 		}, null);
-		addAnchor(true, new ControlPointConstraint() {
+		anchorOnFalse = addAnchor(true, new ControlPointConstraint() {
 			@Override
 			public Point2D updateLocation(Point2D oldLocation) {
 				return new Point2D.Double(getX(), getY() + getHeight() / 2);
 			}
 		}, null);
-		addAnchor(true, new ControlPointConstraint() {
+		anchorOnTrue = addAnchor(true, new ControlPointConstraint() {
 			@Override
 			public Point2D updateLocation(Point2D oldLocation) {
 				return new Point2D.Double(getX() + getWidth(), getY() + getHeight() / 2);
@@ -106,6 +115,38 @@ public class ConditionBlock extends RectangularObject {
 		else
 			index = 1;
 		return sourceAnchors.get(index);
+	}
+
+	@Override
+	public FlowchartBlock executeAndReturnNext(ExecutionManager context) {
+		if (anchorOnFalse.getLink() == null || anchorOnTrue.getLink() == null) {
+			context.raiseError(this, "Object not connected!");
+			return null;
+		}
+		Object onFalse = anchorOnFalse.getLink().getDestinationAnchor().getParent();
+		Object onTrue = anchorOnTrue.getLink().getDestinationAnchor().getParent();
+		if (!(onFalse instanceof FlowchartBlock && onTrue instanceof FlowchartBlock)) {
+			context.raiseError(this, "Connected with non flowchart objects!");
+			return null;
+		}
+
+		String cond = this.getTitle();
+		Object result = context.evaluate(cond);
+		if (Boolean.TRUE.equals(result)) {
+			return (FlowchartBlock) onTrue;
+		} else {
+			return (FlowchartBlock) onFalse;
+		}
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public void setName(String s) {
+		this.name = name;
 	}
 
 }

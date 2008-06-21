@@ -42,7 +42,7 @@ public class DefaultDiagramTreeModel implements IDiagramTreeNode {
 	public String toString() {
 		return this.diagram.getModel().getTitle();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -57,8 +57,7 @@ public class DefaultDiagramTreeModel implements IDiagramTreeNode {
 			if (dae.isAdded()) {
 				IDrawableNode node = new DefaultDrawableTreeNode(d, this);
 				nodes.add(node);
-				workspace.nodesWereInserted(this,
-						new int[] { nodes.size() - 1 });
+				workspace.nodesWereInserted(this, new int[] { nodes.size() - 1 });
 			} else {
 				// O(n) remove
 				Iterator<IDrawableNode> it = nodes.iterator();
@@ -68,7 +67,7 @@ public class DefaultDiagramTreeModel implements IDiagramTreeNode {
 					if (id.getDrawable() == d) {
 						it.remove();
 						workspace.nodesWereRemoved(this, new int[] { index },
-								new IDrawableNode[] { id });
+							new IDrawableNode[] { id });
 						break;
 					}
 					index++;
@@ -135,6 +134,7 @@ public class DefaultDiagramTreeModel implements IDiagramTreeNode {
 		throw new UnsupportedOperationException("This shouldn't be called.");
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Enumeration children() {
 		final Iterator it = diagram.getModel().getDrawables().iterator();

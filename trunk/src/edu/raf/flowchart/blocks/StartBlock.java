@@ -6,21 +6,27 @@ import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
+import edu.raf.flowchart.syntax.ExecutionManager;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
+import edu.raf.gef.editor.model.object.impl.AnchorPoint;
 import edu.raf.gef.editor.model.object.impl.RectangularObject;
+import edu.raf.gef.services.beaneditor.annotations.Property;
 import edu.raf.gef.util.GeomHelper;
 import edu.raf.gef.util.MathHelper;
 
-public class StartBlock extends RectangularObject {
+public class StartBlock extends RectangularObject implements FlowchartBlock {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2677571524459054126L;
+	private static int INSTANCE_COUNTER = 0;
+	private String name = "Start" + ++INSTANCE_COUNTER;
+	private AnchorPoint nextBlockAnchor;
 
 	public StartBlock() {
 		super();
-		addAnchor(true, new ControlPointConstraint() {
+		nextBlockAnchor = addAnchor(true, new ControlPointConstraint() {
 			@Override
 			public Point2D updateLocation(Point2D oldLocation) {
 				return new Point2D.Double(getX() + getWidth() / 2, getY() + getHeight());
@@ -84,5 +90,37 @@ public class StartBlock extends RectangularObject {
 		return (MathHelper.isBetween(point.getX(), getX() + arcDimension / 2, getX() + getWidth()
 				- arcDimension / 2))
 				&& MathHelper.isBetween(point.getY(), getY(), getY() + getHeight());
+	}
+
+	@Override
+	public FlowchartBlock executeAndReturnNext(ExecutionManager context) {
+		if (nextBlockAnchor.getLink() == null) {
+			context.raiseError(this, "Not connected.");
+			return null;
+		}
+		if (!(nextBlockAnchor.getLink().getDestinationAnchor().getParent() instanceof FlowchartBlock)) {
+			context.raiseError(this, "Not connected with flowchart object!");
+			return null;
+		}
+		// don't execute anything
+		return (FlowchartBlock) nextBlockAnchor.getLink().getDestinationAnchor().getParent();
+	}
+
+	@Property
+	public String getNextBlockAnchor() {
+		return "TO:" + nextBlockAnchor;
+	}
+
+	public void setNextBlockAnchor(String nextBlockAnchor) {
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public void setName(String s) {
+		this.name = s;
 	}
 }

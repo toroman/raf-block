@@ -89,9 +89,4 @@ public abstract class AnchorPoint extends ControlPoint {
 	public void setColor(Color color) {
 		this.color = color;
 	}
-	
-	@Override
-	public String toString() {
-		return getLocation().toString();
-	}
 }

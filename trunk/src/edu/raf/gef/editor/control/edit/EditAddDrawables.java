@@ -30,8 +30,10 @@ public class EditAddDrawables extends AbstractUndoableEdit {
 		for (Drawable d: drawables)
 			if (d instanceof Link) {
 				diagram.getModel().addElement(d);
-				diagram.getModel().moveForward(d);
 				diagram.getController().addToFocusedObjects((Focusable)d);
+				Link link = (Link)d;
+				link.getSourceAnchor().setLink(link);
+				link.getDestinationAnchor().setLink(link);
 			}
 		for (Drawable d: drawables)
 			if (d instanceof AnchorPointContainer) {

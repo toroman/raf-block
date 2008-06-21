@@ -1,8 +1,8 @@
 package edu.raf.gefcomponents.beaneditor;
 
-import edu.raf.gef.Main;
 import edu.raf.gef.gui.MainFrame;
 import edu.raf.gef.plugin.AbstractPlugin;
+import edu.raf.gef.services.ServiceManager;
 import edu.raf.gef.services.beaneditor.IBeanEditor;
 import edu.raf.gefcomponents.beaneditor.impl.BeanEditorImplementation;
 import edu.raf.gefcomponents.beaneditor.res.BeansResources;
@@ -19,7 +19,7 @@ public class BeanEditorPlugin implements AbstractPlugin {
 
 	public BeanEditorPlugin() {
 		editor = new BeanEditorImplementation();
-		Main.getServices().addServiceImplementation(editor, IBeanEditor.class);
+		ServiceManager.getServices().addServiceImplementation(editor, IBeanEditor.class);
 	}
 
 	@Override

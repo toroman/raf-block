@@ -6,12 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ServiceManager {
+public final class ServiceManager {
+	private static final ServiceManager _instance = new ServiceManager();
+
+	public static final ServiceManager getServices() {
+		return _instance;
+	}
+
 	private Map<Class<?>, List<?>> services;
 
 	private List<ServiceManagerListener> listeners = new ArrayList<ServiceManagerListener>(2);
 
-	public ServiceManager() {
+	private ServiceManager() {
 		services = new HashMap<Class<?>, List<?>>();
 	}
 

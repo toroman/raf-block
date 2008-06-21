@@ -3,6 +3,7 @@ package edu.raf.flowchart;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.raf.flowchart.actions.ActionExecuteAlgorithm;
 import edu.raf.flowchart.actions.AddFlowchartDraggableAction;
 import edu.raf.flowchart.actions.AddFlowchartLinkAction;
 import edu.raf.flowchart.blocks.ConditionBlock;
@@ -24,6 +25,7 @@ import edu.raf.gef.gui.MainFrame;
 import edu.raf.gef.gui.actions.ActionAddDiagram;
 import edu.raf.gef.gui.swing.menus.StandardMenuParts;
 import edu.raf.gef.plugin.DiagramPlugin;
+import edu.raf.gef.services.ServiceManager;
 import edu.raf.gef.services.mime.ProjectsFileHandler;
 
 public class FlowChartPlugin implements DiagramPlugin {
@@ -36,7 +38,6 @@ public class FlowChartPlugin implements DiagramPlugin {
 
 	private final List<Class<? extends Draggable>> draggables;
 	private final List<Class<? extends Link>> links;
-
 	/**
 	 * Instead of passing the whole frame, more "nice" would be to pass only
 	 * necessary parts, like MenuManager, but let it be like this ...
@@ -58,7 +59,7 @@ public class FlowChartPlugin implements DiagramPlugin {
 		links = new ArrayList<Class<? extends Link>>();
 		links.add(FlowchartLink.class);
 
-		Main.getServices().addServiceImplementation(handler, ProjectsFileHandler.class);
+		ServiceManager.getServices().addServiceImplementation(handler, ProjectsFileHandler.class);
 	}
 
 	@Override
@@ -90,6 +91,7 @@ public class FlowChartPlugin implements DiagramPlugin {
 									.getName()));
 			}
 		}
+
 		String linkGroup = getClass().getName() + ".links";
 		for (Class<? extends Link> d : links) {
 			if (Link.class.isAssignableFrom(d)) {
@@ -98,6 +100,8 @@ public class FlowChartPlugin implements DiagramPlugin {
 			}
 		}
 
+		String executionGroup = getClass().getName() + ".exec";
+		mf.getToolbarManager().addAction(executionGroup, new ActionExecuteAlgorithm(mainFrame));
 	}
 
 	public MainFrame getMainFrame() {

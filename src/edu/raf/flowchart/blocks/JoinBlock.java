@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
+import edu.raf.flowchart.syntax.ExecutionManager;
 import edu.raf.gef.editor.model.object.AnchorPointContainer;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
 import edu.raf.gef.editor.model.object.impl.AnchorPoint;
@@ -14,7 +15,7 @@ import edu.raf.gef.editor.model.object.impl.Link;
 import edu.raf.gef.editor.model.object.impl.RectangularObject;
 import edu.raf.gef.util.GeomHelper;
 
-public class JoinBlock extends RectangularObject {
+public class JoinBlock extends RectangularObject implements FlowchartBlock {
 
 	/**
 	 * 
@@ -29,12 +30,18 @@ public class JoinBlock extends RectangularObject {
 		}
 	};
 
+	private static int INSTANCE_COUNTER = 0;
+
+	private AnchorPoint nextBlockAnchor;
+
+	private String name = "Join" + ++INSTANCE_COUNTER;
+
 	public JoinBlock() {
 		super();
 		setMinDimension(new Dimension(40, 40));
 		addResizeConstraints();
 
-		addAnchor(true, new ControlPointConstraint() {
+		nextBlockAnchor = addAnchor(true, new ControlPointConstraint() {
 			@Override
 			public Point2D updateLocation(Point2D oldLocation) {
 				return new Point2D.Double(getX() + getWidth() / 2, getY() + getHeight());
@@ -163,5 +170,29 @@ public class JoinBlock extends RectangularObject {
 				parent.removeAnchor(this);
 			}
 		}
+	}
+
+	@Override
+	public FlowchartBlock executeAndReturnNext(ExecutionManager context) {
+		if (nextBlockAnchor.getLink() == null) {
+			context.raiseError(this, "Not connected.");
+			return null;
+		}
+		if (!(nextBlockAnchor.getLink().getDestinationAnchor().getParent() instanceof FlowchartBlock)) {
+			context.raiseError(this, "Not connected with flowchart object!");
+			return null;
+		}
+		// don't execute anything
+		return (FlowchartBlock) nextBlockAnchor.getLink().getDestinationAnchor().getParent();
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public void setName(String s) {
+		this.name = s;
 	}
 }

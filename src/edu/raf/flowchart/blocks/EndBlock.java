@@ -6,17 +6,22 @@ import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
+import edu.raf.flowchart.syntax.ExecutionManager;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
 import edu.raf.gef.editor.model.object.impl.RectangularObject;
 import edu.raf.gef.util.GeomHelper;
 import edu.raf.gef.util.MathHelper;
 
-public class EndBlock extends RectangularObject {
+public class EndBlock extends RectangularObject implements FlowchartBlock {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1069962267059640919L;
+
+	private static int INSTANCE_COUNTER = 0;
+
+	private String name = "End" + ++INSTANCE_COUNTER;
 
 	public EndBlock() {
 		super();
@@ -82,6 +87,22 @@ public class EndBlock extends RectangularObject {
 		return (MathHelper.isBetween(point.getX(), getX() + arcDimension / 2, getX() + getWidth()
 				- arcDimension / 2))
 				&& MathHelper.isBetween(point.getY(), getY(), getY() + getHeight());
+	}
+
+	@Override
+	public FlowchartBlock executeAndReturnNext(ExecutionManager context) {
+		context.end();
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public void setName(String s) {
+		this.name = s;
 	}
 
 }

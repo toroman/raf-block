@@ -22,10 +22,10 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-import edu.raf.gef.Main;
 import edu.raf.gef.app.exceptions.GefException;
 import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.editor.IDiagramTreeNode;
+import edu.raf.gef.services.ServiceManager;
 import edu.raf.gef.services.mime.ProjectsFileHandler;
 import edu.raf.gef.workspace.Workspace;
 
@@ -140,8 +140,8 @@ public class DiagramProject extends DefaultMutableTreeNode {
 				return pathname.isFile();
 			}
 		});
-		List<ProjectsFileHandler> handlers = Main.getServices().getServiceImplementations(
-			ProjectsFileHandler.class);
+		List<ProjectsFileHandler> handlers = ServiceManager.getServices()
+				.getServiceImplementations(ProjectsFileHandler.class);
 
 		for (File file : files) {
 			for (ProjectsFileHandler handler : handlers) {

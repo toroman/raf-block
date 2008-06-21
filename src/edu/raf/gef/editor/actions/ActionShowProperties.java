@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.util.Collection;
 import java.util.List;
 
-import edu.raf.gef.Main;
 import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.editor.control.GefFocusEvent;
 import edu.raf.gef.editor.control.GefFocusListener;
@@ -36,7 +35,7 @@ public class ActionShowProperties extends ResourceConfiguredAction implements
 
 	public ActionShowProperties(Component component, GefDiagram diagram) {
 		super(component, StandardMenuActions.PROPERTIES);
-		this.serviceManager = Main.getServices();
+		this.serviceManager = ServiceManager.getServices();
 		this.diagram = diagram;
 		this.diagram.getController().addFocusListener(selectionListener);
 		this.serviceManager.addServiceManagerListener(this);

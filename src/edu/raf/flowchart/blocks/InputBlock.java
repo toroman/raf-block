@@ -7,15 +7,23 @@ import java.awt.Polygon;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
+import edu.raf.flowchart.syntax.ExecutionManager;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
+import edu.raf.gef.editor.model.object.impl.AnchorPoint;
 import edu.raf.gef.editor.model.object.impl.RectangularObject;
 
-public class InputBlock extends RectangularObject {
+public class InputBlock extends RectangularObject implements FlowchartBlock {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8369232407226259942L;
+
+	private static int INSTANCE_COUNTER = 0;
+
+	private String name = "Input" + ++INSTANCE_COUNTER;
+	
+	private AnchorPoint nextBlockAnchor;
 
 	public InputBlock() {
 		super();
@@ -25,7 +33,7 @@ public class InputBlock extends RectangularObject {
 				return new Point2D.Double(getX() + getWidth() / 2, getY());
 			}
 		}, null);
-		addAnchor(true, new ControlPointConstraint() {
+		nextBlockAnchor = addAnchor(true, new ControlPointConstraint() {
 			@Override
 			public Point2D updateLocation(Point2D oldLocation) {
 				return new Point2D.Double(getX() + getWidth() / 2, getY() + getHeight());
@@ -85,5 +93,28 @@ public class InputBlock extends RectangularObject {
 				new int[] { (int) (getY()), (int) (getY()), (int) (getY() + getHeight()),
 						(int) (getY() + getHeight()) }, 4);
 		return p.contains(point);
+	}
+
+	public FlowchartBlock executeAndReturnNext(ExecutionManager context) {
+		if (nextBlockAnchor.getLink() == null) {
+			context.raiseError(this, "Not connected.");
+			return null;
+		}
+		if (!(nextBlockAnchor.getLink().getDestinationAnchor().getParent() instanceof FlowchartBlock)) {
+			context.raiseError(this, "Not connected with flowchart object!");
+			return null;
+		}
+		context.readInput(getTitle());
+		return (FlowchartBlock) nextBlockAnchor.getLink().getDestinationAnchor().getParent();
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public void setName(String s) {
+		this.name = s;
 	}
 }

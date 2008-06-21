@@ -7,15 +7,20 @@ import java.awt.Polygon;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
+import edu.raf.flowchart.syntax.ExecutionManager;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
+import edu.raf.gef.editor.model.object.impl.AnchorPoint;
 import edu.raf.gef.editor.model.object.impl.RectangularObject;
 
-public class OutputBlock extends RectangularObject {
+public class OutputBlock extends RectangularObject implements FlowchartBlock {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4029973414439459416L;
+	private static int INSTANCE_COUNTER = 0;
+	private String name = "Output" + ++INSTANCE_COUNTER;
+	private AnchorPoint nextBlockAnchor;
 
 	public OutputBlock() {
 		super();
@@ -92,5 +97,28 @@ public class OutputBlock extends RectangularObject {
 				(int) (getX()) }, new int[] { (int) (getY()), (int) (getY()),
 				(int) (getY() + getHeight()), (int) (getY() + getHeight()) }, 4);
 		return p.contains(point);
+	}
+
+	public FlowchartBlock executeAndReturnNext(ExecutionManager context) {
+		if (nextBlockAnchor.getLink() == null) {
+			context.raiseError(this, "Not connected.");
+			return null;
+		}
+		if (!(nextBlockAnchor.getLink().getDestinationAnchor().getParent() instanceof FlowchartBlock)) {
+			context.raiseError(this, "Not connected with flowchart object!");
+			return null;
+		}
+		context.writeOutput(getTitle());
+		return (FlowchartBlock) nextBlockAnchor.getLink().getDestinationAnchor().getParent();
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public void setName(String s) {
+		this.name = s;
 	}
 }

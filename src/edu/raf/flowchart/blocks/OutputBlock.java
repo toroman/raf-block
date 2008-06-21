@@ -9,7 +9,6 @@ import java.awt.geom.Point2D;
 
 import edu.raf.flowchart.syntax.ExecutionManager;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
-import edu.raf.gef.editor.model.object.impl.AnchorPoint;
 import edu.raf.gef.editor.model.object.impl.RectangularObject;
 
 public class OutputBlock extends RectangularObject implements FlowchartBlock {
@@ -20,8 +19,6 @@ public class OutputBlock extends RectangularObject implements FlowchartBlock {
 	private static final long serialVersionUID = -4029973414439459416L;
 	private static int INSTANCE_COUNTER = 0;
 	private String name = "Output" + ++INSTANCE_COUNTER;
-	private AnchorPoint nextBlockAnchor;
-
 	public OutputBlock() {
 		super();
 		addAnchor(false, new ControlPointConstraint() {
@@ -30,7 +27,7 @@ public class OutputBlock extends RectangularObject implements FlowchartBlock {
 				return new Point2D.Double(getX() + getWidth() / 2, getY());
 			}
 		}, null);
-		nextBlockAnchor = addAnchor(true, new ControlPointConstraint() {
+		addAnchor(true, new ControlPointConstraint() {
 			@Override
 			public Point2D updateLocation(Point2D oldLocation) {
 				return new Point2D.Double(getX() + getWidth() / 2, getY() + getHeight());
@@ -100,16 +97,16 @@ public class OutputBlock extends RectangularObject implements FlowchartBlock {
 	}
 
 	public FlowchartBlock executeAndReturnNext(ExecutionManager context) {
-		if (nextBlockAnchor.getLink() == null) {
+		if (sourceAnchors.get(0).getLink() == null) {
 			context.raiseError(this, "Not connected.");
 			return null;
 		}
-		if (!(nextBlockAnchor.getLink().getDestinationAnchor().getParent() instanceof FlowchartBlock)) {
+		if (!(sourceAnchors.get(0).getLink().getDestinationAnchor().getParent() instanceof FlowchartBlock)) {
 			context.raiseError(this, "Not connected with flowchart object!");
 			return null;
 		}
 		context.writeOutput(getTitle());
-		return (FlowchartBlock) nextBlockAnchor.getLink().getDestinationAnchor().getParent();
+		return (FlowchartBlock) sourceAnchors.get(0).getLink().getDestinationAnchor().getParent();
 	}
 
 	@Override

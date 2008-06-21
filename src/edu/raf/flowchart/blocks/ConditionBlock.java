@@ -30,10 +30,6 @@ public class ConditionBlock extends RectangularObject implements FlowchartBlock 
 
 	private String name = "Condition" + ++INSTANCE_COUNTER;
 
-	private AnchorPoint anchorOnTrue;
-
-	private AnchorPoint anchorOnFalse;
-
 	public ConditionBlock() {
 		super();
 		addAnchor(false, new ControlPointConstraint() {
@@ -42,13 +38,13 @@ public class ConditionBlock extends RectangularObject implements FlowchartBlock 
 				return new Point2D.Double(getX() + getWidth() / 2, getY());
 			}
 		}, null);
-		anchorOnFalse = addAnchor(true, new ControlPointConstraint() {
+		addAnchor(true, new ControlPointConstraint() {
 			@Override
 			public Point2D updateLocation(Point2D oldLocation) {
 				return new Point2D.Double(getX(), getY() + getHeight() / 2);
 			}
 		}, null);
-		anchorOnTrue = addAnchor(true, new ControlPointConstraint() {
+		addAnchor(true, new ControlPointConstraint() {
 			@Override
 			public Point2D updateLocation(Point2D oldLocation) {
 				return new Point2D.Double(getX() + getWidth(), getY() + getHeight() / 2);
@@ -119,12 +115,12 @@ public class ConditionBlock extends RectangularObject implements FlowchartBlock 
 
 	@Override
 	public FlowchartBlock executeAndReturnNext(ExecutionManager context) {
-		if (anchorOnFalse.getLink() == null || anchorOnTrue.getLink() == null) {
+		if (sourceAnchors.get(0).getLink() == null || sourceAnchors.get(1).getLink() == null) {
 			context.raiseError(this, "Object not connected!");
 			return null;
 		}
-		Object onFalse = anchorOnFalse.getLink().getDestinationAnchor().getParent();
-		Object onTrue = anchorOnTrue.getLink().getDestinationAnchor().getParent();
+		Object onFalse = sourceAnchors.get(0).getLink().getDestinationAnchor().getParent();
+		Object onTrue = sourceAnchors.get(1).getLink().getDestinationAnchor().getParent();
 		if (!(onFalse instanceof FlowchartBlock && onTrue instanceof FlowchartBlock)) {
 			context.raiseError(this, "Connected with non flowchart objects!");
 			return null;
@@ -146,7 +142,7 @@ public class ConditionBlock extends RectangularObject implements FlowchartBlock 
 
 	@Override
 	public void setName(String s) {
-		this.name = name;
+		this.name = s;
 	}
 
 }

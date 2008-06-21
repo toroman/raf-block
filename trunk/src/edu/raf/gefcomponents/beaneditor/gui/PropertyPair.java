@@ -118,11 +118,13 @@ public class PropertyPair implements Comparable<PropertyPair> {
 
 	public void setValue(Object value) throws IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
-		if (parentPanel.isUndoManagerEnabled()) {
-			parentPanel.getUndoManager().addEdit(
-				new UndoablePropertyEdit(this.object, getValue(), value, setter));
+		if (!value.equals(getValue())) {
+			if (parentPanel.isUndoManagerEnabled()) {
+				parentPanel.getUndoManager().addEdit(
+					new UndoablePropertyEdit(this.object, getValue(), value, setter));
+			}
+			setter.invoke(this.object, value);
 		}
-		setter.invoke(this.object, value);
 	}
 
 	/**

@@ -11,15 +11,19 @@ import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import edu.raf.gef.editor.GefDiagram;
+import edu.raf.gef.editor.control.edit.EditAddDrawables;
+import edu.raf.gef.editor.control.edit.EditDeleteDrawables;
 import edu.raf.gef.editor.control.state.DiagramSelectionState;
 import edu.raf.gef.editor.control.state.util.IDiagramAbstractState;
 import edu.raf.gef.editor.model.DiagramModel;
 import edu.raf.gef.editor.model.object.AnchorPointContainer;
+import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.editor.model.object.Focusable;
 import edu.raf.gef.editor.model.object.impl.Link;
 import edu.raf.gef.util.GeomHelper;
@@ -228,11 +232,31 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 	 */
 	public Object cut() {
 		Object obj = copy();
+		HashMap <Drawable, Boolean> mapa = new HashMap<Drawable, Boolean>();
 		for (Focusable focusable : getFocusedObjects()) {
+			mapa.put(focusable, true);
 			getModel().removeElement(focusable);
 		}
+		if (diagram.getUndoManager() != null)
+			diagram.getUndoManager().addEdit(new EditDeleteDrawables(diagram, mapa));
 		clearFocusedObjects();
 		return obj;
+	}
+	
+	private boolean proveriLink (Link link) {
+		boolean sourceok = false;
+		if (link.getSourceAnchor() != null) {
+			AnchorPointContainer source = link.getSourceAnchor().getParent();
+			if (source instanceof Focusable && ((Focusable) source).isFocused())
+				sourceok = true;
+		}
+		boolean destinationok = false;
+		if (link.getDestinationAnchor() != null) {
+			AnchorPointContainer dest = link.getDestinationAnchor().getParent();
+			if (dest instanceof Focusable && ((Focusable) dest).isFocused())
+				destinationok = true;
+		}
+		return sourceok && destinationok;
 	}
 
 	/**
@@ -242,29 +266,20 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 	 */
 	public Object copy() {
 		Set<Focusable> objectsToCopy = new HashSet<Focusable>();
-		for (Focusable focusable : getFocusedObjects())
+		for (Focusable focusable : getFocusedObjects()) {
+			if (focusable instanceof AnchorPointContainer)
+				for (Link link : ((AnchorPointContainer) focusable).getLinks()) {
+					if (proveriLink(link)) {
+						objectsToCopy.add(link);
+					}
+				}
 			if (focusable instanceof Link) {
-				// A focused link
-				Link link = (Link) focusable;
-				boolean sourceok = false;
-				if (link.getSourceAnchor() != null) {
-					AnchorPointContainer source = link.getSourceAnchor().getParent();
-					if (source instanceof Focusable && ((Focusable) source).isFocused())
-						sourceok = true;
+				if (proveriLink((Link)focusable)) {
+					objectsToCopy.add(focusable);
 				}
-				boolean destinationok = false;
-				if (link.getDestinationAnchor() != null) {
-					AnchorPointContainer dest = link.getDestinationAnchor().getParent();
-					if (dest instanceof Focusable && ((Focusable) dest).isFocused())
-						destinationok = true;
-				}
-				if (destinationok && sourceok) {
-					// This link should be copied
-					objectsToCopy.add(link);
-				}
-			} else {
+			} else
 				objectsToCopy.add(focusable);
-			}
+		}
 		return objectsToCopy;
 	}
 
@@ -293,10 +308,9 @@ public class DiagramController implements MouseListener, MouseWheelListener, Mou
 		} else
 			return;
 
-		clearFocusedObjects();
-		for (Focusable focusable : objectsToCopy) {
-			getModel().addElement(focusable);
-			addToFocusedObjects(focusable);
-		}
+		EditAddDrawables.addDrawables(diagram, objectsToCopy.toArray(new Drawable[0]));
+		if (diagram.getUndoManager() != null)
+			diagram.getUndoManager().addEdit(
+				new EditAddDrawables(diagram, objectsToCopy.toArray(new Drawable[0])));
 	}
 }

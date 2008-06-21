@@ -136,7 +136,7 @@ public class JoinBlock extends RectangularObject implements FlowchartBlock {
 	@Override
 	protected boolean isPointOverObject(Point2D point) {
 		return GeomHelper.pointDistance(point.getX(), point.getY(), getX() + getWidth() / 2, getY()
-				+ getHeight() / 2) < getWidth() / 2;
+				+ getHeight() / 2) < getWidth() / 2 + 2;
 	}
 
 	public void removeAnchor(RemovingDestinationAnchorPoint removingDestinationAnchorPoint) {

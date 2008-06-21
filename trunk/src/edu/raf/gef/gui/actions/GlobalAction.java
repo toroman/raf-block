@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.logging.Logger;
 
 import javax.swing.Action;
 import javax.swing.JComponent;

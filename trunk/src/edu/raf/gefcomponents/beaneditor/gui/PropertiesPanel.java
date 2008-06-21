@@ -36,7 +36,7 @@ import javax.swing.undo.UndoManager;
 import edu.raf.gef.services.beaneditor.annotations.Property;
 
 /**
- * Prikazuje osobine nekog objekta.
+ * Dynamicaly show properties of an object.
  * 
  * @author Srecko Toroman
  * 
@@ -47,15 +47,24 @@ public class PropertiesPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 3544816945480445707L;
 	private ArrayList<PropertyPair> properties;
+	/**
+	 * Currently edited object
+	 */
 	private Object object;
+	/**
+	 * Object's undo manager (can be null)
+	 */
+	private UndoManager undoManager;
+
 	private JPanel tableNames;
 	private JPanel tableValues;
-	public JLabel tooltipLabel;
-	public JLabel propertiesLabel;
 	private JSplitPane splitPane;
+
 	protected Dimension nameDimension = new Dimension(60, 22);
 	protected Dimension fieldDimension = new Dimension(60, 22);
-	private UndoManager undoManager;
+
+	public JLabel tooltipLabel;
+	public JLabel propertiesLabel;
 
 	public PropertiesPanel() {
 		super();
@@ -77,8 +86,9 @@ public class PropertiesPanel extends JPanel {
 		tooltipLabel = new JLabel("Tooltip");
 		propertiesLabel = new JLabel("Properties:");
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, tableNames, tableValues);
-		splitPane.setVisible(false);
-		splitPane.setDividerSize(1);
+		splitPane.setDividerSize(2);
+		splitPane.setContinuousLayout(true);
+		splitPane.setOpaque(true);
 		// layout
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -99,6 +109,7 @@ public class PropertiesPanel extends JPanel {
 		gbc.gridy = 2;
 		gbc.weighty = 1.0;
 		this.add(tooltipLabel, gbc);
+		setDoubleBuffered(true);
 	}
 
 	/**
@@ -129,7 +140,8 @@ public class PropertiesPanel extends JPanel {
 		}
 		this.splitPane.setVisible(properties.size() > 0);
 		validate();
-		repaint();
+		getParent().doLayout();
+		// repaint();
 	}
 
 	private void createProperties() {
@@ -151,6 +163,10 @@ public class PropertiesPanel extends JPanel {
 
 	public UndoManager getUndoManager() {
 		return undoManager;
+	}
+
+	public boolean isUndoManagerEnabled() {
+		return undoManager != null;
 	}
 
 }

@@ -1,9 +1,6 @@
 package edu.raf.gef.editor.actions;
 
 import java.awt.event.ActionEvent;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 
 import edu.raf.gef.Main;
 import edu.raf.gef.editor.structure.SerializedDiagramObject;

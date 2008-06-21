@@ -3,16 +3,13 @@ package edu.raf.gefcomponents.beaneditor.impl;
 import javax.swing.undo.UndoManager;
 
 import edu.raf.gef.services.beaneditor.IBeanEditor;
-import edu.raf.gefcomponents.beaneditor.BeanEditorPlugin;
 import edu.raf.gefcomponents.beaneditor.gui.PropertiesPanel;
 
 public class BeanEditorImplementation implements IBeanEditor {
 
 	private PropertiesPanel _view;
-	private BeanEditorPlugin plugin;
 
-	public BeanEditorImplementation(BeanEditorPlugin beanEditorPlugin) {
-		this.plugin = beanEditorPlugin;
+	public BeanEditorImplementation() {
 		this._view = new PropertiesPanel();
 	}
 
@@ -26,7 +23,7 @@ public class BeanEditorImplementation implements IBeanEditor {
 	public void addBean(Object bean, UndoManager mgr) {
 		getView().setUndoManager(mgr);
 		getView().setObject(bean);
-		plugin.getMainFrame().getTabbedTools().setSelectedComponent(getView());
+		getView().grabFocus();
 	}
 
 	@Override

@@ -57,11 +57,13 @@ public class MainFrame extends ApplicationWindow {
 
 	private JTabbedPane tabbedDiagrams;
 
-	private JTabbedPane tabbedTools;
+	private JSplitPane tabbedTools;
 
 	private ActionContextController currentActionContext;
 
 	private MenuManager diagramContextMenu;
+
+	private JSplitPane lastTool;
 
 	public static final String SELECTED_EDITOR_PROPERTY = "selDiagram";
 
@@ -96,7 +98,7 @@ public class MainFrame extends ApplicationWindow {
 		}
 		restore.setWorkspaceLocationToProperties(getResources());
 		workspace = new WorkspaceComponent(restore);
-		tabbedTools.addTab("Navigator", workspace);
+		addTool("Navigator", workspace);
 	}
 
 	public void setWorkspace(Workspace workspace) {
@@ -124,8 +126,7 @@ public class MainFrame extends ApplicationWindow {
 		menu.getPart(StandardMenuParts.NEW_PROJECT_PART).add(new ActionNewProject(this));
 		menu.getPart(StandardMenuParts.PLUGIN_MANAGER).add(new ActionShowPluginManager(this));
 		menu.getPart(StandardMenuParts.FILE_EXIT_PART).add(new ActionExitApplication(this));
-		menu.getPart(StandardMenuParts.HELP).add(
-				new ActionShowHelp());
+		menu.getPart(StandardMenuParts.HELP).add(new ActionShowHelp());
 		return menu;
 	}
 
@@ -179,18 +180,20 @@ public class MainFrame extends ApplicationWindow {
 
 		mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, tabbedTools, tabbedDiagrams);
 		mainSplitPane.setOneTouchExpandable(true);
+		mainSplitPane.setContinuousLayout(true);
 		return mainSplitPane;
 	}
 
 	private void initTabbedTools() {
-		tabbedTools = new JTabbedPane();
+		tabbedTools = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		tabbedTools.setContinuousLayout(true);
+		lastTool = tabbedTools;
 	}
 
 	protected void onWorkspaceSelectionChanged(TreeSelectionEvent e) {
 		Object sel = null;
 		if (e.getNewLeadSelectionPath() != null)
 			sel = e.getNewLeadSelectionPath().getLastPathComponent();
-
 		if (sel instanceof IDiagramTreeNode) {
 			showDiagram((IDiagramTreeNode) sel);
 		} else if (sel instanceof IDrawableNode) {
@@ -257,10 +260,6 @@ public class MainFrame extends ApplicationWindow {
 		currentActionContext = context;
 	}
 
-	public JTabbedPane getTabbedTools() {
-		return tabbedTools;
-	}
-
 	public JTabbedPane getTabbedDiagrams() {
 		return tabbedDiagrams;
 	}
@@ -279,5 +278,11 @@ public class MainFrame extends ApplicationWindow {
 				getGeh().handleErrorBlocking("Save", "Couldn't save workspace!", ex);
 			}
 		}
+	}
+
+	public void addTool(String title, JComponent view) {
+		JSplitPane oldLastTool = lastTool;
+		lastTool = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, view, null);
+		oldLastTool.add(lastTool);
 	}
 }

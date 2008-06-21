@@ -14,6 +14,7 @@
 		<part id="p_file_persisting">
 			<action id="save" />
 			<action id="saveas" />
+			<action id="print" />
 		</part>
 		<part id="p_mru"></part>
 		<part id="p_file_exit"></part>

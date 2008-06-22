@@ -24,4 +24,6 @@ public interface StandardMenuActions {
 	public String BEST_FIT_ZOOM = "best_fit_zoom";
 	
 	public String PRINT = "print";
+	
+	String RENAME = "rename";
 }

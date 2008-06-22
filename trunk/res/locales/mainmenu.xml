@@ -32,6 +32,7 @@
 			<action id="delete" />
 		</part>
 		<part id="p_properties">
+			<action id="rename" />
 			<action id="properties" />
 		</part>
 	</container>

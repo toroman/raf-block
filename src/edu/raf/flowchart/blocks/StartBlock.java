@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
-import edu.raf.flowchart.syntax.ExecutionManager;
+import edu.raf.flowchart.syntax.IExecutionManager;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
 import edu.raf.gef.editor.model.object.impl.RectangularObject;
 import edu.raf.gef.services.beaneditor.annotations.Property;
@@ -91,7 +91,7 @@ public class StartBlock extends RectangularObject implements FlowchartBlock {
 	}
 
 	@Override
-	public FlowchartBlock executeAndReturnNext(ExecutionManager context) {
+	public FlowchartBlock executeAndReturnNext(IExecutionManager context) {
 		if (sourceAnchors.get(0).getLink() == null) {
 			context.raiseError(this, "Not connected.");
 			return null;

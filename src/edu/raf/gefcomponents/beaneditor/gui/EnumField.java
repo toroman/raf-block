@@ -39,7 +39,7 @@ public class EnumField extends PropertyField {
 	public EnumField(PropertyPair propertyPair) {
 		super(propertyPair);
 		setLayout(new BorderLayout());
-		Class<?> type = parent.getValue().getClass();
+		Class<?> type = parent.getter.getReturnType();
 		Object[] values;
 		try {
 			values = (Object[]) type.getMethod("values").invoke(null);

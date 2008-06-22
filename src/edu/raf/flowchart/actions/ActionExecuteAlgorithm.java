@@ -5,7 +5,9 @@ import java.util.Collection;
 
 import edu.raf.flowchart.FlowChartPlugin;
 import edu.raf.flowchart.blocks.StartBlock;
-import edu.raf.flowchart.syntax.ExecutionManager;
+import edu.raf.flowchart.exceptions.FCExecutionException;
+import edu.raf.flowchart.scripting.ScriptExecutionManager;
+import edu.raf.flowchart.syntax.IExecutionManager;
 import edu.raf.gef.app.IResources;
 import edu.raf.gef.editor.model.object.Focusable;
 import edu.raf.gef.gui.MainFrame;
@@ -31,7 +33,16 @@ public class ActionExecuteAlgorithm extends ResourceConfiguredAction {
 		if (c.size() == 1) {
 			Focusable f = c.iterator().next();
 			if (f instanceof StartBlock) {
-				new ExecutionManager(mainFrame.getSelectedDiagram()).execute((StartBlock) f);
+				IExecutionManager mgr = ScriptExecutionManager.createJavaScript(mainFrame
+						.getSelectedDiagram());
+				try {
+					mgr.run((StartBlock) f);
+				} catch (FCExecutionException e1) {
+					getGeh().handleUserError(
+						"Execution error occurred!",
+						"Reason is: " + e1.getMessage()
+								+ "\n\nCheck your log for detailed information.");
+				}
 				return;
 			}
 		}

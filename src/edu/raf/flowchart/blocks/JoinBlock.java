@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
-import edu.raf.flowchart.syntax.ExecutionManager;
+import edu.raf.flowchart.syntax.IExecutionManager;
 import edu.raf.gef.editor.model.object.AnchorPointContainer;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
 import edu.raf.gef.editor.model.object.impl.AnchorPoint;
@@ -176,7 +176,7 @@ public class JoinBlock extends RectangularObject implements FlowchartBlock {
 	}
 
 	@Override
-	public FlowchartBlock executeAndReturnNext(ExecutionManager context) {
+	public FlowchartBlock executeAndReturnNext(IExecutionManager context) {
 		if (sourceAnchors.get(0).getLink() == null) {
 			context.raiseError(this, "Not connected.");
 			return null;

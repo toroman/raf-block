@@ -7,9 +7,11 @@ import java.awt.Polygon;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
-import edu.raf.flowchart.syntax.ExecutionManager;
+import edu.raf.flowchart.syntax.FlowchartVariableType;
+import edu.raf.flowchart.syntax.IExecutionManager;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
 import edu.raf.gef.editor.model.object.impl.RectangularObject;
+import edu.raf.gef.services.beaneditor.annotations.Property;
 
 public class InputBlock extends RectangularObject implements FlowchartBlock {
 
@@ -22,8 +24,11 @@ public class InputBlock extends RectangularObject implements FlowchartBlock {
 
 	private String name = "Input" + ++INSTANCE_COUNTER;
 
+	private FlowchartVariableType varType;
+
 	public InputBlock() {
 		super();
+		varType = FlowchartVariableType.REAL;
 		addAnchor(false, new ControlPointConstraint() {
 			@Override
 			public Point2D updateLocation(Point2D oldLocation) {
@@ -92,7 +97,7 @@ public class InputBlock extends RectangularObject implements FlowchartBlock {
 		return p.contains(point);
 	}
 
-	public FlowchartBlock executeAndReturnNext(ExecutionManager context) {
+	public FlowchartBlock executeAndReturnNext(IExecutionManager context) {
 		if (sourceAnchors.get(0).getLink() == null) {
 			context.raiseError(this, "Not connected.");
 			return null;
@@ -101,7 +106,10 @@ public class InputBlock extends RectangularObject implements FlowchartBlock {
 			context.raiseError(this, "Not connected with flowchart object!");
 			return null;
 		}
-		context.readInput(getTitle());
+		String[] variables = getTitle().trim().split("[ ,]+");
+		for (String var : variables) {
+			context.readInput(var, varType);
+		}
 		return (FlowchartBlock) sourceAnchors.get(0).getLink().getDestinationAnchor().getParent();
 	}
 
@@ -114,14 +122,23 @@ public class InputBlock extends RectangularObject implements FlowchartBlock {
 	public void setName(String s) {
 		this.name = s;
 	}
-	
+
 	@Override
 	public void setWidth(double newWidth) {
 		super.setWidth(Math.max(newWidth, getHeight()));
 	}
-	
+
 	@Override
 	public void setHeight(double newHeight) {
 		super.setHeight(Math.min(newHeight, getWidth()));
+	}
+
+	@Property
+	public FlowchartVariableType getVarType() {
+		return varType;
+	}
+
+	public void setVarType(FlowchartVariableType varType) {
+		this.varType = varType;
 	}
 }

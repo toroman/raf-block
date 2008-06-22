@@ -7,7 +7,8 @@ import java.awt.Polygon;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
-import edu.raf.flowchart.syntax.ExecutionManager;
+import edu.raf.flowchart.exceptions.FCExecutionException;
+import edu.raf.flowchart.syntax.IExecutionManager;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
 import edu.raf.gef.editor.model.object.impl.AnchorPoint;
 import edu.raf.gef.editor.model.object.impl.Link;
@@ -114,7 +115,8 @@ public class ConditionBlock extends RectangularObject implements FlowchartBlock 
 	}
 
 	@Override
-	public FlowchartBlock executeAndReturnNext(ExecutionManager context) {
+	public FlowchartBlock executeAndReturnNext(IExecutionManager context)
+			throws FCExecutionException {
 		if (sourceAnchors.get(0).getLink() == null || sourceAnchors.get(1).getLink() == null) {
 			context.raiseError(this, "Object not connected!");
 			return null;
@@ -144,12 +146,12 @@ public class ConditionBlock extends RectangularObject implements FlowchartBlock 
 	public void setName(String s) {
 		this.name = s;
 	}
-	
+
 	@Override
 	public void setWidth(double newWidth) {
 		super.setWidth(Math.max(newWidth, getHeight()));
 	}
-	
+
 	@Override
 	public void setHeight(double newHeight) {
 		super.setHeight(Math.min(newHeight, getWidth()));

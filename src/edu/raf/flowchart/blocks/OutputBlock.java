@@ -7,7 +7,8 @@ import java.awt.Polygon;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
-import edu.raf.flowchart.syntax.ExecutionManager;
+import edu.raf.flowchart.exceptions.FCExecutionException;
+import edu.raf.flowchart.syntax.IExecutionManager;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
 import edu.raf.gef.editor.model.object.impl.RectangularObject;
 
@@ -19,6 +20,7 @@ public class OutputBlock extends RectangularObject implements FlowchartBlock {
 	private static final long serialVersionUID = -4029973414439459416L;
 	private static int INSTANCE_COUNTER = 0;
 	private String name = "Output" + ++INSTANCE_COUNTER;
+
 	public OutputBlock() {
 		super();
 		addAnchor(false, new ControlPointConstraint() {
@@ -96,7 +98,8 @@ public class OutputBlock extends RectangularObject implements FlowchartBlock {
 		return p.contains(point);
 	}
 
-	public FlowchartBlock executeAndReturnNext(ExecutionManager context) {
+	public FlowchartBlock executeAndReturnNext(IExecutionManager context)
+			throws FCExecutionException {
 		if (sourceAnchors.get(0).getLink() == null) {
 			context.raiseError(this, "Not connected.");
 			return null;
@@ -105,7 +108,7 @@ public class OutputBlock extends RectangularObject implements FlowchartBlock {
 			context.raiseError(this, "Not connected with flowchart object!");
 			return null;
 		}
-		context.writeOutput(getTitle());
+		context.writeOutput(context.evaluate(getTitle()));
 		return (FlowchartBlock) sourceAnchors.get(0).getLink().getDestinationAnchor().getParent();
 	}
 
@@ -118,12 +121,12 @@ public class OutputBlock extends RectangularObject implements FlowchartBlock {
 	public void setName(String s) {
 		this.name = s;
 	}
-	
+
 	@Override
 	public void setWidth(double newWidth) {
 		super.setWidth(Math.max(newWidth, getHeight()));
 	}
-	
+
 	@Override
 	public void setHeight(double newHeight) {
 		super.setHeight(Math.min(newHeight, getWidth()));

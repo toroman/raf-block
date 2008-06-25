@@ -13,6 +13,7 @@ import javax.print.PrintService;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.OrientationRequested;
+import javax.swing.SwingWorker;
 
 import edu.raf.gef.app.exceptions.GefRuntimeException;
 import edu.raf.gef.editor.GefDiagram;
@@ -30,6 +31,16 @@ public class ActionPrintDiagram extends ResourceConfiguredAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		new SwingWorker<Void, Void>() {
+			@Override
+			protected Void doInBackground() throws Exception {
+				doPrint();
+				return null;
+			}
+		}.execute();
+	}
+
+	protected void doPrint() {
 		PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 		aset.add(OrientationRequested.LANDSCAPE);
 		// aset.add(new Copies(1));

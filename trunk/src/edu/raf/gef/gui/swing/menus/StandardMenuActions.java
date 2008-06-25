@@ -26,4 +26,5 @@ public interface StandardMenuActions {
 	public String PRINT = "print";
 	
 	String RENAME = "rename";
+	
 }

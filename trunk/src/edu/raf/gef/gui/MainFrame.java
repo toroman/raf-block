@@ -24,6 +24,7 @@ import edu.raf.gef.app.exceptions.GefException;
 import edu.raf.gef.editor.GefDiagram;
 import edu.raf.gef.editor.IDiagramTreeNode;
 import edu.raf.gef.editor.IDrawableNode;
+import edu.raf.gef.editor.actions.ActionExportDiagram;
 import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.editor.model.object.Focusable;
 import edu.raf.gef.gui.actions.ActionChangeLanguage;
@@ -99,7 +100,7 @@ public class MainFrame extends ApplicationWindow {
 			return;
 		}
 		restore.setWorkspaceLocationToProperties(getResources());
-		workspace = new WorkspaceComponent(restore);
+		workspace = new WorkspaceComponent(this, restore);
 		addTool("Navigator", workspace);
 	}
 
@@ -135,6 +136,8 @@ public class MainFrame extends ApplicationWindow {
 		for (String lang : langs) {
 			pLangs.add(new ActionChangeLanguage(this, lang));
 		}
+
+		menu.getPart(StandardMenuParts.FILE_PERSISTING_PART).add(new ActionExportDiagram(this));
 		return menu;
 	}
 

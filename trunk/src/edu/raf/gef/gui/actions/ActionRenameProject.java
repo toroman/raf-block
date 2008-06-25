@@ -26,7 +26,7 @@ public class ActionRenameProject extends ResourceConfiguredAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		DiagramProject prj = workspace.getSelectedProject();
-		String neuNamen = JOptionPane.showInputDialog("Rename", prj.getProjectName());
+		String neuNamen = JOptionPane.showInputDialog("Rename project", prj.getProjectName());
 		if (neuNamen == null || neuNamen.equals(prj.getProjectName())) {
 			return;
 		}

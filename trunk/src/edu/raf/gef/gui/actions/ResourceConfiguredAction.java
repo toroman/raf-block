@@ -41,6 +41,7 @@ public abstract class ResourceConfiguredAction extends AbstractAction {
 		}
 	}
 
+
 	/**
 	 * 
 	 * @return Unique (non translatable) identification of this action type,

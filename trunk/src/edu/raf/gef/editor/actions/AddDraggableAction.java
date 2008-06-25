@@ -12,7 +12,6 @@ import edu.raf.gef.editor.control.state.DiagramSelectionState;
 import edu.raf.gef.editor.model.object.Draggable;
 import edu.raf.gef.gui.MainFrame;
 import edu.raf.gef.gui.actions.ResourceConfiguredAction;
-import edu.raf.gef.gui.swing.DiagramPluginFrame;
 
 public abstract class AddDraggableAction extends ResourceConfiguredAction {
 

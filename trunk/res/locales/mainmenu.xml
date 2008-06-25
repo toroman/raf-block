@@ -13,7 +13,6 @@
 		</part>
 		<part id="p_file_persisting">
 			<action id="save" />
-			<action id="saveas" />
 			<action id="print" />
 		</part>
 		<part id="p_mru"></part>
@@ -32,7 +31,6 @@
 			<action id="delete" />
 		</part>
 		<part id="p_properties">
-			<action id="rename" />
 			<action id="properties" />
 		</part>
 	</container>
@@ -50,6 +48,11 @@
 	</container>
 
 	<container id="c_help" text="Help" mnemonic="H">
+		<part id="p_localization">
+			<container id="c_language" text="Language" mnemonic="L">
+				<part id="p_language"></part>
+			</container>
+		</part>
 		<part id="p_help"></part>
 		<part id="p_about"></part>
 	</container>

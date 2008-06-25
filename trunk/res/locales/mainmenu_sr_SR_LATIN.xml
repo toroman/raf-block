@@ -5,7 +5,7 @@
 
 	<container id="c_file" text="Fajl" mnemonic="F">
 		<part id="p_file_creation">
-			<container id="c_file_new" text="Novi">
+			<container id="c_file_new" text="Nov">
 				<part id="p_new_project"></part>
 				<part id="p_new_diagram"></part>
 			</container>
@@ -13,13 +13,13 @@
 		</part>
 		<part id="p_file_persisting">
 			<action id="save" />
-			<action id="saveas" />
+			<action id="print" />
 		</part>
 		<part id="p_mru"></part>
 		<part id="p_file_exit"></part>
 	</container>
 
-	<container id="c_edit" text="Editovanje" mnemonic="E">
+	<container id="c_edit" text="Uredjivanje" mnemonic="E">
 		<part id="p_unredo">
 			<action id="undo" />
 			<action id="redo" />
@@ -35,19 +35,24 @@
 		</part>
 	</container>
 
-	<container id="c_view" text="Pogled" mnemonic="P">
+	<container id="c_view" text="Pogled" mnemonic="p">
 		<part id="p_zoom">
 			<action id="best_fit_zoom" />
 		</part>
 	</container>
 
-	<container id="c_window" text="Prozor" mnemonic="R">
+	<container id="c_window" text="Prozori" mnemonic="o">
 		<part id="p_window_arrangement"></part>
 		<part id="p_look_and_feel"></part>
 		<part id="p_plugin_manager"></part>
 	</container>
 
-	<container id="c_help" text="Pomoć" mnemonic="M">
+	<container id="c_help" text="Pomoc" mnemonic="m">
+		<part id="p_localization">
+			<container id="c_language" text="Jezik" mnemonic="Ј">
+				<part id="p_language"></part>
+			</container>
+		</part>
 		<part id="p_help"></part>
 		<part id="p_about"></part>
 	</container>

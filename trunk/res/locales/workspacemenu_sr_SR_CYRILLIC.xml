@@ -3,7 +3,7 @@
 <menubar>
 	<!-- Those starting with "c_" are Standard Containers, and those starting with "p_" are standard parts -->
  
-	<container id="c_popup_root" text="Едитовање" mnemonic="Е">
+	<container id="c_popup_root" text="Уређивање" mnemonic="е">
 		<part id="p_unredo">
 			<action id="undo" />
 			<action id="redo" />

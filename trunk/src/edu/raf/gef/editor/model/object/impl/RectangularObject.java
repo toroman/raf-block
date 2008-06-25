@@ -26,7 +26,7 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 	private Dimension2D minDimension, maxDimension;
 	private double x, y, width, height;
 
-	private String title = "";
+	private String text = "";
 
 	private transient Point2D draggingOffset;
 
@@ -375,7 +375,7 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 		for (AnchorPoint point : getAnchorPoints())
 			point.paint(g);
 		g.setColor(Color.BLACK);
-		String msg = title == null ? "" : title;
+		String msg = text == null ? "" : text;
 		g.drawString(msg, (float) (getX() + getWidth() / 2 - msg.length() * 3), (float) (getY()
 				+ getHeight() / 2 + 3));
 	}
@@ -470,14 +470,14 @@ public abstract class RectangularObject extends DraggableDiagramObject implement
 	}
 
 	@Property
-	public String getTitle() {
-		return title;
+	public String getText() {
+		return text;
 	}
 
-	public void setTitle(String title) {
+	public void setText(String title) {
 		if (title == null)
 			title = "";
-		this.title = title;
+		this.text = title;
 		setChanged();
 		notifyObservers();
 	}

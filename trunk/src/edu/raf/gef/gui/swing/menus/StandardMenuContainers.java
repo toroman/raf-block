@@ -54,5 +54,5 @@ public interface StandardMenuContainers {
 	 * and maybe more.
 	 */
 	public String WINDOW = "c_window";
-	
+		
 }

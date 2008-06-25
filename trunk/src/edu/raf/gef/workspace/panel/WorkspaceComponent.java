@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.Action;
 import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.tree.TreeNode;
@@ -15,9 +16,12 @@ import javax.swing.tree.TreePath;
 
 import edu.raf.gef.app.Resources;
 import edu.raf.gef.app.exceptions.GefException;
+import edu.raf.gef.gui.actions.ActionRenameProject;
 import edu.raf.gef.gui.swing.menus.MenuManager;
 import edu.raf.gef.gui.swing.menus.MenuManagerSAXImporter;
 import edu.raf.gef.gui.swing.menus.PopupListener;
+import edu.raf.gef.gui.swing.menus.StandardMenuContainers;
+import edu.raf.gef.gui.swing.menus.StandardMenuParts;
 import edu.raf.gef.workspace.Workspace;
 import edu.raf.gef.workspace.project.DiagramProject;
 
@@ -58,6 +62,8 @@ public class WorkspaceComponent extends JPanel {
 			Logger.getAnonymousLogger().log(Level.SEVERE, "Couldn't read menu.", t);
 			System.exit(-1);
 		}
+		Action aciRename = new ActionRenameProject(this);
+		menuManager.addAction(StandardMenuParts.PROPERTIES_PART, aciRename);
 		trWorkspace.add(menuManager.getPopupMenu());
 		trWorkspace.addMouseListener(new PopupListener(menuManager.getPopupMenu()));
 		Container con = this;

@@ -14,7 +14,6 @@
 			<action id="paste" />
 		</part>
 		<part id="p_properties">
-			<action id="rename" />
 			<action id="properties" />
 		</part>
 	</container>

@@ -47,7 +47,7 @@ public class StartBlock extends RectangularObject implements FlowchartBlock {
 				resizeControlPoints.get(index).addConstraint(constraint);
 		}
 
-		setTitle("Start");
+		setText("Start");
 	}
 
 	@Override

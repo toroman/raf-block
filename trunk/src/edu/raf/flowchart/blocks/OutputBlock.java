@@ -68,7 +68,7 @@ public class OutputBlock extends RectangularObject implements FlowchartBlock {
 		}
 		setMinDimension(new Dimension(60, 40));
 
-		setTitle("Output");
+		setText("Output");
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public class OutputBlock extends RectangularObject implements FlowchartBlock {
 			context.raiseError(this, "Not connected with flowchart object!");
 			return null;
 		}
-		context.writeOutput(context.evaluate(getTitle()));
+		context.writeOutput(context.evaluate(getText()));
 		return (FlowchartBlock) sourceAnchors.get(0).getLink().getDestinationAnchor().getParent();
 	}
 

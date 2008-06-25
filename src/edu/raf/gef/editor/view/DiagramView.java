@@ -5,8 +5,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -22,7 +22,8 @@ import edu.raf.gef.util.TransientObservable;
 import edu.raf.gef.util.TransientObserver;
 
 /**
- * Abstract diagram view. Takes care of repainting, transformations, drawing the grid etc.
+ * Abstract diagram view. Takes care of repainting, transformations, drawing the
+ * grid etc.
  * 
  * It is, att all times, observing the model and is automatically updated.
  */
@@ -57,35 +58,44 @@ public class DiagramView implements TransientObserver {
 
 			@Override
 			public void paintComponent(Graphics g1) {
-				Graphics2D g = (Graphics2D) g1;
-				DiagramView.this.drawDiagram(g);
+				paintDiagramCanvas(g1);
 			}
-
 		};
 		c.setBackground(Color.GRAY);
 		return c;
 	}
 
-	public void drawDiagram(Graphics2D g) {
-		if (antialiasing)
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	protected void paintDiagramCanvas(Graphics g1) {
+		Graphics2D g = (Graphics2D) g1;
 		Rectangle r = g.getClipBounds();
 		g.clearRect(0, 0, (int) r.getWidth() + 1, (int) r.getHeight() + 1);
 		if (getGrid() != null)
 			getGrid().paintGrid(g, canvas.getSize());
 		g.transform(affineTransformManager.getAffineTransform());
-		List<Drawable> focused = new LinkedList<Drawable>();
-		for (Drawable de : model.getDrawables()) {
-			if (de instanceof Focusable && ((Focusable) de).isFocused())
-				focused.add(de);
-			else
-				de.paint(g);
+		if (antialiasing) {
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		}
-		for (Drawable de : focused)
+		drawDiagram(g);
+	}
+
+	public void drawDiagram(Graphics2D g) {
+		List<Drawable> focused = new ArrayList<Drawable>();
+		for (Drawable de : model.getDrawables()) {
+			if (de instanceof Focusable && ((Focusable) de).isFocused()) {
+				focused.add(de);
+			} else {
+				de.paint(g);
+			}
+		}
+
+		for (Drawable de : focused) {
 			de.paint(g);
+		}
+
 		Collection<Drawable> temporaryDrawables = model.getTemporaryDrawables();
-		for (Drawable temp : temporaryDrawables)
+		for (Drawable temp : temporaryDrawables) {
 			temp.paint(g);
+		}
 	}
 
 	/**

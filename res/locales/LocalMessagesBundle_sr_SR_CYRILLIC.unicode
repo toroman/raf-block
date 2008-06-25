@@ -1,3 +1,5 @@
+browse = Претрага
+
 mainFrame.title = \u0420\u0430\u0444-\u0411\u043b\u043e\u043a \u0415\u0434\u0438\u0442\u043e\u0440 \u0430\u043b\u0433\u043e\u0440\u0438\u0442\u0430\u043c\u0441\u043a\u0438\u0445 \u0448\u0435\u043c\u0430
 mainFrame.icon = MainFrameIcon 16x16.PNG
 mainFrame.MenuConfigurationFile=locales/mainmenu_sr_SR_CYRILLIC.xml
@@ -63,3 +65,11 @@ rename.name = Rename
 rename.accelerator = F2
 
 ActionChangeLanguage.afterRestart = Промене ће се применити након следећег покретања програма!
+
+ActionExportDiagram.name = Извоз
+
+WorkspaceChooser.title = Радни фолдер
+WorkspaceChooser.icon = MainFrameIcon 16x16.PNG
+
+
+ActionChangeWorkspace.name = Промени радни фолдер

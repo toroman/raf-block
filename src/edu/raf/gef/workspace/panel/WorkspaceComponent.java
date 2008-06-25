@@ -16,11 +16,12 @@ import javax.swing.tree.TreePath;
 
 import edu.raf.gef.app.Resources;
 import edu.raf.gef.app.exceptions.GefException;
+import edu.raf.gef.gui.MainFrame;
+import edu.raf.gef.gui.actions.ActionChangeWorkspace;
 import edu.raf.gef.gui.actions.ActionRenameProject;
 import edu.raf.gef.gui.swing.menus.MenuManager;
 import edu.raf.gef.gui.swing.menus.MenuManagerSAXImporter;
 import edu.raf.gef.gui.swing.menus.PopupListener;
-import edu.raf.gef.gui.swing.menus.StandardMenuContainers;
 import edu.raf.gef.gui.swing.menus.StandardMenuParts;
 import edu.raf.gef.workspace.Workspace;
 import edu.raf.gef.workspace.project.DiagramProject;
@@ -35,10 +36,12 @@ public class WorkspaceComponent extends JPanel {
 
 	private JTree trWorkspace;
 	private MenuManager menuManager;
+	private MainFrame mainFrame;
 
 	private static final String ID = "WorkspaceComponent";
 
-	public WorkspaceComponent(Workspace workspace) {
+	public WorkspaceComponent(MainFrame mf, Workspace workspace) {
+		this.mainFrame = mf;
 		initComponents();
 		setWorkspace(workspace);
 		setPreferredSize(new Dimension(250, 300));
@@ -64,6 +67,8 @@ public class WorkspaceComponent extends JPanel {
 		}
 		Action aciRename = new ActionRenameProject(this);
 		menuManager.addAction(StandardMenuParts.PROPERTIES_PART, aciRename);
+		menuManager.addAction(StandardMenuParts.PROPERTIES_PART, new ActionChangeWorkspace(
+				mainFrame));
 		trWorkspace.add(menuManager.getPopupMenu());
 		trWorkspace.addMouseListener(new PopupListener(menuManager.getPopupMenu()));
 		Container con = this;

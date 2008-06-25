@@ -3,9 +3,9 @@
 <menubar>
 	<!-- Those starting with "c_" are Standard Containers, and those starting with "p_" are standard parts -->
 
-	<container id="c_file" text="Фајл" mnemonic="Ф">
+	<container id="c_file" text="Фајл" mnemonic="F">
 		<part id="p_file_creation">
-			<container id="c_file_new" text="Нови">
+			<container id="c_file_new" text="Нов">
 				<part id="p_new_project"></part>
 				<part id="p_new_diagram"></part>
 			</container>
@@ -13,13 +13,13 @@
 		</part>
 		<part id="p_file_persisting">
 			<action id="save" />
-			<action id="saveas" />
+			<action id="print" />
 		</part>
 		<part id="p_mru"></part>
 		<part id="p_file_exit"></part>
 	</container>
 
-	<container id="c_edit" text="Едитовање" mnemonic="E">
+	<container id="c_edit" text="Уређивање" mnemonic="E">
 		<part id="p_unredo">
 			<action id="undo" />
 			<action id="redo" />
@@ -35,19 +35,24 @@
 		</part>
 	</container>
 
-	<container id="c_view" text="Поглед" mnemonic="П">
+	<container id="c_view" text="Поглед" mnemonic="V">
 		<part id="p_zoom">
 			<action id="best_fit_zoom" />
 		</part>
 	</container>
 
-	<container id="c_window" text="Прозор" mnemonic="П">
+	<container id="c_window" text="Прозори" mnemonic="о">
 		<part id="p_window_arrangement"></part>
 		<part id="p_look_and_feel"></part>
 		<part id="p_plugin_manager"></part>
 	</container>
 
-	<container id="c_help" text="Помоћ" mnemonic="М">
+	<container id="c_help" text="Помоћ" mnemonic="м">
+		<part id="p_localization">
+			<container id="c_language" text="Језик" mnemonic="Ј">
+				<part id="p_language"></part>
+			</container>
+		</part>
 		<part id="p_help"></part>
 		<part id="p_about"></part>
 	</container>

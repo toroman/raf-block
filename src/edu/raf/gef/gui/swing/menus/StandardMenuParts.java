@@ -70,7 +70,8 @@ public interface StandardMenuParts {
 	String COPY_PASTE_PART = "p_copypaste";
 
 	String ZOOM_PART = "p_zoom";
-	
+
 	String PROPERTIES_PART = "p_properties";
 
+	String LANGUAGE = "p_language";
 }

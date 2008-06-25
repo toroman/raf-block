@@ -205,9 +205,9 @@ public class Workspace extends DefaultTreeModel {
 	}
 
 	public void addProject(DiagramProject project) {
-		project.setWorkspace(this);
 		insertNodeInto(project, (MutableTreeNode) getRoot(), 0);
 	}
 
 	protected static transient final Logger log = Logger.getLogger(Workspace.class.getName());
+
 }

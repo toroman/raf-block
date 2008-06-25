@@ -66,7 +66,7 @@ public class ConditionBlock extends RectangularObject implements FlowchartBlock 
 				resizeControlPoints.get(index).addConstraint(constraint);
 		}
 		setMinDimension(new Dimension(60, 40));
-		setTitle("If <condition>");
+		setText("If <condition>");
 	}
 
 	@Override
@@ -128,7 +128,7 @@ public class ConditionBlock extends RectangularObject implements FlowchartBlock 
 			return null;
 		}
 
-		String cond = this.getTitle();
+		String cond = this.getText();
 		Object result = context.evaluate(cond);
 		if (Boolean.TRUE.equals(result)) {
 			return (FlowchartBlock) onTrue;

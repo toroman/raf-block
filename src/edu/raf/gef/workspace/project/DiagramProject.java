@@ -38,17 +38,22 @@ public class DiagramProject extends DefaultMutableTreeNode {
 
 	protected transient Workspace workspace;
 
-	public DiagramProject(String projectName) {
-		super(projectName);
+	private String projectName;
+
+	public DiagramProject(Workspace workspace, File projectFolder) {
+		super();
+		this.projectName = projectFolder.getName();
+		this.workspace = workspace;
+		ensureFileSystem();
 	}
 
 	public String getProjectName() {
-		return (String) getUserObject();
+		return projectName;
 	}
 
-	public void setWorkspace(Workspace workspace) {
-		this.workspace = workspace;
-		ensureFileSystem();
+	@Override
+	public String toString() {
+		return projectName;
 	}
 
 	public void addDiagram(GefDiagram diagram) {
@@ -69,7 +74,7 @@ public class DiagramProject extends DefaultMutableTreeNode {
 		}
 
 		XStream xs = new XStream(new DomDriver());
-		xs.registerConverter(createConvertor(null));
+		xs.registerConverter(createConvertor(null, null));
 		xs.toXML(this, os);
 
 		try {
@@ -126,7 +131,7 @@ public class DiagramProject extends DefaultMutableTreeNode {
 			throw new GefException("Couldn't read project configuration!", e);
 		}
 		XStream xs = new XStream(new DomDriver());
-		xs.registerConverter(createConvertor(workspace));
+		xs.registerConverter(createConvertor(workspace, projectFolder));
 		DiagramProject dproject = (DiagramProject) xs.fromXML(is);
 		try {
 			is.close();
@@ -154,17 +159,16 @@ public class DiagramProject extends DefaultMutableTreeNode {
 		return dproject;
 	}
 
-	private static Converter createConvertor(final Workspace workspace2) {
+	private static Converter createConvertor(final Workspace workspace2, final File projectFolder) {
 		return new Converter() {
 			public void marshal(Object diagramObj, HierarchicalStreamWriter writer,
 					MarshallingContext context) {
-				writer.addAttribute("name", ((DiagramProject) diagramObj).getProjectName());
+				writer.addAttribute("serialVersionUID", Long
+						.toString(DiagramProject.serialVersionUID));
 			}
 
 			public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-				String name = reader.getAttribute("name");
-				DiagramProject project = new DiagramProject(name);
-				project.setWorkspace(workspace2);
+				DiagramProject project = new DiagramProject(workspace2, projectFolder);
 				return project;
 			}
 
@@ -172,5 +176,19 @@ public class DiagramProject extends DefaultMutableTreeNode {
 				return DiagramProject.class.equals(arg0);
 			}
 		};
+	}
+
+	public void renameTo(String neuNamen) throws GefException {
+		if (!neuNamen.matches("[a-zA-Z0-9 -_]+")) {
+			throw new GefException(
+					"Only letters, numbers, dash, space and underscore characters are allowed.");
+		}
+		if (neuNamen.equals(getProjectName())) {
+			return;
+		}
+		File old = getProjectFolder();
+		File neu = new File(old.getParent(), neuNamen);
+		old.renameTo(neu);
+		this.projectName = neuNamen;
 	}
 }

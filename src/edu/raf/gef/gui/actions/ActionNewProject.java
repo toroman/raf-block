@@ -1,9 +1,12 @@
 package edu.raf.gef.gui.actions;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
 
 import edu.raf.gef.gui.MainFrame;
 import edu.raf.gef.plugin.PluginsManager;
+import edu.raf.gef.workspace.Workspace;
+import edu.raf.gef.workspace.panel.WorkspaceComponent;
 import edu.raf.gef.workspace.project.DiagramProject;
 
 public class ActionNewProject extends ResourceConfiguredAction {
@@ -24,9 +27,11 @@ public class ActionNewProject extends ResourceConfiguredAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		DiagramProject project = new DiagramProject("Untitled");
-		mainFrame.getWorkspace().addProject(project);
-		mainFrame.getWorkspaceComponent().setSelectedProject(project);
+		WorkspaceComponent wc = mainFrame.getWorkspaceComponent();
+		Workspace ws = wc.getWorkspace();
+		DiagramProject prj = new DiagramProject(ws, new File(ws.getLocation(), "Untitled"));
+		ws.addProject(prj);
+		wc.setSelectedProject(prj);
 	}
 
 	public PluginsManager getManager() {

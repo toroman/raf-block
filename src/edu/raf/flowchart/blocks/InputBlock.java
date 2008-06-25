@@ -67,7 +67,7 @@ public class InputBlock extends RectangularObject implements FlowchartBlock {
 				resizeControlPoints.get(index).addConstraint(northConstraint);
 		}
 		setMinDimension(new Dimension(60, 40));
-		setTitle("Input");
+		setText("Input");
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class InputBlock extends RectangularObject implements FlowchartBlock {
 			context.raiseError(this, "Not connected with flowchart object!");
 			return null;
 		}
-		String[] variables = getTitle().trim().split("[ ,]+");
+		String[] variables = getText().trim().split("[ ,]+");
 		for (String var : variables) {
 			context.readInput(var, varType);
 		}

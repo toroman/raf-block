@@ -38,7 +38,7 @@ public class ExecutionBlock extends RectangularObject implements AnchorPointCont
 				return new Point2D.Double(getX() + getWidth() / 2, getY() + getHeight());
 			}
 		}, null);
-		setTitle("Execution");
+		setText("Execution");
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class ExecutionBlock extends RectangularObject implements AnchorPointCont
 			context.raiseError(this, "Not connected with flowchart object!");
 			return null;
 		}
-		context.evaluate(getTitle());
+		context.evaluate(getText());
 		return (FlowchartBlock) sourceAnchors.get(0).getLink().getDestinationAnchor().getParent();
 	}
 

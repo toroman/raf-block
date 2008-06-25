@@ -26,6 +26,7 @@ import edu.raf.gef.editor.IDiagramTreeNode;
 import edu.raf.gef.editor.IDrawableNode;
 import edu.raf.gef.editor.model.object.Drawable;
 import edu.raf.gef.editor.model.object.Focusable;
+import edu.raf.gef.gui.actions.ActionChangeLanguage;
 import edu.raf.gef.gui.actions.ActionExitApplication;
 import edu.raf.gef.gui.actions.ActionNewProject;
 import edu.raf.gef.gui.actions.ActionShowHelp;
@@ -37,6 +38,7 @@ import edu.raf.gef.gui.swing.StandardToolbars;
 import edu.raf.gef.gui.swing.ToolbarManager;
 import edu.raf.gef.gui.swing.menus.MenuManager;
 import edu.raf.gef.gui.swing.menus.MenuManagerSAXImporter;
+import edu.raf.gef.gui.swing.menus.MenuPart;
 import edu.raf.gef.gui.swing.menus.StandardMenuParts;
 import edu.raf.gef.plugin.AbstractPlugin;
 import edu.raf.gef.workspace.Workspace;
@@ -127,6 +129,12 @@ public class MainFrame extends ApplicationWindow {
 		menu.getPart(StandardMenuParts.PLUGIN_MANAGER).add(new ActionShowPluginManager(this));
 		menu.getPart(StandardMenuParts.FILE_EXIT_PART).add(new ActionExitApplication(this));
 		menu.getPart(StandardMenuParts.HELP).add(new ActionShowHelp());
+
+		MenuPart pLangs = menu.getPart(StandardMenuParts.LANGUAGE);
+		String[] langs = { "sr_SR_CYRILLIC", "sr_SR_LATIN", "en" };
+		for (String lang : langs) {
+			pLangs.add(new ActionChangeLanguage(this, lang));
+		}
 		return menu;
 	}
 

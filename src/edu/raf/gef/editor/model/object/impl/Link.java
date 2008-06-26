@@ -1,5 +1,6 @@
 package edu.raf.gef.editor.model.object.impl;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.event.MouseEvent;
@@ -148,6 +149,7 @@ public abstract class Link extends DiagramObject {
 
 			int x1 = (int) p1.getLocation().getX(), y1 = (int) p1.getLocation().getY();
 			int x2 = (int) p2.getLocation().getX(), y2 = (int) p2.getLocation().getY();
+			g.setColor(Color.BLACK);
 			g.drawLine(x1, y1, x2, y2);
 			p1.paint(g);
 

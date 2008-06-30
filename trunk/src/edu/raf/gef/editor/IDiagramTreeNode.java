@@ -6,6 +6,12 @@ import edu.raf.gef.gui.swing.DiagramPluginFrame;
 import edu.raf.gef.util.TransientObservable;
 import edu.raf.gef.util.TransientObserver;
 
+/**
+ * Represents a diagram in the Workspace tree.
+ * 
+ * @author toroman
+ *
+ */
 public interface IDiagramTreeNode extends MutableTreeNode, TransientObserver {
 
 	public abstract void update(TransientObservable o, Object arg);

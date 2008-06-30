@@ -1,5 +1,7 @@
 package edu.raf.gef;
 
+import java.io.File;
+
 import javax.swing.UIManager;
 
 import edu.raf.gef.app.Resources;
@@ -11,6 +13,10 @@ public final class Main {
 	private static MainFrame mainFrame;
 	private static final ComponentDiscoveryUtils components = new ComponentDiscoveryUtils();
 
+	public static final File config = new File("./etc");
+	static {
+		config.mkdirs();
+	}
 	/**
 	 * Well, we should change this :)
 	 */

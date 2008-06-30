@@ -44,6 +44,7 @@ public class GefDiagramConverter implements Converter {
 			if ("model".equals(reader.getNodeName())) {
 				DiagramModel model = (DiagramModel) modelConverter.unmarshal(reader, context);
 				try {
+					// this constructor will automatically add diagram to the project
 					diagram = diagramClazz.getConstructor(DiagramProject.class, DiagramModel.class)
 							.newInstance(project, model);
 				} catch (Exception e) {

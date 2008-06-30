@@ -20,6 +20,12 @@ import edu.raf.gef.editor.structure.GefDiagramConverter;
 import edu.raf.gef.services.mime.ProjectsFileHandler;
 import edu.raf.gef.workspace.project.DiagramProject;
 
+/**
+ * Here we define what files FlowChart editor can handle and *how*.
+ * 
+ * @author toroman
+ * 
+ */
 public class FlowChartFileHandler implements ProjectsFileHandler {
 
 	@Override

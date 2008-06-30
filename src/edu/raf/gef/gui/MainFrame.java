@@ -32,10 +32,8 @@ import edu.raf.gef.gui.actions.ActionExitApplication;
 import edu.raf.gef.gui.actions.ActionNewProject;
 import edu.raf.gef.gui.actions.ActionShowHelp;
 import edu.raf.gef.gui.actions.ActionShowPluginManager;
-import edu.raf.gef.gui.actions.OpenDocumentAction;
 import edu.raf.gef.gui.standard.ApplicationWindow;
 import edu.raf.gef.gui.swing.DiagramPluginFrame;
-import edu.raf.gef.gui.swing.StandardToolbars;
 import edu.raf.gef.gui.swing.ToolbarManager;
 import edu.raf.gef.gui.swing.menus.MenuManager;
 import edu.raf.gef.gui.swing.menus.MenuManagerSAXImporter;
@@ -119,7 +117,6 @@ public class MainFrame extends ApplicationWindow {
 	@Override
 	protected ToolbarManager createToolbarManager() {
 		ToolbarManager tbm = super.createToolbarManager();
-		tbm.addAction(StandardToolbars.STANDARD.name(), new OpenDocumentAction(this));
 		return tbm;
 	}
 

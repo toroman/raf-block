@@ -59,7 +59,7 @@ public class ActionShowProperties extends ResourceConfiguredAction implements
 			srvBeanEditor.removeBean(bean);
 		}
 		Collection<Focusable> focused = diagram.getController().getFocusedObjects();
-		if (focused != null && focused.size() >= 1) {
+		if (focused != null && focused.size() == 1) {
 			srvBeanEditor.addBean(bean = focused.iterator().next(), diagram.getUndoManager());
 		}
 	}

@@ -3,13 +3,13 @@ package edu.raf.flowchart.blocks;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
 import edu.raf.flowchart.syntax.IExecutionManager;
 import edu.raf.gef.editor.model.object.constraint.ControlPointConstraint;
 import edu.raf.gef.editor.model.object.impl.RectangularObject;
-import edu.raf.gef.services.beaneditor.annotations.Property;
 import edu.raf.gef.util.GeomHelper;
 import edu.raf.gef.util.MathHelper;
 
@@ -49,7 +49,7 @@ public class StartBlock extends RectangularObject implements FlowchartBlock {
 
 		setText("Start");
 	}
-
+		
 	@Override
 	protected void paintRectangular(Graphics2D g) {
 		double arcDimension = (int) (Math.min(getWidth(), getHeight()));
@@ -102,14 +102,6 @@ public class StartBlock extends RectangularObject implements FlowchartBlock {
 		}
 		// don't execute anything
 		return (FlowchartBlock) sourceAnchors.get(0).getLink().getDestinationAnchor().getParent();
-	}
-
-	@Property
-	public String getNextBlockAnchor() {
-		return "TO:" + sourceAnchors.get(0);
-	}
-
-	public void setNextBlockAnchor(String nextBlockAnchor) {
 	}
 
 	@Override

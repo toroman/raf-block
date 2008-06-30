@@ -1,9 +1,9 @@
 package edu.raf.gef.app;
 
 import java.awt.Image;
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+import edu.raf.gef.Main;
 import edu.raf.gef.app.exceptions.GefException;
 
 /**
@@ -93,10 +94,7 @@ public class Resources implements IResources {
 		properties = new Properties();
 		InputStream fis = null;
 		try {
-			// fis = new FileInputStream(new File("properties.properties"));
-			String path = location + "properties.properties";
-			InputStream is = getClass().getClassLoader().getResourceAsStream(path);
-			fis = new BufferedInputStream(is);
+			fis = new FileInputStream(getPropertiesFile());
 			properties.load(fis);
 		} catch (IOException ex) {
 			log.log(Level.SEVERE, "Couldn't load properties!", ex);
@@ -108,6 +106,18 @@ public class Resources implements IResources {
 				}
 			}
 		}
+	}
+
+	protected File getPropertiesFile() throws IOException {
+		File prop = null;
+		if (location.length() == 0) {
+			prop = new File(Main.config, "gef.config");
+		} else {
+			prop = new File(Main.config, location.replace(File.separatorChar, '.') + "config");
+		}
+		if (!prop.exists())
+			prop.createNewFile();
+		return prop;
 	}
 
 	public ResourceBundle getBundle() {
@@ -129,10 +139,7 @@ public class Resources implements IResources {
 		OutputStream fos = null;
 		try {
 			synchronized (properties) {
-				URL url = getClass().getClassLoader().getResource(
-					location + "properties.properties");
-				fos = new BufferedOutputStream(new FileOutputStream(url.getPath().replaceAll("%20",
-					" ")));
+				fos = new BufferedOutputStream(new FileOutputStream(getPropertiesFile()));
 				properties.store(fos, null);
 			}
 		} catch (IOException e) {

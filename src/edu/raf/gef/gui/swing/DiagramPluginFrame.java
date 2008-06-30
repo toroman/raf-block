@@ -39,11 +39,14 @@ public class DiagramPluginFrame extends JPanel implements ActionContextControlle
 		c.setFocusable(true);
 		// TODO: IoC here for Services!
 		// doing sensitive actions here
-		getActionMap().put(StandardMenuActions.CUT, new ActionCutDiagramObject(mainFrame));
-		getActionMap().put(StandardMenuActions.COPY, new ActionCopyDiagramObject(mainFrame));
-		getActionMap().put(StandardMenuActions.PASTE, new ActionPasteDiagramObject(mainFrame));
+		getActionMap().put(StandardMenuActions.CUT, new ActionCutDiagramObject(mainFrame, diagram));
+		getActionMap().put(StandardMenuActions.COPY,
+			new ActionCopyDiagramObject(mainFrame, diagram));
+		getActionMap().put(StandardMenuActions.PASTE,
+			new ActionPasteDiagramObject(mainFrame, diagram));
 		getActionMap().put(StandardMenuActions.SAVE, new ActionSaveDiagram(mainFrame, diagram));
-		getActionMap().put(StandardMenuActions.DELETE, new ActionDeleteSelectedObject(mainFrame));
+		getActionMap().put(StandardMenuActions.DELETE,
+			new ActionDeleteSelectedObject(mainFrame, diagram));
 		getActionMap().put(StandardMenuActions.BEST_FIT_ZOOM, new ActionBestFitZoom(mainFrame));
 
 		getActionMap().put(StandardMenuActions.UNDO,

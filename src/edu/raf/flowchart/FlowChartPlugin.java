@@ -15,7 +15,6 @@ import edu.raf.flowchart.blocks.OutputBlock;
 import edu.raf.flowchart.blocks.StartBlock;
 import edu.raf.flowchart.diagram.FlowChartDiagram;
 import edu.raf.flowchart.link.FlowchartLink;
-import edu.raf.gef.Main;
 import edu.raf.gef.app.IResources;
 import edu.raf.gef.app.Resources;
 import edu.raf.gef.editor.GefDiagram;
@@ -28,6 +27,12 @@ import edu.raf.gef.plugin.DiagramPlugin;
 import edu.raf.gef.services.ServiceManager;
 import edu.raf.gef.services.mime.ProjectsFileHandler;
 
+/**
+ * Entry class for the Flowchart plugin.
+ * 
+ * @author toroman
+ * 
+ */
 public class FlowChartPlugin implements DiagramPlugin {
 	/**
 	 * 

@@ -37,7 +37,7 @@ public class DiagramModel extends TransientObservable implements TransientObserv
 	private transient Collection<Drawable> readOnlyDrawables;
 	private transient Collection<Drawable> readOnlyTemporaryDrawables;
 
-	private String title = "untitled" + ++INSTANCE_COUNTER;
+	private String title = "Diagram " + ++INSTANCE_COUNTER;
 
 	public Converter getConverter() {
 		return new DiagramModelConverter(getClass());

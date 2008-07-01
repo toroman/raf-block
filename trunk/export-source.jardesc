@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jardesc>
+    <jar path="C:/Documents and Settings/Srecko Toroman/Desktop/raf-block/source.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/raf-block/export-source.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="true" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="true"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <selectedElements exportClassFiles="false" exportJavaFiles="true" exportOutputFolder="false">
+        <javaElement handleIdentifier="=raf-block/src"/>
+        <folder path="/raf-block/docs"/>
+        <folder path="/raf-block/etc"/>
+        <javaElement handleIdentifier="=raf-block/res"/>
+        <folder path="/raf-block/bin"/>
+    </selectedElements>
+    <fatjar builder="org.eclipse.jdt.ui.plain_jar_builder" launchConfig=""/>
+</jardesc>
